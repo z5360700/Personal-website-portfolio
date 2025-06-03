@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, ExternalLink, Github } from "lucide-react"
+import { ArrowLeft, ExternalLink, Github, Smile } from "lucide-react" // Added Smile icon
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import BeforeAfterSlider from "@/components/before-after-slider"
@@ -20,10 +20,12 @@ const projectsData = [
     description:
       "Complete residential building renovation from foundation to finish, including structural framing, roofing, plumbing, and electrical work.",
     longDescription: `
-      This comprehensive residential construction project involved the complete renovation and reconstruction of a deteriorated building into a modern, fully functional residential structure. Working alongside my father, I gained hands-on experience in all aspects of construction from initial demolition through to final finishing.
-      
-      The project required careful planning, adherence to building codes and regulations, and coordination of multiple trades including electrical, plumbing, and structural work. The transformation showcases both technical construction skills and project management capabilities.
-    `,
+This project involved completely renovating a deteriorated building into a modern home. Working with my father, I gained hands-on experience in all aspects of construction.
+
+From demolition to finishing touches, we handled everything - structural work, roofing, electrical, plumbing, and interior design. The project required careful planning and coordination of different trades.
+
+The transformation showcases both my technical construction skills and project management abilities. Every step was completed with attention to building codes and quality standards.
+`,
     image: "/images/construction-after.jpg",
     beforeImage: "/images/construction-before-new.png",
     exteriorGallery: [
@@ -33,6 +35,7 @@ const projectsData = [
       "/images/construction-1.jpg",
       "/images/construction-3.jpg",
       "/images/construction-5.jpg",
+      "/images/construction-primed-exterior.jpeg",
       "/images/construction-after.jpg",
     ],
     interiorGallery: [
@@ -44,6 +47,32 @@ const projectsData = [
       "/images/interior-7.jpg",
       "/images/interior-6.jpg",
       "/images/interior-8.jpg",
+    ],
+    finishedProductGallery: [
+      "/images/finished-product-1.jpeg",
+      "/images/finished-product-2.jpeg",
+      "/images/finished-product-3.jpeg",
+      "/images/finished-product-4.jpeg",
+      "/images/finished-product-5.jpeg",
+      "/images/finished-product-6.jpeg",
+      "/images/finished-product-7.jpeg",
+    ],
+    miscellaneousGallery: [
+      "/images/misc-construction-1.jpeg",
+      "/images/misc-construction-2.jpeg",
+      "/images/misc-construction-3.jpeg",
+      "/images/misc-construction-4.jpeg",
+      "/images/misc-construction-5.jpeg",
+      "/images/misc-construction-6.jpeg",
+      "/images/misc-construction-7.jpeg",
+      "/images/misc-construction-8.jpeg",
+      "/images/misc-construction-9.jpeg",
+      "/images/misc-construction-10.jpeg",
+      "/images/misc-construction-11.jpeg",
+      "/images/misc-construction-12.jpeg",
+      "/images/misc-construction-13.jpeg",
+      "/images/misc-construction-14.jpeg",
+      "/images/misc-construction-15.jpeg",
     ],
     tags: ["Construction", "Renovation", "Project Management", "Building Codes"],
     liveUrl: null,
@@ -78,14 +107,14 @@ const projectsData = [
       compliance: ["Building Codes", "Safety Regulations", "Quality Standards", "Project Management"],
     },
     challenges: `
-      One of the main challenges was working with the existing foundation while ensuring the new structure met current building standards. This required careful assessment of the existing structure and strategic reinforcement where necessary.
-      
-      The interior renovation presented unique challenges with coordinating electrical, plumbing, and HVAC systems within the existing structure. Proper sequencing of trades was critical to ensure quality workmanship and avoid conflicts between different systems.
-      
-      Weather conditions also posed challenges during the construction phase, requiring flexible scheduling and proper protection of materials and work areas. Coordinating multiple trades and ensuring quality workmanship while maintaining project timelines required strong organizational and communication skills.
-      
-      Ensuring compliance with all building codes and regulations while maintaining cost-effectiveness was another key challenge that required thorough planning and attention to detail throughout the construction process.
-    `,
+  One of the main challenges was working with the existing foundation while ensuring the new structure met current building standards. This required careful assessment of the existing structure and strategic reinforcement where necessary.
+  
+  The interior renovation presented unique challenges with coordinating electrical, plumbing, and HVAC systems within the existing structure. Proper sequencing of trades was critical to ensure quality workmanship and avoid conflicts between different systems.
+  
+  Weather conditions also posed challenges during the construction phase, requiring flexible scheduling and proper protection of materials and work areas. Coordinating multiple trades and ensuring quality workmanship while maintaining project timelines required strong organizational and communication skills.
+  
+  Ensuring compliance with all building codes and regulations while maintaining cost-effectiveness was another key challenge that required thorough planning and attention to detail throughout the construction process.
+`,
   },
   {
     id: 2,
@@ -93,14 +122,14 @@ const projectsData = [
     description:
       "Autonomous robot designed to navigate through complex mazes using LiDAR, IMU, and wheel encoders with path planning algorithms and computer vision.",
     longDescription: `
-      The Micromouse Maze Navigation Robot was developed as part of the MTRN3100 course, focusing on autonomous robotics and navigation systems. This project involved designing and implementing a robot capable of navigating through unknown maze environments efficiently.
-      
-      The robot utilizes multiple sensors including LiDAR for distance measurement, an Inertial Measurement Unit (IMU) for orientation tracking, and wheel encoders for precise movement control. These sensors work together to provide comprehensive environmental awareness and position tracking.
-      
-      A key feature of this project was the implementation of computer vision techniques to generate occupancy maps of the maze in real-time. Using these maps, the robot applies Breadth-First Search (BFS) algorithms to determine optimal paths while avoiding obstacles.
-      
-      The system also includes a manual override feature, allowing users to input directional commands (forward, left, right) for situations where direct control is preferred over autonomous navigation.
-    `,
+  The Micromouse Maze Navigation Robot was developed as part of the MTRN3100 course, focusing on autonomous robotics and navigation systems. This project involved designing and implementing a robot capable of navigating through unknown maze environments efficiently.
+  
+  The robot utilizes multiple sensors including LiDAR for distance measurement, an Inertial Measurement Unit (IMU) for orientation tracking, and wheel encoders for precise movement control. These sensors work together to provide comprehensive environmental awareness and position tracking.
+  
+  A key feature of this project was the implementation of computer vision techniques to generate occupancy maps of the maze in real-time. Using these maps, the robot applies Breadth-First Search (BFS) algorithms to determine optimal paths while avoiding obstacles.
+  
+  The system also includes a manual override feature, allowing users to input directional commands (forward, left, right) for situations where direct control is preferred over autonomous navigation.
+`,
     image: "/images/micromouse-robot.jpeg",
     course: "MTRN3100",
     hardwareGallery: [
@@ -170,14 +199,14 @@ const projectsData = [
       ],
     },
     challenges: `
-      One of the primary challenges was achieving accurate localization within the maze environment. Small errors in sensor readings or wheel slippage could compound over time, leading to significant position estimation errors. We addressed this by implementing sensor fusion techniques that combined data from multiple sources to improve accuracy.
-      
-      Processing constraints were another significant challenge, as the Arduino Nano has limited computational resources. Optimizing the code for efficiency while maintaining real-time performance required careful algorithm selection and implementation.
-      
-      The integration of computer vision for map generation presented challenges in terms of processing speed and accuracy. We had to balance the resolution of the occupancy map with the processing capabilities of our system to ensure real-time performance.
-      
-      Tuning the PID controllers for consistent performance across different maze surfaces and conditions required extensive testing and parameter adjustment. We developed an adaptive control system that could adjust parameters based on detected surface conditions.
-    `,
+  One of the primary challenges was achieving accurate localization within the maze environment. Small errors in sensor readings or wheel slippage could compound over time, leading to significant position estimation errors. We addressed this by implementing sensor fusion techniques that combined data from multiple sources to improve accuracy.
+  
+  Processing constraints were another significant challenge, as the Arduino Nano has limited computational resources. Optimizing the code for efficiency while maintaining real-time performance required careful algorithm selection and implementation.
+  
+  The integration of computer vision for map generation presented challenges in terms of processing speed and accuracy. We had to balance the resolution of the occupancy map with the processing capabilities of our system to ensure real-time performance.
+  
+  Tuning the PID controllers for consistent performance across different maze surfaces and conditions required extensive testing and parameter adjustment. We developed an adaptive control system that could adjust parameters based on detected surface conditions.
+`,
   },
   {
     id: 3,
@@ -185,13 +214,13 @@ const projectsData = [
     description:
       "Work in progress - An interactive weather dashboard that displays current and forecasted weather data for any location.",
     longDescription: `
-      Work in progress - This weather dashboard will provide users with accurate and up-to-date weather information for any location worldwide.
-      It will feature a clean, intuitive interface that displays current conditions, hourly forecasts, and a 7-day outlook.
-      
-      Users will be able to save favorite locations, receive severe weather alerts, and view detailed meteorological data including
-      temperature, precipitation, wind, humidity, and atmospheric pressure. The app will also include historical weather data
-      and interactive weather maps.
-    `,
+  Work in progress - This weather dashboard will provide users with accurate and up-to-date weather information for any location worldwide.
+  It will feature a clean, intuitive interface that displays current conditions, hourly forecasts, and a 7-day outlook.
+  
+  Users will be able to save favorite locations, receive severe weather alerts, and view detailed meteorological data including
+  temperature, precipitation, wind, humidity, and atmospheric pressure. The app will also include historical weather data
+  and interactive weather maps.
+`,
     image: "/placeholder.svg?height=600&width=800",
     exteriorGallery: [
       "/placeholder.svg?height=600&width=800",
@@ -216,12 +245,12 @@ const projectsData = [
       deployment: ["Netlify", "Serverless Functions"],
     },
     challenges: `
-      One challenge will be optimizing API usage to stay within rate limits while providing real-time data. We plan to implement
-      a caching strategy with Redis that will significantly reduce API calls while keeping data fresh.
-      
-      Displaying complex meteorological data in an intuitive way will be another challenge. We plan to use Chart.js to create
-      visualizations that make it easy for users to understand weather patterns and trends at a glance.
-    `,
+  One challenge will be optimizing API usage to stay within rate limits while providing real-time data. We plan to implement
+  a caching strategy with Redis that will significantly reduce API calls while keeping data fresh.
+  
+  Displaying complex meteorological data in an intuitive way will be another challenge. We plan to use Chart.js to create
+  visualizations that make it easy for users to understand weather patterns and trends at a glance.
+`,
   },
   {
     id: 4,
@@ -229,12 +258,12 @@ const projectsData = [
     description:
       "Designed and 3D-printed cooling funnels using PLA material to direct airflow for GPU components, inspired by automotive ducted cooling systems.",
     longDescription: `
-    This project was inspired by ducted cooling systems found in automotive applications, where air is directed precisely to components that need cooling. The idea emerged from observing that airflow transfer in PC cases isn't well optimized, with much of the intake air not reaching critical components like the GPU effectively.
-    
-    The project began with identifying the airflow optimization problem in my PC case, where front intake fans weren't efficiently directing cool air to the graphics card. Taking inspiration from automotive ducted parts that channel air directly to specific engine components, I designed custom cooling funnels to create a direct airflow path from the front case fans to the GPU.
-    
-    The solution involved precise 3D modeling of the PC case components, designing custom ducting that would fit perfectly within the case constraints, and 3D printing the parts using PLA material for heat resistance and durability.
-  `,
+This project was inspired by ducted cooling systems found in automotive applications, where air is directed precisely to components that need cooling. The idea emerged from observing that airflow transfer in PC cases isn't well optimized, with much of the intake air not reaching critical components like the GPU effectively.
+
+The project began with identifying the airflow optimization problem in my PC case, where front intake fans weren't efficiently directing cool air to the graphics card. Taking inspiration from automotive ducted parts that channel air directly to specific engine components, I designed custom cooling funnels to create a direct airflow path from the front case fans to the GPU.
+
+The solution involved precise 3D modeling of the PC case components, designing custom ducting that would fit perfectly within the case constraints, and 3D printing the parts using PLA material for heat resistance and durability.
+`,
     image: "/images/pc-cooling-installed.jpeg",
     designGallery: [
       "/images/pc-airflow-problem.jpeg",
@@ -350,21 +379,21 @@ const projectsData = [
       ],
     },
     challenges: `
-      One of the primary challenges was accurately measuring and modeling the internal dimensions of the PC case while accounting for cable management and component clearances. The ducting needed to fit precisely without interfering with other components or restricting access for maintenance.
-      
-      Designing for 3D printing presented constraints in terms of overhang angles, support material requirements, and print bed size limitations. The duct had to be split into multiple parts that could be printed separately and assembled, while maintaining structural integrity and airflow efficiency.
-      
-      Material selection was important for this application. PLA was chosen for its ease of printing and good structural properties, making it ideal for prototyping and testing the ducting design.
-      
-      Validating the effectiveness of the cooling solution required establishing baseline temperature measurements and conducting controlled testing under various load conditions. Ensuring that the ducting actually improved cooling performance rather than just redirecting airflow was essential to the project's success.
-    `,
+  One of the primary challenges was accurately measuring and modeling the internal dimensions of the PC case while accounting for cable management and component clearances. The ducting needed to fit precisely without interfering with other components or restricting access for maintenance.
+  
+  Designing for 3D printing presented constraints in terms of overhang angles, support material requirements, and print bed size limitations. The duct had to be split into multiple parts that could be printed separately and assembled, while maintaining structural integrity and airflow efficiency.
+  
+  Material selection was important for this application. PLA was chosen for its ease of printing and good structural properties, making it ideal for prototyping and testing the ducting design.
+  
+  Validating the effectiveness of the cooling solution required establishing baseline temperature measurements and conducting controlled testing under various load conditions. Ensuring that the ducting actually improved cooling performance rather than just redirecting airflow was essential to the project's success.
+`,
     results: `
-      The custom cooling ducts proved highly effective, reducing GPU temperatures by 8°C under full load compared to the standard case configuration. This temperature reduction allowed the GPU to maintain higher boost clocks for longer periods, resulting in more consistent performance during demanding tasks like gaming and 3D rendering.
-      
-      An unexpected benefit was the reduction in fan noise, as the GPU's cooling system didn't need to work as hard to maintain safe temperatures. The direct airflow path also reduced dust accumulation on the GPU, as air was now following a more controlled path through the case.
-      
-      The project demonstrated how principles from automotive cooling systems could be successfully applied to PC hardware cooling, opening up possibilities for further optimization of other components like CPU coolers and memory modules.
-    `,
+  The custom cooling ducts proved highly effective, reducing GPU temperatures by 8°C under full load compared to the standard case configuration. This temperature reduction allowed the GPU to maintain higher boost clocks for longer periods, resulting in more consistent performance during demanding tasks like gaming and 3D rendering.
+  
+  An unexpected benefit was the reduction in fan noise, as the GPU's cooling system didn't need to work as hard to maintain safe temperatures. The direct airflow path also reduced dust accumulation on the GPU, as air was now following a more controlled path through the case.
+  
+  The project demonstrated how principles from automotive cooling systems could be successfully applied to PC hardware cooling, opening up possibilities for further optimization of other components like CPU coolers and memory modules.
+`,
   },
 ]
 
@@ -447,7 +476,7 @@ export default function ProjectDetailClient() {
 
           {/* Special layout for Construction Project with full-width slider */}
           {project.id === 1 ? (
-            <div className="space-y-12">
+            <div className="space-y-8">
               {/* Project Header */}
               <div className="text-center max-w-4xl mx-auto">
                 <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
@@ -473,22 +502,12 @@ export default function ProjectDetailClient() {
                   ))}
                 </div>
               </div>
-
-              {/* Full-width Before/After Slider */}
-              <div className="w-full max-w-7xl mx-auto mb-12">
-                <BeforeAfterSlider
-                  beforeImage={project.beforeImage}
-                  afterImage={project.image}
-                  beforeAlt="Before construction"
-                  afterAlt="After construction"
-                  className="before-after-slider-full"
-                />
-              </div>
-
               {/* Project Description */}
               <div className="max-w-4xl mx-auto">
-                <div className="prose dark:prose-invert max-w-none mb-8">
-                  <p>{project.longDescription}</p>
+                <div className="bg-card dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-border mb-6">
+                  <div className="prose dark:prose-invert max-w-none">
+                    <p>{project.longDescription}</p>
+                  </div>
                 </div>
 
                 {project.liveUrl || project.githubUrl ? (
@@ -522,9 +541,8 @@ export default function ProjectDetailClient() {
                   </div>
                 ) : null}
               </div>
-
               {/* Before/After Transformation Slider */}
-              <div className="max-w-6xl mx-auto mb-12">
+              <div className="max-w-6xl mx-auto mb-8">
                 <div className="text-center mb-6">
                   <h3 className="text-2xl font-bold mb-4">Complete Transformation</h3>
                   <p className="text-foreground/70 max-w-3xl mx-auto">
@@ -542,54 +560,160 @@ export default function ProjectDetailClient() {
                   />
                 </div>
               </div>
-
-              {/* Image Galleries */}
-              <div className="max-w-6xl mx-auto">
-                <Tabs defaultValue="exterior" className="mb-12">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="exterior">Construction Progress</TabsTrigger>
-                    <TabsTrigger value="interior">Interior Finishes</TabsTrigger>
+              {/* Key Features, Skills & Tools, and Challenges Tabs */}
+              <div className="max-w-6xl mx-auto mb-8">
+                <Tabs defaultValue="features">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="features">Key Features</TabsTrigger>
+                    <TabsTrigger value="technologies">Skills & Tools</TabsTrigger>
+                    <TabsTrigger value="challenges">Challenges</TabsTrigger>
                   </TabsList>
-                  <TabsContent value="exterior" className="mt-6">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {project.exteriorGallery.map((image, index) => (
-                        <div
-                          key={index}
-                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => openLightbox(project.exteriorGallery, index, "Construction progress")}
-                        >
-                          <Image
-                            src={image || "/placeholder.svg"}
-                            alt={`Construction progress ${index + 1}`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          />
+                  <TabsContent value="features" className="p-6 border rounded-md mt-2">
+                    <h2 className="text-xl font-bold mb-4">Key Features</h2>
+                    <ul className="space-y-2">
+                      {project.features.map((feature, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="mr-2 text-primary">•</span>
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </TabsContent>
+                  <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
+                    <h2 className="text-xl font-bold mb-4">Skills & Tools Used</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {Object.entries(project.technologies).map(([category, items]) => (
+                        <div key={category}>
+                          <h3 className="font-bold mb-2 capitalize">{category.replace(/([A-Z])/g, " $1").trim()}</h3>
+                          <ul className="space-y-1">
+                            {items.map((item, index) => (
+                              <li key={index} className="flex items-start">
+                                <span className="mr-2 text-primary">•</span>
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       ))}
                     </div>
                   </TabsContent>
-                  <TabsContent value="interior" className="mt-6">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {project.interiorGallery.map((image, index) => (
-                        <div
-                          key={index}
-                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => openLightbox(project.interiorGallery, index, "Interior finishes")}
-                        >
-                          <Image
-                            src={image || "/placeholder.svg"}
-                            alt={`Interior finish ${index + 1}`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          />
-                        </div>
-                      ))}
+                  <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
+                    <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
+                    <div className="prose dark:prose-invert max-w-none">
+                      <p>{project.challenges}</p>
                     </div>
                   </TabsContent>
                 </Tabs>
               </div>
+              {/* Construction Progress Gallery */}
+              <div className="max-w-6xl mx-auto mb-8">
+                <h3 className="text-2xl font-bold mb-6 text-center">Construction Progress</h3>
+                <p className="text-foreground/70 max-w-3xl mx-auto mb-6 text-center">
+                  Follow the journey from the initial stages to the near-complete exterior. Click any image to view it
+                  in full size.
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {project.exteriorGallery.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => openLightbox(project.exteriorGallery, index, "Construction progress")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`Construction progress ${index + 1}`}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Interior Finishes Gallery */}
+              <div className="max-w-6xl mx-auto mb-8">
+                <h3 className="text-2xl font-bold mb-6 text-center">Interior Finishes</h3>
+                <p className="text-foreground/70 max-w-3xl mx-auto mb-6 text-center">
+                  Explore the details of the newly renovated interior spaces, showcasing modern design and quality
+                  craftsmanship. Click any image to view it in full size.
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {project.interiorGallery.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => openLightbox(project.interiorGallery, index, "Interior finishes")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`Interior finish ${index + 1}`}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Finished Product Gallery */}
+              {project.finishedProductGallery && project.finishedProductGallery.length > 0 && (
+                <div className="max-w-6xl mx-auto mb-8">
+                  <h3 className="text-2xl font-bold mb-6 text-center">Finished Product Photos</h3>
+                  <p className="text-foreground/70 max-w-3xl mx-auto mb-6 text-center">
+                    Step inside and see the final results of the renovation. These photos highlight the completed
+                    interiors and overall quality of the finished home. Click any image to view it in full size.
+                  </p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {project.finishedProductGallery.map((image, index) => (
+                      <div
+                        key={index}
+                        className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => openLightbox(project.finishedProductGallery, index, "Finished product")}
+                      >
+                        <Image
+                          src={image || "/placeholder.svg"}
+                          alt={`Finished product ${index + 1}`}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {/* Miscellaneous Pictures Gallery */}
+              {project.miscellaneousGallery && project.miscellaneousGallery.length > 0 && (
+                <div className="max-w-6xl mx-auto">
+                  <div className="text-center mb-6">
+                    <p className="text-lg text-foreground/80 mb-2 flex items-center justify-center">
+                      If you made it this far in the project it means you liked it!{" "}
+                      <Smile className="inline-block ml-1 h-5 w-5" />
+                    </p>
+                    <p className="text-foreground/70 max-w-3xl mx-auto">
+                      I hope you enjoy some more miscellaneous pictures I took. Click any image to view it in full size.
+                    </p>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-6 text-center">Miscellaneous Pictures</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                    {project.miscellaneousGallery.map((image, index) => (
+                      <div
+                        key={index}
+                        className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => openLightbox(project.miscellaneousGallery, index, "Miscellaneous picture")}
+                      >
+                        <Image
+                          src={image || "/placeholder.svg"}
+                          alt={`Miscellaneous picture ${index + 1}`}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ) : project.id === 2 ? (
             // Special layout for Micromouse project
@@ -1022,50 +1146,50 @@ export default function ProjectDetailClient() {
             </div>
           )}
 
-          <Tabs defaultValue="features" className="mb-12">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="features">Key Features</TabsTrigger>
-              <TabsTrigger value="technologies">{project.id === 1 ? "Skills & Tools" : "Technologies"}</TabsTrigger>
-              <TabsTrigger value="challenges">Challenges</TabsTrigger>
-            </TabsList>
-            <TabsContent value="features" className="p-6 border rounded-md mt-2">
-              <h2 className="text-xl font-bold mb-4">Key Features</h2>
-              <ul className="space-y-2">
-                {project.features.map((feature, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="mr-2 text-primary">•</span>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </TabsContent>
-            <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
-              <h2 className="text-xl font-bold mb-4">
-                {project.id === 1 ? "Skills & Tools Used" : "Technologies Used"}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {Object.entries(project.technologies).map(([category, items]) => (
-                  <div key={category}>
-                    <h3 className="font-bold mb-2 capitalize">{category.replace(/([A-Z])/g, " $1").trim()}</h3>
-                    <ul className="space-y-1">
-                      {items.map((item, index) => (
-                        <li key={index} className="flex items-start">
-                          <span className="mr-2 text-primary">•</span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </TabsContent>
-            <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
-              <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
-              <div className="prose dark:prose-invert max-w-none">
-                <p>{project.challenges}</p>
-              </div>
-            </TabsContent>
-          </Tabs>
+          {project.id !== 1 && (
+            <Tabs defaultValue="features" className="mb-12">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="features">Key Features</TabsTrigger>
+                <TabsTrigger value="technologies">Technologies</TabsTrigger>
+                <TabsTrigger value="challenges">Challenges</TabsTrigger>
+              </TabsList>
+              <TabsContent value="features" className="p-6 border rounded-md mt-2">
+                <h2 className="text-xl font-bold mb-4">Key Features</h2>
+                <ul className="space-y-2">
+                  {project.features.map((feature, index) => (
+                    <li key={index} className="flex items-start">
+                      <span className="mr-2 text-primary">•</span>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </TabsContent>
+              <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
+                <h2 className="text-xl font-bold mb-4">Technologies Used</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {Object.entries(project.technologies).map(([category, items]) => (
+                    <div key={category}>
+                      <h3 className="font-bold mb-2 capitalize">{category.replace(/([A-Z])/g, " $1").trim()}</h3>
+                      <ul className="space-y-1">
+                        {items.map((item, index) => (
+                          <li key={index} className="flex items-start">
+                            <span className="mr-2 text-primary">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
+                <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
+                <div className="prose dark:prose-invert max-w-none">
+                  <p>{project.challenges}</p>
+                </div>
+              </TabsContent>
+            </Tabs>
+          )}
         </div>
       </main>
 
