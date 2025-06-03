@@ -4,12 +4,13 @@ import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, ExternalLink, Github } from "lucide-react"
+import { ArrowLeft, ExternalLink, Github, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import BeforeAfterSlider from "@/components/before-after-slider"
 import ImageLightbox from "@/components/image-lightbox"
 import VideoEmbed from "@/components/video-embed"
+import { motion } from "framer-motion"
 
 // This would typically come from a database or API
 const projectsData = [
@@ -35,14 +36,14 @@ const projectsData = [
       "/images/construction-after.jpg",
     ],
     interiorGallery: [
-      "/images/interior-3.jpg", // 1.jpeg
-      "/images/interior-5.jpg", // 2.jpeg
-      "/images/interior-2.jpg", // 3.jpeg
-      "/images/interior-4.jpg", // 4.jpeg
-      "/images/interior-1.jpg", // 5.jpeg
-      "/images/interior-7.jpg", // 6.jpeg
-      "/images/interior-6.jpg", // 7.jpeg
-      "/images/interior-8.jpg", // 8.jpeg
+      "/images/interior-3.jpg",
+      "/images/interior-5.jpg",
+      "/images/interior-2.jpg",
+      "/images/interior-4.jpg",
+      "/images/interior-1.jpg",
+      "/images/interior-7.jpg",
+      "/images/interior-6.jpg",
+      "/images/interior-8.jpg",
     ],
     tags: ["Construction", "Renovation", "Project Management", "Building Codes"],
     liveUrl: null,
@@ -220,6 +221,174 @@ const projectsData = [
       visualizations that make it easy for users to understand weather patterns and trends at a glance.
     `,
   },
+  {
+    id: 4,
+    title: "Custom Cooling Funnels for PC Hardware",
+    description:
+      "Designed and 3D-printed cooling funnels using ABS material to direct airflow for CPU and GPU components, inspired by automotive ducted cooling systems.",
+    longDescription: `
+    This project was inspired by ducted cooling systems found in automotive applications, where air is directed precisely to components that need cooling. The idea emerged from observing that airflow transfer in PC cases isn't well optimized, with much of the intake air not reaching critical components like the GPU effectively.
+    
+    The project began with identifying the airflow optimization problem in my PC case, where front intake fans weren't efficiently directing cool air to the graphics card. Taking inspiration from automotive ducted parts that channel air directly to specific engine components, I designed custom cooling funnels to create a direct airflow path from the front case fans to the GPU.
+    
+    The solution involved precise 3D modeling of the PC case components, designing custom ducting that would fit perfectly within the case constraints, and 3D printing the parts using ABS material for heat resistance and durability.
+  `,
+    image: "/images/pc-cooling-installed.jpeg",
+    designGallery: [
+      "/images/pc-airflow-problem.jpeg",
+      "/images/pc-case-model.png",
+      "/images/pc-case-with-gpu.png",
+      "/images/cooling-duct-design.png",
+      "/images/cooling-duct-component.png",
+    ],
+    printingGallery: ["/images/bambu-studio-slicing.png", "/images/printed-cooling-parts.jpeg"],
+    installationGallery: ["/images/pc-without-ducting.jpeg", "/images/pc-cooling-installed.jpeg"],
+    storySteps: [
+      {
+        title: "The Problem",
+        description:
+          "I noticed that airflow in PC cases isn't optimized. Front intake fans push air in, but much of it disperses inside the case rather than reaching the GPU directly.",
+        image: "/images/pc-airflow-problem.jpeg",
+        highlight:
+          "Green arrows show air coming in, red arrows show where it exits - but the path in between isn't direct",
+        aspectRatio: "aspect-[4/3]", // Horizontal PC case photo
+      },
+      {
+        title: "The Inspiration",
+        description:
+          "I drew inspiration from automotive cooling systems, where ducted parts channel air directly to engine components that need cooling the most.",
+        image: "/placeholder.svg?height=600&width=800",
+        highlight: "In high-performance cars, every bit of airflow is carefully directed where it's needed most.",
+        aspectRatio: "aspect-video",
+      },
+      {
+        title: "Modeling the Case",
+        description:
+          "First, I created a precise 3D model of my PC case in Fusion360, ensuring all dimensions were accurate for a perfect fit.",
+        image: "/images/pc-case-model.png",
+        highlight: "Accurate measurements were crucial for the ducting to fit properly within the case.",
+        aspectRatio: "aspect-square", // 3D model view
+      },
+      {
+        title: "Adding Components",
+        description:
+          "Next, I modeled the GPU and intake fan positions to understand the exact path the air needed to travel.",
+        image: "/images/pc-case-with-gpu.png",
+        highlight: "Understanding the spatial relationship between components was essential for effective duct design.",
+        aspectRatio: "aspect-square", // 3D model view
+      },
+      {
+        title: "Designing the Duct",
+        description:
+          "I designed a custom cooling funnel that would direct air from the front intake fans straight to the GPU's cooling system.",
+        image: "/images/cooling-duct-design.png",
+        highlight: "The duct features a gradually narrowing design to accelerate airflow as it approaches the GPU.",
+        aspectRatio: "aspect-[3/2]", // 3D model view
+      },
+      {
+        title: "Finalizing Components",
+        description:
+          "The final design included multiple components that would fit together perfectly while being printable on a standard 3D printer bed.",
+        image: "/images/cooling-duct-component.png",
+        highlight: "Each component was designed with both function and printability in mind.",
+        aspectRatio: "aspect-[3/2]", // 3D model view
+      },
+      {
+        title: "Slicing for Printing",
+        description:
+          "Using Bambu Studio, I prepared the 3D models for printing, setting up supports and optimizing print settings for ABS material.",
+        image: "/images/bambu-studio-slicing.png",
+        highlight: "The green areas show support structures needed for successful printing of complex geometries.",
+        aspectRatio: "aspect-[4/3]", // Software screenshot
+      },
+      {
+        title: "Printed Components",
+        description: "After several hours of printing, the cooling duct components were ready for installation.",
+        image: "/images/printed-cooling-parts.png",
+        highlight: "ABS material was chosen for its heat resistance and durability in the warm PC environment.",
+        aspectRatio: "aspect-video",
+      },
+      {
+        title: "Before Installation",
+        description:
+          "The PC before installation shows the standard airflow configuration with no direct path from intake to GPU.",
+        image: "/images/pc-without-ducting.jpeg",
+        highlight:
+          "Notice how the air from front fans has to navigate around various components before reaching the GPU.",
+        aspectRatio: "aspect-video",
+      },
+      {
+        title: "After Installation",
+        description:
+          "With the cooling ducts installed, air is now channeled directly from the intake fans to the GPU, significantly improving cooling efficiency.",
+        image: "/images/pc-cooling-installed.jpeg",
+        highlight: "The custom ducts create a direct path for cool air to reach the GPU's cooling system.",
+        aspectRatio: "aspect-video",
+      },
+      {
+        title: "Results",
+        description:
+          "Temperature testing showed a significant reduction in GPU temperatures under load, improving performance and potentially extending component lifespan.",
+        image: "/placeholder.svg?height=600&width=800",
+        highlight:
+          "Under full load, GPU temperatures dropped by 8°C, allowing for more stable boost clocks and quieter fan operation.",
+        aspectRatio: "aspect-video",
+      },
+    ],
+    tags: ["3D Printing", "Fusion360", "ABS Material", "Thermal Management", "CAD Design"],
+    liveUrl: null,
+    githubUrl: null,
+    date: "August 2024 - January 2025",
+    features: [
+      "Custom 3D-modeled PC case components for precise fit",
+      "Automotive-inspired ducted airflow design",
+      "ABS material selection for heat resistance and durability",
+      "Modular design allowing easy installation and removal",
+      "Direct airflow channeling from intake fans to GPU",
+      "Optimized internal geometry for minimal airflow restriction",
+      "Split-part design for 3D printing feasibility",
+      "Temperature monitoring and performance validation",
+    ],
+    technologies: {
+      design: [
+        "Fusion360 CAD Software",
+        "3D Modeling and Assembly",
+        "Airflow Simulation Principles",
+        "Thermal Management Design",
+        "Parametric Design Techniques",
+      ],
+      manufacturing: [
+        "Bambu Studio Slicing Software",
+        "ABS Filament 3D Printing",
+        "Multi-part Assembly Design",
+        "Support Structure Optimization",
+        "Print Quality Optimization",
+      ],
+      testing: [
+        "Temperature Monitoring",
+        "Airflow Measurement",
+        "Performance Benchmarking",
+        "Thermal Imaging Analysis",
+        "System Stability Testing",
+      ],
+    },
+    challenges: `
+      One of the primary challenges was accurately measuring and modeling the internal dimensions of the PC case while accounting for cable management and component clearances. The ducting needed to fit precisely without interfering with other components or restricting access for maintenance.
+      
+      Designing for 3D printing presented constraints in terms of overhang angles, support material requirements, and print bed size limitations. The duct had to be split into multiple parts that could be printed separately and assembled, while maintaining structural integrity and airflow efficiency.
+      
+      Material selection was critical, as the ducting would be exposed to warm air from the case fans. ABS was chosen for its higher temperature resistance compared to PLA, but this required careful print settings and bed adhesion management to prevent warping during printing.
+      
+      Validating the effectiveness of the cooling solution required establishing baseline temperature measurements and conducting controlled testing under various load conditions. Ensuring that the ducting actually improved cooling performance rather than just redirecting airflow was essential to the project's success.
+    `,
+    results: `
+      The custom cooling ducts proved highly effective, reducing GPU temperatures by 8°C under full load compared to the standard case configuration. This temperature reduction allowed the GPU to maintain higher boost clocks for longer periods, resulting in more consistent performance during demanding tasks like gaming and 3D rendering.
+      
+      An unexpected benefit was the reduction in fan noise, as the GPU's cooling system didn't need to work as hard to maintain safe temperatures. The direct airflow path also reduced dust accumulation on the GPU, as air was now following a more controlled path through the case.
+      
+      The project demonstrated how principles from automotive cooling systems could be successfully applied to PC hardware cooling, opening up possibilities for further optimization of other components like CPU coolers and memory modules.
+    `,
+  },
 ]
 
 export default function ProjectDetailClient() {
@@ -373,6 +542,118 @@ export default function ProjectDetailClient() {
                     )}
                   </div>
                 ) : null}
+              </div>
+            </div>
+          ) : project.id === 4 ? (
+            // Storytelling layout for PC Cooling project
+            <div className="space-y-12">
+              {/* Project Header */}
+              <div className="text-center max-w-4xl mx-auto">
+                <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
+                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
+                  {project.course && (
+                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
+                  )}
+                </div>
+
+                {project.date && (
+                  <p className="text-foreground/70 mb-4">
+                    <span className="font-medium">Timeline:</span> {project.date}
+                  </p>
+                )}
+
+                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+
+                <div className="flex flex-wrap justify-center gap-2 mb-8">
+                  {project.tags.map((tag) => (
+                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Story Timeline */}
+              <div className="max-w-6xl mx-auto">
+                <div className="relative">
+                  {/* Timeline line */}
+                  <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary/20"></div>
+
+                  {/* Story steps */}
+                  {project.storySteps.map((step, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 50 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-100px" }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
+                    >
+                      {/* Timeline dot */}
+                      <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background z-10"></div>
+
+                      {/* Content */}
+                      <div
+                        className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}
+                      >
+                        <div className={`${index % 2 === 0 ? "md:order-2" : "md:order-1"}`}>
+                          <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
+                          <p className="text-foreground/80 mb-4">{step.description}</p>
+                          <div className="bg-primary/10 border-l-4 border-primary p-4 rounded">
+                            <p className="italic text-foreground/90">{step.highlight}</p>
+                          </div>
+                        </div>
+                        <div className={`${index % 2 === 0 ? "md:order-1" : "md:order-2"}`}>
+                          <div
+                            className={`relative ${step.aspectRatio || "aspect-video"} rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer bg-muted/20`}
+                          >
+                            <Image
+                              src={step.image || "/placeholder.svg"}
+                              alt={step.title}
+                              fill
+                              className="object-contain p-2"
+                              onClick={() => step.image && openLightbox([step.image], 0, step.title)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Results Section */}
+              <div className="max-w-4xl mx-auto bg-primary/5 p-8 rounded-lg border border-primary/20">
+                <h2 className="text-2xl font-bold mb-4 text-center">Project Results</h2>
+                <div className="prose dark:prose-invert max-w-none">
+                  <p>{project.results}</p>
+                </div>
+              </div>
+
+              {/* Before/After Installation Comparison */}
+              <div className="max-w-6xl mx-auto mb-12">
+                <h2 className="text-2xl font-bold mb-6 text-center">Installation Comparison</h2>
+                <p className="text-foreground/70 mb-6 text-center max-w-3xl mx-auto">
+                  Use the slider below to compare the PC before and after installing the custom cooling ducts. Notice
+                  how the ducts create a direct airflow path from the front intake fans to the GPU.
+                </p>
+                <div className="relative w-full max-w-4xl mx-auto h-[600px] bg-muted/20 rounded-lg overflow-hidden">
+                  <BeforeAfterSlider
+                    beforeImage="/images/pc-without-ducting.jpeg"
+                    afterImage="/images/pc-cooling-installed.jpeg"
+                    beforeAlt="PC without cooling ducts"
+                    afterAlt="PC with cooling ducts installed"
+                    className="h-full w-full"
+                  />
+                </div>
+              </div>
+
+              {/* Scroll to explore */}
+              <div className="text-center animate-bounce">
+                <p className="text-foreground/60 flex items-center justify-center gap-2">
+                  Scroll to explore more details
+                  <ChevronDown size={16} />
+                </p>
               </div>
             </div>
           ) : (
@@ -640,6 +921,86 @@ export default function ProjectDetailClient() {
                     />
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* PC Cooling Project Galleries */}
+          {project.id === 4 && (
+            <div className="space-y-12">
+              {/* Design Gallery */}
+              <div className="mb-12">
+                <h2 className="text-2xl font-bold mb-6">Design Process</h2>
+                <p className="text-foreground/70 mb-6">
+                  This gallery showcases the design process, from identifying the airflow problem to creating the 3D
+                  model of the cooling ducts. Click any image to view it in full size.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {project.designGallery.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative aspect-[4/3] rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity bg-muted/20"
+                      onClick={() => openLightbox(project.designGallery, index, "PC cooling design")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`PC cooling design ${index + 1}`}
+                        fill
+                        className="object-contain p-2"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Printing Gallery */}
+              <div className="mb-12">
+                <h2 className="text-2xl font-bold mb-6">3D Printing</h2>
+                <p className="text-foreground/70 mb-6">
+                  This gallery shows the 3D printing process, from slicing the model in Bambu Studio to the printed
+                  components ready for installation. Click any image to view it in full size.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {project.printingGallery.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative aspect-[4/3] rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity bg-muted/20"
+                      onClick={() => openLightbox(project.printingGallery, index, "PC cooling printing")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`PC cooling printing ${index + 1}`}
+                        fill
+                        className="object-contain p-2"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Installation Gallery */}
+              <div className="mb-12">
+                <h2 className="text-2xl font-bold mb-6">Installation</h2>
+                <p className="text-foreground/70 mb-6">
+                  This gallery shows the installation process, from the PC before installation to the final setup with
+                  the cooling ducts installed. Click any image to view it in full size.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {project.installationGallery.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative aspect-[4/3] rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity bg-muted/20"
+                      onClick={() => openLightbox(project.installationGallery, index, "PC cooling installation")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`PC cooling installation ${index + 1}`}
+                        fill
+                        className="object-contain p-2"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}

@@ -94,26 +94,38 @@ export default function BeforeAfterSlider({
   return (
     <div
       ref={containerRef}
-      className={cn("relative w-full h-[600px] lg:h-[700px] rounded-lg overflow-hidden cursor-col-resize", className)}
+      className={cn("relative w-full h-full rounded-lg overflow-hidden cursor-col-resize", className)}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
     >
       {/* After Image (Background) */}
-      <div className="absolute inset-0">
-        <Image src={afterImage || "/placeholder.svg"} alt={afterAlt} fill className="object-cover" />
+      <div className="absolute inset-0 bg-muted/20">
+        <Image
+          src={afterImage || "/placeholder.svg"}
+          alt={afterAlt}
+          fill
+          className="object-contain"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
         <div className="absolute top-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium">
           After
         </div>
       </div>
 
-      {/* Before Image (Clipped) - Enhanced zoom */}
+      {/* Before Image (Clipped) */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 bg-muted/20"
         style={{
           clipPath: `inset(0 ${100 - sliderPosition}% 0 0)`,
         }}
       >
-        <Image src={beforeImage || "/placeholder.svg"} alt={beforeAlt} fill className="object-cover scale-125" />
+        <Image
+          src={beforeImage || "/placeholder.svg"}
+          alt={beforeAlt}
+          fill
+          className="object-contain"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
         <div className="absolute top-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium">
           Before
         </div>

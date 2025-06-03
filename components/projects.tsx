@@ -38,6 +38,16 @@ const projects = [
     tags: ["React", "Redux", "Weather API", "Chart.js"],
     githubUrl: "#",
   },
+  {
+    id: 4,
+    title: "Custom Cooling Funnels for PC Hardware",
+    description:
+      "Designed and 3D-printed cooling funnels using ABS material to direct airflow for CPU and GPU components, inspired by automotive ducted cooling systems.",
+    image: "/images/pc-cooling-installed.png",
+    tags: ["3D Printing", "Fusion360", "ABS Material", "Thermal Management", "CAD Design"],
+    githubUrl: "#",
+    date: "August 2024 - January 2025",
+  },
 ]
 
 export default function Projects() {
@@ -56,7 +66,7 @@ export default function Projects() {
           </p>
         </div>
 
-        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {projects.map((project, index) => (
             <motion.div
               key={project.id}
