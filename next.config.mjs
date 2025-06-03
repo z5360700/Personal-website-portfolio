@@ -7,8 +7,8 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true
-  }
+    unoptimized: true,
+  },
 }
 
 export default nextConfig
