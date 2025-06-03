@@ -143,6 +143,7 @@ The transformation showcases both my technical construction skills and project m
       "/images/micromouse-workshop.jpeg",
       "/images/micromouse-assembled.jpeg",
       "/images/micromouse-closeup.jpeg",
+      "/images/micromouse-testing-lab.jpeg",
     ],
     softwareGallery: [
       "/images/micromouse-code1.jpeg",
@@ -151,18 +152,25 @@ The transformation showcases both my technical construction skills and project m
     ],
     videoGallery: [
       {
-        id: "B2lfw8Rdm6E",
-        title: "PID Control Straight Line Demonstration",
-        description:
-          "This video demonstrates the PID controller in action, showing how the robot maintains a straight line path with precise motor control.",
-        isShort: true,
-      },
-      {
         id: "EOZJjVUmMxs",
         title: "Micromouse Maze Navigation",
         description:
           "Full demonstration of the Micromouse robot navigating through a complex maze environment using its sensor array and path planning algorithms.",
         isShort: false,
+      },
+      {
+        id: "ZRjj2WblTCQ",
+        title: "Early Testing - Accuracy Focus",
+        description:
+          "This video shows early testing of the micromouse robot where we prioritized getting accurate movement over speed. The robot demonstrates precise navigation and turning capabilities.",
+        isShort: false,
+      },
+      {
+        id: "B2lfw8Rdm6E",
+        title: "PID Control Straight Line Demonstration",
+        description:
+          "This video demonstrates the PID controller in action alongside aid from LiDAR values, showing how the robot maintains a straight line path with precise motor control.",
+        isShort: true,
       },
     ],
     tags: ["C++", "Python", "Arduino", "Computer Vision", "Robotics", "OpenCV"],
@@ -801,15 +809,58 @@ export default function ProjectDetailClient() {
                 ) : null}
               </div>
 
-              {/* Media Galleries */}
+              {/* Video Demonstrations Section */}
+              <div className="max-w-6xl mx-auto mb-12">
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-bold mb-4">Project Demonstrations</h3>
+                  <p className="text-foreground/70 max-w-3xl mx-auto">
+                    Watch the micromouse robot in action, demonstrating key features like PID control and autonomous
+                    maze navigation.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Left column - First two videos */}
+                  <div className="space-y-8">
+                    {project.videoGallery.slice(0, 2).map((video, index) => (
+                      <div key={index} className="space-y-4">
+                        <VideoEmbed videoId={video.id} title={video.title} isShort={video.isShort} />
+                        <div>
+                          <h3 className="font-bold text-lg mb-2">{video.title}</h3>
+                          <p className="text-foreground/70 text-sm">{video.description}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Right column - PID video */}
+                  <div className="space-y-4">
+                    <VideoEmbed
+                      videoId={project.videoGallery[2].id}
+                      title={project.videoGallery[2].title}
+                      isShort={project.videoGallery[2].isShort}
+                    />
+                    <div>
+                      <h3 className="font-bold text-lg mb-2">{project.videoGallery[2].title}</h3>
+                      <p className="text-foreground/70 text-sm">{project.videoGallery[2].description}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Hardware and Software Galleries */}
               <div className="max-w-6xl mx-auto">
                 <Tabs defaultValue="hardware" className="mb-12">
-                  <TabsList className="grid w-full grid-cols-3">
+                  <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="hardware">Hardware</TabsTrigger>
                     <TabsTrigger value="software">Software</TabsTrigger>
-                    <TabsTrigger value="videos">Demonstrations</TabsTrigger>
                   </TabsList>
                   <TabsContent value="hardware" className="mt-6">
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-bold mb-2">Hardware Components</h3>
+                      <p className="text-foreground/70">
+                        Explore the physical components and assembly of the micromouse robot.
+                      </p>
+                    </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                       {project.hardwareGallery.map((image, index) => (
                         <div
@@ -829,6 +880,12 @@ export default function ProjectDetailClient() {
                     </div>
                   </TabsContent>
                   <TabsContent value="software" className="mt-6">
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-bold mb-2">Software Implementation</h3>
+                      <p className="text-foreground/70">
+                        View the code implementation, algorithms, and software architecture.
+                      </p>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {project.softwareGallery.map((image, index) => (
                         <div
@@ -843,19 +900,6 @@ export default function ProjectDetailClient() {
                             className="object-cover"
                             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           />
-                        </div>
-                      ))}
-                    </div>
-                  </TabsContent>
-                  <TabsContent value="videos" className="mt-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {project.videoGallery.map((video, index) => (
-                        <div key={index} className="space-y-4">
-                          <VideoEmbed videoId={video.id} title={video.title} isShort={video.isShort} />
-                          <div>
-                            <h3 className="font-bold text-lg mb-2">{video.title}</h3>
-                            <p className="text-foreground/70 text-sm">{video.description}</p>
-                          </div>
                         </div>
                       ))}
                     </div>

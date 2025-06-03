@@ -27,7 +27,7 @@ const projects = [
       "Autonomous robot designed to navigate through complex mazes using LiDAR, IMU, and wheel encoders with path planning algorithms and computer vision.",
     image: "/images/micromouse-robot.jpeg",
     tags: ["C++", "Python", "Arduino", "Computer Vision", "Robotics", "OpenCV"],
-    githubUrl: "#",
+    githubUrl: "https://github.com/z5360700/micromouse-from2024",
     date: "May 2024 - August 2024",
   },
   {
