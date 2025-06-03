@@ -32,12 +32,13 @@ const projects = [
   },
   {
     id: 3,
-    title: "Weather Dashboard",
+    title: "Cat Door Monitoring System",
     description:
-      "Work in progress - An interactive weather dashboard that displays current and forecasted weather data for any location.",
-    image: "/placeholder.svg?height=600&width=800",
-    tags: ["React", "Redux", "Weather API", "Chart.js"],
+      "IoT monitoring system using ESP32 and break beam sensors to track cat movement through a pet door, with real-time Telegram notifications to prevent unauthorized access.",
+    image: "/images/cat-door-v2-system.png",
+    tags: ["ESP32", "IoT", "Arduino", "3D Printing", "Telegram Bot", "Break Beam Sensors"],
     githubUrl: "#",
+    date: "September 2024 - December 2024",
   },
   {
     id: 4,

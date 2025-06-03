@@ -223,46 +223,97 @@ The transformation showcases both my technical construction skills and project m
   },
   {
     id: 3,
-    title: "Weather Dashboard",
+    title: "Cat Door Monitoring System",
     description:
-      "Work in progress - An interactive weather dashboard that displays current and forecasted weather data for any location.",
+      "IoT monitoring system using ESP32 and break beam sensors to track cat movement through a pet door, with real-time Telegram notifications to prevent unauthorized access.",
     longDescription: `
-  Work in progress - This weather dashboard will provide users with accurate and up-to-date weather information for any location worldwide.
-  It will feature a clean, intuitive interface that displays current conditions, hourly forecasts, and a 7-day outlook.
-  
-  Users will be able to save favorite locations, receive severe weather alerts, and view detailed meteorological data including
-  temperature, precipitation, wind, humidity, and atmospheric pressure. The app will also include historical weather data
-  and interactive weather maps.
+This project was motivated by our family cat eating too much food and the discovery of another neighborhood cat sneaking into our house. The cat eats downstairs away from the kitchen, and we had caught the intruder cat inside the house around 3 times, prompting the need for a monitoring solution.
+
+The system evolved through two major versions. Version 1 used a PIR sensor but proved unreliable as it was triggered by cockroaches and would activate when opening the door. Version 2 implemented break beam sensors, which worked much more effectively and reliably.
+
+The ESP32 connects via WiFi to send notifications through a Telegram bot, providing real-time alerts whenever the beam is broken. This project was particularly rewarding because within the first 2 days of deployment, I immediately caught the other cat coming into the house and found him in the backyard.
+
+Future versions will include double break beam sensors to determine direction of movement, and potentially RFID tags or camera-based identification using computer vision knowledge gained from the micromouse project.
 `,
-    image: "/placeholder.svg?height=600&width=800",
-    exteriorGallery: [
-      "/placeholder.svg?height=600&width=800",
-      "/placeholder.svg?height=600&width=800",
-      "/placeholder.svg?height=600&width=800",
+    image: "/images/cat-door-v2-system.png",
+    designGallery: [
+      "/images/cat-door-v1.jpeg",
+      "/images/cat-door-cad-design.jpeg",
+      "/images/cat-door-cad-slicing.jpeg",
+      "/images/cat-door-3d-printed.png",
+      "/images/cat-door-v2-system.png",
     ],
-    tags: ["React", "Redux", "Weather API", "Chart.js"],
-    liveUrl: "#",
-    githubUrl: "#",
+    notificationGallery: ["/images/cat-door-telegram-notifications.png"],
+    videoGallery: [
+      {
+        id: "4Ufpr4eA3jw",
+        title: "Cat Door Monitoring System V2 Demonstration",
+        description:
+          "Demonstration of the Version 2 cat door monitoring system using break beam sensors, ESP32, and Telegram notifications.",
+        isShort: false,
+      },
+    ],
+    tags: ["ESP32", "IoT", "Arduino", "3D Printing", "Telegram Bot", "Break Beam Sensors"],
+    liveUrl: null,
+    githubUrl: null,
+    date: "September 2024 - December 2024",
     features: [
-      "Current weather conditions",
-      "Hourly and 7-day forecasts",
-      "Interactive weather maps",
-      "Location search and favorites",
-      "Weather alerts and notifications",
-      "Historical weather data",
-      "Responsive design with dark mode",
+      "Evolution from PIR sensors (V1) to break beam sensors (V2) for improved reliability",
+      "ESP32 WiFi connectivity for real-time communication",
+      "Telegram bot integration for instant mobile notifications",
+      "Custom 3D printed weatherproof housing designed in Fusion360",
+      "LED status indicators for visual feedback",
+      "Sensor debouncing to prevent false triggers",
+      "Low power consumption for continuous operation",
+      "Immediate detection and notification of unauthorized access",
+      "Timestamped activity logs for behavior analysis",
+      "Modular design for easy maintenance and upgrades",
     ],
     technologies: {
-      frontend: ["React", "Redux", "Chart.js", "Leaflet Maps"],
-      backend: ["Node.js", "Express", "OpenWeather API", "Redis caching"],
-      deployment: ["Netlify", "Serverless Functions"],
+      hardware: [
+        "ESP32 Development Board",
+        "Break Beam Sensors (Transmitter & Receiver)",
+        "LED Status Indicators",
+        "3D Printed PLA Housing",
+        "Breadboard Prototyping",
+        "Weatherproof Connectors",
+      ],
+      software: [
+        "Arduino IDE for ESP32 programming",
+        "WiFi Libraries for network connectivity",
+        "Telegram Bot API integration",
+        "Sensor debouncing algorithms",
+        "Real-time notification system",
+        "Serial communication for debugging",
+      ],
+      design: [
+        "Fusion360 CAD Software",
+        "3D Modeling and Assembly",
+        "Bambu Lab 3D Printing",
+        "Weatherproof Enclosure Design",
+        "Component Integration Planning",
+        "Print Support Optimization",
+      ],
     },
     challenges: `
-  One challenge will be optimizing API usage to stay within rate limits while providing real-time data. We plan to implement
-  a caching strategy with Redis that will significantly reduce API calls while keeping data fresh.
-  
-  Displaying complex meteorological data in an intuitive way will be another challenge. We plan to use Chart.js to create
-  visualizations that make it easy for users to understand weather patterns and trends at a glance.
+The primary challenge was eliminating false positives from the initial PIR sensor design. The PIR sensor was too sensitive and would trigger from small animals like cockroaches, as well as when the door itself was opened. This led to the redesign using break beam sensors, which provide much more precise detection.
+
+Designing a weatherproof housing that could accommodate all components while maintaining sensor alignment was another significant challenge. The 3D printed enclosure needed to protect the electronics from outdoor conditions while allowing proper sensor operation.
+
+Implementing reliable WiFi connectivity and Telegram bot integration required careful handling of network timeouts and reconnection logic. The system needed to be robust enough to operate continuously without manual intervention.
+
+Power management was also a consideration, as the system needed to run continuously while minimizing power consumption. Optimizing the ESP32 sleep modes and sensor polling frequency was essential for long-term operation.
+
+Future development will focus on implementing directional detection using dual break beam sensors, which will require more sophisticated timing algorithms to determine whether the cat is entering or leaving the house.
+`,
+    results: `
+The Version 2 system with break beam sensors proved highly effective, providing reliable detection without false positives. Within the first two days of deployment, the system successfully detected and alerted me to the neighborhood cat's intrusion, allowing me to locate and remove the intruder from the backyard.
+
+The Telegram notification system provides excellent real-time monitoring capabilities, with timestamped alerts that help track the cat's movement patterns throughout the day. This data has been valuable for understanding feeding schedules and outdoor activity.
+
+The 3D printed housing has proven durable in outdoor conditions, protecting the electronics while maintaining proper sensor alignment. The modular design has made it easy to perform maintenance and upgrades as needed.
+
+The project successfully solved the original problem of unauthorized access while providing valuable insights into the cat's behavior patterns. The immediate success in catching the intruder cat validated the effectiveness of the monitoring approach.
 `,
   },
   {
@@ -905,6 +956,314 @@ export default function ProjectDetailClient() {
                     </div>
                   </TabsContent>
                 </Tabs>
+              </div>
+            </div>
+          ) : project.id === 3 ? (
+            // Special layout for Cat Door Monitoring System
+            <div className="space-y-12">
+              {/* Project Header */}
+              <div className="text-center max-w-4xl mx-auto">
+                <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
+                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
+                  {project.course && (
+                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
+                  )}
+                </div>
+
+                {project.date && (
+                  <p className="text-foreground/70 mb-4">
+                    <span className="font-medium">Timeline:</span> {project.date}
+                  </p>
+                )}
+
+                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+
+                <div className="flex flex-wrap justify-center gap-2 mb-8">
+                  {project.tags.map((tag) => (
+                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Main Project Image */}
+              <div className="max-w-4xl mx-auto mb-12">
+                <div className="relative aspect-video rounded-lg overflow-hidden">
+                  <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
+                </div>
+              </div>
+
+              {/* Project Description */}
+              <div className="max-w-4xl mx-auto">
+                <div className="prose dark:prose-invert max-w-none mb-8">
+                  <p>{project.longDescription}</p>
+                </div>
+
+                {project.liveUrl || project.githubUrl ? (
+                  <div className="flex flex-wrap justify-center gap-4 mb-8">
+                    {project.liveUrl && (
+                      <Button asChild>
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <ExternalLink size={16} />
+                          Live Demo
+                        </a>
+                      </Button>
+                    )}
+                    {project.githubUrl && (
+                      <Button variant="outline" asChild>
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <Github size={16} />
+                          View Code
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+                ) : null}
+              </div>
+
+              {/* Video Demonstration Section */}
+              {project.videoGallery && project.videoGallery.length > 0 && (
+                <div className="max-w-4xl mx-auto mb-12">
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-bold mb-4">System Demonstration</h3>
+                    <p className="text-foreground/70 max-w-3xl mx-auto">
+                      Watch the Version 2 cat door monitoring system in action, demonstrating the break beam sensor
+                      detection and real-time notifications.
+                    </p>
+                  </div>
+                  <div className="space-y-6">
+                    {project.videoGallery.map((video, index) => (
+                      <div key={index} className="space-y-4">
+                        <VideoEmbed videoId={video.id} title={video.title} isShort={video.isShort} />
+                        <div className="text-center">
+                          <h3 className="font-bold text-lg mb-2">{video.title}</h3>
+                          <p className="text-foreground/70">{video.description}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Project Evolution Story */}
+              <div className="max-w-6xl mx-auto mb-12">
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-bold mb-4">Project Evolution: From V1 to V2</h3>
+                  <p className="text-foreground/70 max-w-3xl mx-auto">
+                    Follow the development journey from the initial PIR sensor design to the final break beam sensor
+                    solution.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                  {/* Version 1 Story */}
+                  <div className="space-y-6">
+                    <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border border-red-200 dark:border-red-800">
+                      <h4 className="text-xl font-bold text-red-800 dark:text-red-200 mb-3">
+                        Version 1: PIR Sensor (Failed)
+                      </h4>
+                      <p className="text-red-700 dark:text-red-300 mb-4">
+                        The initial design used a PIR (Passive Infrared) sensor to detect motion through the cat door.
+                        However, this approach proved unreliable due to false triggers from small animals like
+                        cockroaches and activation when the door itself was opened.
+                      </p>
+                      <div
+                        className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => openLightbox(["/images/cat-door-v1.jpeg"], 0, "Version 1 PIR sensor setup")}
+                      >
+                        <Image
+                          src="/images/cat-door-v1.jpeg"
+                          alt="Version 1 with PIR sensor"
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 1024px) 100vw, 50vw"
+                        />
+                      </div>
+                      <p className="text-sm text-red-600 dark:text-red-400 mt-2 italic">
+                        Click image to view full size - Version 1 setup with PIR sensor mounted above the cat door
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Version 2 Story */}
+                  <div className="space-y-6">
+                    <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
+                      <h4 className="text-xl font-bold text-green-800 dark:text-green-200 mb-3">
+                        Version 2: Break Beam Sensor (Success)
+                      </h4>
+                      <p className="text-green-700 dark:text-green-300 mb-4">
+                        The redesigned system uses break beam sensors that create an invisible infrared beam across the
+                        door opening. This provides much more precise detection with virtually no false positives,
+                        successfully solving the reliability issues of Version 1.
+                      </p>
+                      <div
+                        className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() =>
+                          openLightbox(["/images/cat-door-v2-system.png"], 0, "Version 2 break beam sensor system")
+                        }
+                      >
+                        <Image
+                          src="/images/cat-door-v2-system.png"
+                          alt="Version 2 with break beam sensors and ESP32"
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 1024px) 100vw, 50vw"
+                        />
+                      </div>
+                      <p className="text-sm text-green-600 dark:text-green-400 mt-2 italic">
+                        Click image to view full size - Version 2 system with ESP32, break beam sensors, and Arduino IDE
+                        code
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Design and Manufacturing Process */}
+              <div className="max-w-6xl mx-auto mb-12">
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-bold mb-4">Design & Manufacturing Process</h3>
+                  <p className="text-foreground/70 max-w-3xl mx-auto">
+                    The project required custom 3D printed housing to protect the electronics while maintaining sensor
+                    alignment.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="space-y-3">
+                    <div
+                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => openLightbox(["/images/cat-door-cad-design.jpeg"], 0, "CAD design in Fusion360")}
+                    >
+                      <Image
+                        src="/images/cat-door-cad-design.jpeg"
+                        alt="CAD design in Fusion360"
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      />
+                    </div>
+                    <div className="text-center">
+                      <h4 className="font-bold mb-1">CAD Design</h4>
+                      <p className="text-sm text-foreground/70">3D modeling the sensor housing in Fusion360</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div
+                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => openLightbox(["/images/cat-door-cad-slicing.jpeg"], 0, "3D printing preparation")}
+                    >
+                      <Image
+                        src="/images/cat-door-cad-slicing.jpeg"
+                        alt="3D printing slicing preparation"
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      />
+                    </div>
+                    <div className="text-center">
+                      <h4 className="font-bold mb-1">Print Preparation</h4>
+                      <p className="text-sm text-foreground/70">Slicing software with support structures</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div
+                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => openLightbox(["/images/cat-door-3d-printed.png"], 0, "3D printed housing")}
+                    >
+                      <Image
+                        src="/images/cat-door-3d-printed.png"
+                        alt="3D printed housing on printer bed"
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      />
+                    </div>
+                    <div className="text-center">
+                      <h4 className="font-bold mb-1">3D Printing</h4>
+                      <p className="text-sm text-foreground/70">Completed housing on Bambu Lab printer</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div
+                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() =>
+                        openLightbox(["/images/cat-door-telegram-notifications.png"], 0, "Telegram notifications")
+                      }
+                    >
+                      <Image
+                        src="/images/cat-door-telegram-notifications.png"
+                        alt="Telegram bot notifications on phone"
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      />
+                    </div>
+                    <div className="text-center">
+                      <h4 className="font-bold mb-1">Real-time Alerts</h4>
+                      <p className="text-sm text-foreground/70">Telegram notifications showing detection events</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Results and Success Story */}
+              <div className="max-w-4xl mx-auto mb-12">
+                <div className="bg-primary/5 p-8 rounded-lg border border-primary/20">
+                  <h3 className="text-2xl font-bold mb-4 text-center">Immediate Success</h3>
+                  <div className="prose dark:prose-invert max-w-none text-center">
+                    <p className="text-lg mb-4">
+                      The project was incredibly rewarding because within the first 2 days of deployment, I immediately
+                      caught the neighborhood cat coming into the house and found him in the backyard!
+                    </p>
+                    <p className="text-foreground/80">
+                      The system now provides reliable monitoring of our cat's movement patterns while successfully
+                      preventing unauthorized access from the intruder cat. The real-time Telegram notifications allow
+                      us to track feeding schedules and ensure our cat's food is protected.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Future Development */}
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-muted/30 p-8 rounded-lg">
+                  <h3 className="text-2xl font-bold mb-4 text-center">Future Enhancements</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="font-bold mb-2 text-primary">Next Version Features</h4>
+                      <ul className="space-y-2 text-foreground/80">
+                        <li>• Double break beam sensors for directional detection</li>
+                        <li>• Determine if cat is entering or leaving</li>
+                        <li>• RFID tags for individual cat identification</li>
+                        <li>• Camera-based identification using computer vision</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-bold mb-2 text-primary">Technical Improvements</h4>
+                      <ul className="space-y-2 text-foreground/80">
+                        <li>• Enhanced weatherproofing for outdoor durability</li>
+                        <li>• Battery backup for continuous operation</li>
+                        <li>• Data logging for behavior analysis</li>
+                        <li>• Integration with home automation systems</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           ) : project.id === 4 ? (
