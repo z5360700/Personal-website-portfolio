@@ -8,6 +8,7 @@ import { ArrowLeft, ExternalLink, Github, Smile } from "lucide-react" // Added S
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import BeforeAfterSlider from "@/components/before-after-slider"
+import EnhancedBeforeAfterSlider from "@/components/enhanced-before-after-slider"
 import ImageLightbox from "@/components/image-lightbox"
 import VideoEmbed from "@/components/video-embed"
 import { motion } from "framer-motion"
@@ -73,6 +74,10 @@ The transformation showcases both my technical construction skills and project m
       "/images/misc-construction-13.jpeg",
       "/images/misc-construction-14.jpeg",
       "/images/misc-construction-15.jpeg",
+      "/images/misc-construction-16.jpeg",
+      "/images/misc-construction-17.jpeg",
+      "/images/misc-construction-18.jpeg",
+      "/images/misc-construction-19.jpeg",
     ],
     tags: ["Construction", "Renovation", "Project Management", "Building Codes"],
     liveUrl: null,
@@ -162,7 +167,7 @@ The transformation showcases both my technical construction skills and project m
     ],
     tags: ["C++", "Python", "Arduino", "Computer Vision", "Robotics", "OpenCV"],
     liveUrl: null,
-    githubUrl: "https://github.com/yourusername/micromouse-robot",
+    githubUrl: "https://github.com/UNSW-MTRN3100/micromouse-lightning-mcqueen",
     date: "May 2024 - August 2024",
     features: [
       "Autonomous maze navigation using sensor fusion",
@@ -541,24 +546,16 @@ export default function ProjectDetailClient() {
                   </div>
                 ) : null}
               </div>
-              {/* Before/After Transformation Slider */}
-              <div className="max-w-6xl mx-auto mb-8">
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold mb-4">Complete Transformation</h3>
-                  <p className="text-foreground/70 max-w-3xl mx-auto">
-                    Use the slider below to see the dramatic transformation from the deteriorated starting condition to
-                    the fully renovated modern home.
-                  </p>
-                </div>
-                <div className="relative w-full h-[500px] bg-muted/20 rounded-lg overflow-hidden">
-                  <BeforeAfterSlider
-                    beforeImage="/images/construction-before-new.png"
-                    afterImage="/images/construction-after.jpg"
-                    beforeAlt="Before renovation - deteriorated condition"
-                    afterAlt="After renovation - completed home"
-                    className="h-full w-full"
-                  />
-                </div>
+              {/* Enhanced Before/After Transformation Slider */}
+              <div className="max-w-7xl mx-auto mb-12">
+                <EnhancedBeforeAfterSlider
+                  beforeImage="/images/construction-before-new.png"
+                  afterImage="/images/construction-after.jpg"
+                  beforeAlt="Before renovation - deteriorated condition"
+                  afterAlt="After renovation - completed home"
+                  title="Complete Transformation"
+                  description="Use the slider below to see the dramatic transformation from the deteriorated starting condition to the fully renovated modern home."
+                />
               </div>
               {/* Key Features, Skills & Tools, and Challenges Tabs */}
               <div className="max-w-6xl mx-auto mb-8">
@@ -605,115 +602,131 @@ export default function ProjectDetailClient() {
                   </TabsContent>
                 </Tabs>
               </div>
-              {/* Construction Progress Gallery */}
-              <div className="max-w-6xl mx-auto mb-8">
-                <h3 className="text-2xl font-bold mb-6 text-center">Construction Progress</h3>
-                <p className="text-foreground/70 max-w-3xl mx-auto mb-6 text-center">
-                  Follow the journey from the initial stages to the near-complete exterior. Click any image to view it
-                  in full size.
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {project.exteriorGallery.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => openLightbox(project.exteriorGallery, index, "Construction progress")}
-                    >
-                      <Image
-                        src={image || "/placeholder.svg"}
-                        alt={`Construction progress ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* Interior Finishes Gallery */}
-              <div className="max-w-6xl mx-auto mb-8">
-                <h3 className="text-2xl font-bold mb-6 text-center">Interior Finishes</h3>
-                <p className="text-foreground/70 max-w-3xl mx-auto mb-6 text-center">
-                  Explore the details of the newly renovated interior spaces, showcasing modern design and quality
-                  craftsmanship. Click any image to view it in full size.
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {project.interiorGallery.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => openLightbox(project.interiorGallery, index, "Interior finishes")}
-                    >
-                      <Image
-                        src={image || "/placeholder.svg"}
-                        alt={`Interior finish ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* Finished Product Gallery */}
-              {project.finishedProductGallery && project.finishedProductGallery.length > 0 && (
-                <div className="max-w-6xl mx-auto mb-8">
-                  <h3 className="text-2xl font-bold mb-6 text-center">Finished Product Photos</h3>
-                  <p className="text-foreground/70 max-w-3xl mx-auto mb-6 text-center">
-                    Step inside and see the final results of the renovation. These photos highlight the completed
-                    interiors and overall quality of the finished home. Click any image to view it in full size.
-                  </p>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {project.finishedProductGallery.map((image, index) => (
-                      <div
-                        key={index}
-                        className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                        onClick={() => openLightbox(project.finishedProductGallery, index, "Finished product")}
-                      >
-                        <Image
-                          src={image || "/placeholder.svg"}
-                          alt={`Finished product ${index + 1}`}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {/* Miscellaneous Pictures Gallery */}
-              {project.miscellaneousGallery && project.miscellaneousGallery.length > 0 && (
-                <div className="max-w-6xl mx-auto">
-                  <div className="text-center mb-6">
-                    <p className="text-lg text-foreground/80 mb-2 flex items-center justify-center">
-                      If you made it this far in the project it means you liked it!{" "}
-                      <Smile className="inline-block ml-1 h-5 w-5" />
+
+              {/* Photo Galleries with Clear Grouping */}
+              <div className="space-y-32">
+                {/* Group 1: Construction Progress */}
+                <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
+                  <div className="max-w-6xl mx-auto">
+                    <h3 className="text-3xl font-bold mb-6 text-center">Construction Progress</h3>
+                    <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-center">
+                      Follow the journey from the initial stages to the near-complete exterior. Click any image to view
+                      it in full size.
                     </p>
-                    <p className="text-foreground/70 max-w-3xl mx-auto">
-                      I hope you enjoy some more miscellaneous pictures I took. Click any image to view it in full size.
-                    </p>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-6 text-center">Miscellaneous Pictures</h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                    {project.miscellaneousGallery.map((image, index) => (
-                      <div
-                        key={index}
-                        className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                        onClick={() => openLightbox(project.miscellaneousGallery, index, "Miscellaneous picture")}
-                      >
-                        <Image
-                          src={image || "/placeholder.svg"}
-                          alt={`Miscellaneous picture ${index + 1}`}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                        />
-                      </div>
-                    ))}
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {project.exteriorGallery.map((image, index) => (
+                        <div
+                          key={index}
+                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => openLightbox(project.exteriorGallery, index, "Construction progress")}
+                        >
+                          <Image
+                            src={image || "/placeholder.svg"}
+                            alt={`Construction progress ${index + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              )}
+
+                {/* Group 2: Interior Finishes */}
+                <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
+                  <div className="max-w-6xl mx-auto">
+                    <h3 className="text-3xl font-bold mb-6 text-center">Interior Finishes</h3>
+                    <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-center">
+                      Explore the details of the newly renovated interior spaces, showcasing modern design and quality
+                      craftsmanship. Click any image to view it in full size.
+                    </p>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {project.interiorGallery.map((image, index) => (
+                        <div
+                          key={index}
+                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => openLightbox(project.interiorGallery, index, "Interior finishes")}
+                        >
+                          <Image
+                            src={image || "/placeholder.svg"}
+                            alt={`Interior finish ${index + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Group 3: Finished Product Photos */}
+                {project.finishedProductGallery && project.finishedProductGallery.length > 0 && (
+                  <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
+                    <div className="max-w-6xl mx-auto">
+                      <h3 className="text-3xl font-bold mb-6 text-center">Finished Product Photos</h3>
+                      <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-center">
+                        Step inside and see the final results of the renovation. These photos highlight the completed
+                        interiors and overall quality of the finished home. Click any image to view it in full size.
+                      </p>
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {project.finishedProductGallery.map((image, index) => (
+                          <div
+                            key={index}
+                            className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => openLightbox(project.finishedProductGallery, index, "Finished product")}
+                          >
+                            <Image
+                              src={image || "/placeholder.svg"}
+                              alt={`Finished product ${index + 1}`}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Group 4: Miscellaneous Pictures */}
+                {project.miscellaneousGallery && project.miscellaneousGallery.length > 0 && (
+                  <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
+                    <div className="max-w-6xl mx-auto">
+                      <div className="text-center mb-6">
+                        <p className="text-lg text-foreground/80 mb-2 flex items-center justify-center">
+                          If you made it this far in the project it means you liked it!{" "}
+                          <Smile className="inline-block ml-1 h-5 w-5" />
+                        </p>
+                        <p className="text-foreground/70 max-w-3xl mx-auto">
+                          I hope you enjoy some more miscellaneous pictures I took. Click any image to view it in full
+                          size.
+                        </p>
+                      </div>
+                      <h3 className="text-3xl font-bold mb-6 text-center">Miscellaneous Pictures</h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        {project.miscellaneousGallery.map((image, index) => (
+                          <div
+                            key={index}
+                            className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => openLightbox(project.miscellaneousGallery, index, "Miscellaneous picture")}
+                          >
+                            <Image
+                              src={image || "/placeholder.svg"}
+                              alt={`Miscellaneous picture ${index + 1}`}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           ) : project.id === 2 ? (
             // Special layout for Micromouse project
@@ -897,7 +910,7 @@ export default function ProjectDetailClient() {
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, y: 50 }}
-                      whileInView={{ opacity: 1, y: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-100px" }}
                       transition={{ duration: 0.3, delay: index * 0.05 }}
                       className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
