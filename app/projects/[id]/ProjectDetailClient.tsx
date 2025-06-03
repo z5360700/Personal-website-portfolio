@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import BeforeAfterSlider from "@/components/before-after-slider"
 import ImageLightbox from "@/components/image-lightbox"
-import VideoEmbed from "@/components/video-embed"
 import { motion } from "framer-motion"
 
 // This would typically come from a database or API
@@ -634,21 +633,110 @@ export default function ProjectDetailClient() {
                     </div>
                   </motion.div>
 
-                  {/* Results Section - Standalone */}
+                  {/* Testing Methodology Section */}
                   <motion.div
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.3, delay: 0.15 }}
-                    className="relative"
+                    transition={{ duration: 0.3, delay: 0.12 }}
+                    className="relative mb-24"
                   >
-                    {/* Results content */}
                     <div className="text-center">
-                      <div className="max-w-4xl mx-auto bg-primary/5 p-8 rounded-lg border border-primary/20">
-                        <h3 className="text-2xl font-bold mb-4">Project Results</h3>
-                        <div className="prose dark:prose-invert max-w-none">
-                          <p>{project.results}</p>
+                      <h3 className="text-2xl font-bold mb-6">Testing Methodology</h3>
+                      <div className="max-w-4xl mx-auto bg-muted/30 p-8 rounded-lg">
+                        <p className="text-foreground/80 mb-4">
+                          To validate the effectiveness of the cooling ducts, comprehensive testing was conducted under
+                          controlled conditions. Both configurations were tested in an identical setup within a 21°C
+                          room temperature environment.
+                        </p>
+                        <p className="text-foreground/80 mb-4">
+                          The testing utilized MSI Afterburner for real-time monitoring and data logging, while
+                          Kombustor v4.1.31.0 was used for stress testing the GPU. Each test session lasted 8 minutes to
+                          ensure the system reached thermal steady state.
+                        </p>
+                        <p className="text-foreground/80">
+                          The results showed a significant 7°C temperature difference at steady state between the ducted
+                          and non-ducted configurations. Importantly, both the core clock and memory clock frequencies
+                          remained stable throughout testing, indicating no thermal throttling occurred in either
+                          configuration.
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Test Results Comparison */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.3, delay: 0.13 }}
+                    className="relative mb-24"
+                  >
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold mb-6">Performance Test Results</h3>
+                      <p className="text-foreground/70 mb-8 max-w-3xl mx-auto">
+                        Side-by-side comparison of GPU monitoring data showing temperature, usage, clock speeds, and
+                        power consumption during identical 8-minute stress tests.
+                      </p>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                        {/* With Ducting Results */}
+                        <div className="space-y-4">
+                          <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-lg bg-muted/20">
+                            <Image
+                              src="/images/gpu-test-with-ducting.png"
+                              alt="GPU monitoring data with ducted cooling"
+                              fill
+                              className="object-contain p-2"
+                              onClick={() =>
+                                openLightbox(["/images/gpu-test-with-ducting.png"], 0, "GPU test with ducting")
+                              }
+                            />
+                          </div>
+                          <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                            <h4 className="font-bold text-green-800 dark:text-green-200 mb-2">With Ducted Cooling</h4>
+                            <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
+                              <li>• Max Temperature: 63°C</li>
+                              <li>• Core Clock: 2610 MHz (stable)</li>
+                              <li>• Memory Clock: 10502 MHz</li>
+                              <li>• Power Draw: ~197W</li>
+                            </ul>
+                          </div>
                         </div>
+
+                        {/* Without Ducting Results */}
+                        <div className="space-y-4">
+                          <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-lg bg-muted/20">
+                            <Image
+                              src="/images/gpu-test-without-ducting.png"
+                              alt="GPU monitoring data without ducted cooling"
+                              fill
+                              className="object-contain p-2"
+                              onClick={() =>
+                                openLightbox(["/images/gpu-test-without-ducting.png"], 0, "GPU test without ducting")
+                              }
+                            />
+                          </div>
+                          <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
+                            <h4 className="font-bold text-red-800 dark:text-red-200 mb-2">Without Ducted Cooling</h4>
+                            <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
+                              <li>• Max Temperature: 70°C</li>
+                              <li>• Core Clock: 2530 MHz (stable)</li>
+                              <li>• Memory Clock: 10502 MHz</li>
+                              <li>• Power Draw: ~197W</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-8 max-w-4xl mx-auto bg-primary/5 p-6 rounded-lg border border-primary/20">
+                        <h4 className="text-lg font-bold mb-3">Key Benefits</h4>
+                        <p className="text-foreground/80">
+                          The 7°C temperature reduction is particularly beneficial because it allows the GPU's cooling
+                          fans to operate at lower speeds while maintaining the same thermal performance. This results
+                          in significantly quieter operation during demanding workloads, improving the overall user
+                          experience without sacrificing performance.
+                        </p>
                       </div>
                     </div>
                   </motion.div>
@@ -770,161 +858,6 @@ export default function ProjectDetailClient() {
               </div>
             </TabsContent>
           </Tabs>
-
-          {/* Construction Project Galleries */}
-          {project.id === 1 && (
-            <div className="space-y-12">
-              {/* Exterior Construction Progress */}
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold mb-6">Exterior Construction Progress</h2>
-                <p className="text-foreground/70 mb-6">
-                  This gallery shows the complete exterior transformation from the original deteriorated structure to
-                  the modern finished building. Click any image to view it in full size.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {project.exteriorGallery.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
-                      onClick={() => openLightbox(project.exteriorGallery, index, "Exterior construction progress")}
-                    >
-                      <Image
-                        src={image || "/placeholder.svg"}
-                        alt={`Exterior construction progress ${index + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Interior Construction Progress */}
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold mb-6">Interior Construction Progress</h2>
-                <p className="text-foreground/70 mb-6">
-                  This gallery showcases the interior renovation from structural framing through to the completed modern
-                  living space with kitchen, lighting, and flooring installations. Click any image to view it in full
-                  size.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {project.interiorGallery.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
-                      onClick={() => openLightbox(project.interiorGallery, index, "Interior construction progress")}
-                    >
-                      <Image
-                        src={image || "/placeholder.svg"}
-                        alt={`Interior construction progress ${index + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Micromouse Project Gallery */}
-          {project.id === 2 && (
-            <div className="space-y-12">
-              {/* Video Demonstrations */}
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold mb-6">Video Demonstrations</h2>
-                <p className="text-foreground/70 mb-6">
-                  Watch the Micromouse robot in action! These videos demonstrate the robot's capabilities, including PID
-                  control for straight-line movement and maze navigation.
-                </p>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {project.videoGallery.map((video, index) => (
-                    <div key={index} className="space-y-3">
-                      <VideoEmbed videoId={video.id} title={video.title} isShort={video.isShort} />
-                      <h3 className="text-lg font-medium">{video.title}</h3>
-                      <p className="text-foreground/70">{video.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Hardware Gallery */}
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold mb-6">Hardware Development</h2>
-                <p className="text-foreground/70 mb-6">
-                  This gallery shows the hardware development process of the Micromouse robot, from early prototyping to
-                  the final assembled robot. Click any image to view it in full size.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {project.hardwareGallery.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
-                      onClick={() => openLightbox(project.hardwareGallery, index, "Micromouse hardware")}
-                    >
-                      <Image
-                        src={image || "/placeholder.svg"}
-                        alt={`Micromouse hardware ${index + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Software Gallery */}
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold mb-6">Software & Algorithms</h2>
-                <p className="text-foreground/70 mb-6">
-                  This gallery showcases the software development aspects of the project, including Arduino C++ code for
-                  sensor integration and motor control, as well as Python algorithms for path planning and navigation.
-                  Click any image to view it in full size.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {project.softwareGallery.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
-                      onClick={() => openLightbox(project.softwareGallery, index, "Micromouse software")}
-                    >
-                      <Image
-                        src={image || "/placeholder.svg"}
-                        alt={`Micromouse software ${index + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Regular Project Gallery for other projects */}
-          {project.id === 3 && (
-            <div className="mb-12">
-              <h2 className="text-2xl font-bold mb-6">Project Gallery</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {project.exteriorGallery.map((image, index) => (
-                  <div
-                    key={index}
-                    className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
-                    onClick={() => openLightbox(project.exteriorGallery, index, `${project.title} screenshot`)}
-                  >
-                    <Image
-                      src={image || "/placeholder.svg"}
-                      alt={`${project.title} screenshot ${index + 1}`}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* PC Cooling Project - galleries removed, story timeline contains all visual content */}
         </div>
       </main>
 
