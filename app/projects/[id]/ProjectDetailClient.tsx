@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import BeforeAfterSlider from "@/components/before-after-slider"
 import ImageLightbox from "@/components/image-lightbox"
+import VideoEmbed from "@/components/video-embed"
 import { motion } from "framer-motion"
 
 // This would typically come from a database or API
@@ -101,6 +102,7 @@ const projectsData = [
       The system also includes a manual override feature, allowing users to input directional commands (forward, left, right) for situations where direct control is preferred over autonomous navigation.
     `,
     image: "/images/micromouse-robot.jpeg",
+    course: "MTRN3100",
     hardwareGallery: [
       "/images/micromouse-robot.jpeg",
       "/images/micromouse-prototype.jpeg",
@@ -380,11 +382,13 @@ export default function ProjectDetailClient() {
 
   useEffect(() => {
     // In a real app, you would fetch this data from an API
-    const projectId = Number.parseInt(id)
+    const projectId = Array.isArray(id) ? Number.parseInt(id[0]) : Number.parseInt(id as string)
     const foundProject = projectsData.find((p) => p.id === projectId)
 
     if (foundProject) {
       setProject(foundProject)
+    } else {
+      console.error(`Project with ID ${projectId} not found`)
     }
     setLoading(false)
   }, [id])
@@ -517,6 +521,190 @@ export default function ProjectDetailClient() {
                     )}
                   </div>
                 ) : null}
+              </div>
+
+              {/* Image Galleries */}
+              <div className="max-w-6xl mx-auto">
+                <Tabs defaultValue="exterior" className="mb-12">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="exterior">Construction Progress</TabsTrigger>
+                    <TabsTrigger value="interior">Interior Finishes</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="exterior" className="mt-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {project.exteriorGallery.map((image, index) => (
+                        <div
+                          key={index}
+                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => openLightbox(project.exteriorGallery, index, "Construction progress")}
+                        >
+                          <Image
+                            src={image || "/placeholder.svg"}
+                            alt={`Construction progress ${index + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="interior" className="mt-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {project.interiorGallery.map((image, index) => (
+                        <div
+                          key={index}
+                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => openLightbox(project.interiorGallery, index, "Interior finishes")}
+                        >
+                          <Image
+                            src={image || "/placeholder.svg"}
+                            alt={`Interior finish ${index + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </div>
+          ) : project.id === 2 ? (
+            // Special layout for Micromouse project
+            <div className="space-y-12">
+              {/* Project Header */}
+              <div className="text-center max-w-4xl mx-auto">
+                <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
+                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
+                  {project.course && (
+                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
+                  )}
+                </div>
+
+                {project.date && (
+                  <p className="text-foreground/70 mb-4">
+                    <span className="font-medium">Timeline:</span> {project.date}
+                  </p>
+                )}
+
+                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+
+                <div className="flex flex-wrap justify-center gap-2 mb-8">
+                  {project.tags.map((tag) => (
+                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Main Project Image */}
+              <div className="max-w-4xl mx-auto mb-12">
+                <div className="relative aspect-video rounded-lg overflow-hidden">
+                  <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
+                </div>
+              </div>
+
+              {/* Project Description */}
+              <div className="max-w-4xl mx-auto">
+                <div className="prose dark:prose-invert max-w-none mb-8">
+                  <p>{project.longDescription}</p>
+                </div>
+
+                {project.liveUrl || project.githubUrl ? (
+                  <div className="flex flex-wrap justify-center gap-4 mb-8">
+                    {project.liveUrl && (
+                      <Button asChild>
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <ExternalLink size={16} />
+                          Live Demo
+                        </a>
+                      </Button>
+                    )}
+                    {project.githubUrl && (
+                      <Button variant="outline" asChild>
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <Github size={16} />
+                          View Code
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+                ) : null}
+              </div>
+
+              {/* Media Galleries */}
+              <div className="max-w-6xl mx-auto">
+                <Tabs defaultValue="hardware" className="mb-12">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="hardware">Hardware</TabsTrigger>
+                    <TabsTrigger value="software">Software</TabsTrigger>
+                    <TabsTrigger value="videos">Demonstrations</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="hardware" className="mt-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {project.hardwareGallery.map((image, index) => (
+                        <div
+                          key={index}
+                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => openLightbox(project.hardwareGallery, index, "Hardware")}
+                        >
+                          <Image
+                            src={image || "/placeholder.svg"}
+                            alt={`Hardware ${index + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="software" className="mt-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {project.softwareGallery.map((image, index) => (
+                        <div
+                          key={index}
+                          className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => openLightbox(project.softwareGallery, index, "Software")}
+                        >
+                          <Image
+                            src={image || "/placeholder.svg"}
+                            alt={`Software ${index + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="videos" className="mt-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      {project.videoGallery.map((video, index) => (
+                        <div key={index} className="space-y-4">
+                          <VideoEmbed videoId={video.id} title={video.title} isShort={video.isShort} />
+                          <div>
+                            <h3 className="font-bold text-lg mb-2">{video.title}</h3>
+                            <p className="text-foreground/70 text-sm">{video.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </div>
             </div>
           ) : project.id === 4 ? (
