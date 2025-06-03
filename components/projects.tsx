@@ -33,7 +33,8 @@ const projects = [
   {
     id: 3,
     title: "Weather Dashboard",
-    description: "An interactive weather dashboard that displays current and forecasted weather data for any location.",
+    description:
+      "Work in progress - An interactive weather dashboard that displays current and forecasted weather data for any location.",
     image: "/placeholder.svg?height=600&width=800",
     tags: ["React", "Redux", "Weather API", "Chart.js"],
     githubUrl: "#",
@@ -43,7 +44,7 @@ const projects = [
     title: "Custom Cooling Funnels for PC Hardware",
     description:
       "Designed and 3D-printed cooling funnels using ABS material to direct airflow for CPU and GPU components, inspired by automotive ducted cooling systems.",
-    image: "/images/pc-cooling-installed.png",
+    image: "/images/pc-cooling-installed.jpeg",
     tags: ["3D Printing", "Fusion360", "ABS Material", "Thermal Management", "CAD Design"],
     githubUrl: "#",
     date: "August 2024 - January 2025",
@@ -75,7 +76,7 @@ export default function Projects() {
               transition={{ duration: 0.5, delay: index * 0.2 }}
             >
               <Card className="overflow-hidden h-full flex flex-col">
-                <div className="relative h-48 w-full overflow-hidden">
+                <div className="relative h-64 w-full overflow-hidden">
                   <Image
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}

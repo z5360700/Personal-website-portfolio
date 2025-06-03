@@ -8,7 +8,7 @@ export default function Footer() {
     <footer className="bg-muted/50 py-12">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center justify-center text-center">
-          <Link href="#home" className="flex items-center gap-2 text-xl font-bold mb-6">
+          <Link href="/" className="flex items-center gap-2 text-xl font-bold mb-6">
             <Frame className="w-6 h-6" />
             <span>Portfolio</span>
           </Link>

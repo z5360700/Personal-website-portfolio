@@ -45,7 +45,7 @@ export default function Navbar() {
       )}
     >
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link href="#home" className="text-2xl font-bold">
+        <Link href="/" className="text-2xl font-bold">
           Portfolio
         </Link>
 

@@ -181,13 +181,14 @@ const projectsData = [
   {
     id: 3,
     title: "Weather Dashboard",
-    description: "An interactive weather dashboard that displays current and forecasted weather data for any location.",
+    description:
+      "Work in progress - An interactive weather dashboard that displays current and forecasted weather data for any location.",
     longDescription: `
-      This weather dashboard provides users with accurate and up-to-date weather information for any location worldwide.
-      It features a clean, intuitive interface that displays current conditions, hourly forecasts, and a 7-day outlook.
+      Work in progress - This weather dashboard will provide users with accurate and up-to-date weather information for any location worldwide.
+      It will feature a clean, intuitive interface that displays current conditions, hourly forecasts, and a 7-day outlook.
       
-      Users can save favorite locations, receive severe weather alerts, and view detailed meteorological data including
-      temperature, precipitation, wind, humidity, and atmospheric pressure. The app also includes historical weather data
+      Users will be able to save favorite locations, receive severe weather alerts, and view detailed meteorological data including
+      temperature, precipitation, wind, humidity, and atmospheric pressure. The app will also include historical weather data
       and interactive weather maps.
     `,
     image: "/placeholder.svg?height=600&width=800",
@@ -214,10 +215,10 @@ const projectsData = [
       deployment: ["Netlify", "Serverless Functions"],
     },
     challenges: `
-      One challenge was optimizing API usage to stay within rate limits while providing real-time data. We implemented
-      a caching strategy with Redis that significantly reduced API calls while keeping data fresh.
+      One challenge will be optimizing API usage to stay within rate limits while providing real-time data. We plan to implement
+      a caching strategy with Redis that will significantly reduce API calls while keeping data fresh.
       
-      Displaying complex meteorological data in an intuitive way was another challenge. We used Chart.js to create
+      Displaying complex meteorological data in an intuitive way will be another challenge. We plan to use Chart.js to create
       visualizations that make it easy for users to understand weather patterns and trends at a glance.
     `,
   },
@@ -257,8 +258,9 @@ const projectsData = [
         title: "The Inspiration",
         description:
           "I drew inspiration from automotive cooling systems, where ducted parts channel air directly to engine components that need cooling the most.",
-        image: "/placeholder.svg?height=600&width=800",
-        highlight: "In high-performance cars, every bit of airflow is carefully directed where it's needed most.",
+        image: "/images/rs3-carbon-intake.jpeg",
+        highlight:
+          "This is an RS3 carbon fiber air intake - in high-performance cars, every bit of airflow is carefully directed where it's needed most.",
         aspectRatio: "aspect-video",
       },
       {
@@ -266,7 +268,7 @@ const projectsData = [
         description:
           "First, I created a precise 3D model of my PC case in Fusion360, ensuring all dimensions were accurate for a perfect fit.",
         image: "/images/pc-case-model.png",
-        highlight: "Accurate measurements were crucial for the ducting to fit properly within the case.",
+        highlight: "",
         aspectRatio: "aspect-square", // 3D model view
       },
       {
@@ -304,34 +306,8 @@ const projectsData = [
       {
         title: "Printed Components",
         description: "After several hours of printing, the cooling duct components were ready for installation.",
-        image: "/images/printed-cooling-parts.png",
+        image: "/images/printed-cooling-parts.jpeg",
         highlight: "ABS material was chosen for its heat resistance and durability in the warm PC environment.",
-        aspectRatio: "aspect-video",
-      },
-      {
-        title: "Before Installation",
-        description:
-          "The PC before installation shows the standard airflow configuration with no direct path from intake to GPU.",
-        image: "/images/pc-without-ducting.jpeg",
-        highlight:
-          "Notice how the air from front fans has to navigate around various components before reaching the GPU.",
-        aspectRatio: "aspect-video",
-      },
-      {
-        title: "After Installation",
-        description:
-          "With the cooling ducts installed, air is now channeled directly from the intake fans to the GPU, significantly improving cooling efficiency.",
-        image: "/images/pc-cooling-installed.jpeg",
-        highlight: "The custom ducts create a direct path for cool air to reach the GPU's cooling system.",
-        aspectRatio: "aspect-video",
-      },
-      {
-        title: "Results",
-        description:
-          "Temperature testing showed a significant reduction in GPU temperatures under load, improving performance and potentially extending component lifespan.",
-        image: "/placeholder.svg?height=600&width=800",
-        highlight:
-          "Under full load, GPU temperatures dropped by 8°C, allowing for more stable boost clocks and quieter fan operation.",
         aspectRatio: "aspect-video",
       },
     ],
@@ -446,7 +422,7 @@ export default function ProjectDetailClient() {
       <div className="min-h-screen flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold mb-4">Project not found</h1>
         <Button asChild>
-          <Link href="/#projects">
+          <Link href="/">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Projects
           </Link>
@@ -460,7 +436,7 @@ export default function ProjectDetailClient() {
       <main className="min-h-screen pt-20 pb-16">
         <div className="container mx-auto px-4">
           <Button variant="ghost" className="mb-6" asChild>
-            <Link href="/#projects" className="flex items-center">
+            <Link href="/" className="flex items-center">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Projects
             </Link>
@@ -576,8 +552,14 @@ export default function ProjectDetailClient() {
               {/* Story Timeline */}
               <div className="max-w-6xl mx-auto">
                 <div className="relative">
-                  {/* Timeline line */}
-                  <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary/20"></div>
+                  {/* Timeline line - Covers all story steps including printed components */}
+                  <motion.div
+                    initial={{ height: 0 }}
+                    animate={{ height: `${project.storySteps.length * 24}rem` }}
+                    transition={{ duration: 1.5, ease: "easeInOut" }}
+                    className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/20"
+                    style={{ top: 0 }}
+                  ></motion.div>
 
                   {/* Story steps */}
                   {project.storySteps.map((step, index) => (
@@ -586,7 +568,7 @@ export default function ProjectDetailClient() {
                       initial={{ opacity: 0, y: 50 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-100px" }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      transition={{ duration: 0.5, delay: index * 0.3 }}
                       className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
                     >
                       {/* Timeline dot */}
@@ -599,9 +581,11 @@ export default function ProjectDetailClient() {
                         <div className={`${index % 2 === 0 ? "md:order-2" : "md:order-1"}`}>
                           <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
                           <p className="text-foreground/80 mb-4">{step.description}</p>
-                          <div className="bg-primary/10 border-l-4 border-primary p-4 rounded">
-                            <p className="italic text-foreground/90">{step.highlight}</p>
-                          </div>
+                          {step.highlight && (
+                            <div className="bg-primary/10 border-l-4 border-primary p-4 rounded">
+                              <p className="italic text-foreground/90">{step.highlight}</p>
+                            </div>
+                          )}
                         </div>
                         <div className={`${index % 2 === 0 ? "md:order-1" : "md:order-2"}`}>
                           <div
@@ -619,32 +603,55 @@ export default function ProjectDetailClient() {
                       </div>
                     </motion.div>
                   ))}
-                </div>
-              </div>
 
-              {/* Results Section */}
-              <div className="max-w-4xl mx-auto bg-primary/5 p-8 rounded-lg border border-primary/20">
-                <h2 className="text-2xl font-bold mb-4 text-center">Project Results</h2>
-                <div className="prose dark:prose-invert max-w-none">
-                  <p>{project.results}</p>
-                </div>
-              </div>
+                  {/* Gap section - no timeline line */}
+                  <div className="mb-24"></div>
 
-              {/* Before/After Installation Comparison */}
-              <div className="max-w-6xl mx-auto mb-12">
-                <h2 className="text-2xl font-bold mb-6 text-center">Installation Comparison</h2>
-                <p className="text-foreground/70 mb-6 text-center max-w-3xl mx-auto">
-                  Use the slider below to compare the PC before and after installing the custom cooling ducts. Notice
-                  how the ducts create a direct airflow path from the front intake fans to the GPU.
-                </p>
-                <div className="relative w-full max-w-4xl mx-auto h-[600px] bg-muted/20 rounded-lg overflow-hidden">
-                  <BeforeAfterSlider
-                    beforeImage="/images/pc-without-ducting.jpeg"
-                    afterImage="/images/pc-cooling-installed.jpeg"
-                    beforeAlt="PC without cooling ducts"
-                    afterAlt="PC with cooling ducts installed"
-                    className="h-full w-full"
-                  />
+                  {/* Before/After Installation Comparison - Standalone section */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.5, delay: 1.5 }}
+                    className="relative mb-24"
+                  >
+                    {/* Before/After Slider Section */}
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold mb-6">Installation Comparison</h3>
+                      <p className="text-foreground/70 mb-6 max-w-3xl mx-auto">
+                        Use the slider below to compare the PC before and after installing the custom cooling ducts.
+                        Notice how the ducts create a direct airflow path from the front intake fans to the GPU.
+                      </p>
+                      <div className="relative w-full max-w-4xl mx-auto h-[600px] bg-muted/20 rounded-lg overflow-hidden">
+                        <BeforeAfterSlider
+                          beforeImage="/images/pc-without-ducting.jpeg"
+                          afterImage="/images/pc-cooling-installed.jpeg"
+                          beforeAlt="PC without cooling ducts"
+                          afterAlt="PC with cooling ducts installed"
+                          className="h-full w-full"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Results Section - Standalone */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.5, delay: 1.8 }}
+                    className="relative"
+                  >
+                    {/* Results content */}
+                    <div className="text-center">
+                      <div className="max-w-4xl mx-auto bg-primary/5 p-8 rounded-lg border border-primary/20">
+                        <h3 className="text-2xl font-bold mb-4">Project Results</h3>
+                        <div className="prose dark:prose-invert max-w-none">
+                          <p>{project.results}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
                 </div>
               </div>
 
@@ -925,85 +932,7 @@ export default function ProjectDetailClient() {
             </div>
           )}
 
-          {/* PC Cooling Project Galleries */}
-          {project.id === 4 && (
-            <div className="space-y-12">
-              {/* Design Gallery */}
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold mb-6">Design Process</h2>
-                <p className="text-foreground/70 mb-6">
-                  This gallery showcases the design process, from identifying the airflow problem to creating the 3D
-                  model of the cooling ducts. Click any image to view it in full size.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {project.designGallery.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative aspect-[4/3] rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity bg-muted/20"
-                      onClick={() => openLightbox(project.designGallery, index, "PC cooling design")}
-                    >
-                      <Image
-                        src={image || "/placeholder.svg"}
-                        alt={`PC cooling design ${index + 1}`}
-                        fill
-                        className="object-contain p-2"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Printing Gallery */}
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold mb-6">3D Printing</h2>
-                <p className="text-foreground/70 mb-6">
-                  This gallery shows the 3D printing process, from slicing the model in Bambu Studio to the printed
-                  components ready for installation. Click any image to view it in full size.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {project.printingGallery.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative aspect-[4/3] rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity bg-muted/20"
-                      onClick={() => openLightbox(project.printingGallery, index, "PC cooling printing")}
-                    >
-                      <Image
-                        src={image || "/placeholder.svg"}
-                        alt={`PC cooling printing ${index + 1}`}
-                        fill
-                        className="object-contain p-2"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Installation Gallery */}
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold mb-6">Installation</h2>
-                <p className="text-foreground/70 mb-6">
-                  This gallery shows the installation process, from the PC before installation to the final setup with
-                  the cooling ducts installed. Click any image to view it in full size.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {project.installationGallery.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative aspect-[4/3] rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity bg-muted/20"
-                      onClick={() => openLightbox(project.installationGallery, index, "PC cooling installation")}
-                    >
-                      <Image
-                        src={image || "/placeholder.svg"}
-                        alt={`PC cooling installation ${index + 1}`}
-                        fill
-                        className="object-contain p-2"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+          {/* PC Cooling Project - galleries removed, story timeline contains all visual content */}
         </div>
       </main>
 
