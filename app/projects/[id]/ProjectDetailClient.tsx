@@ -167,7 +167,7 @@ The transformation showcases both my technical construction skills and project m
     ],
     tags: ["C++", "Python", "Arduino", "Computer Vision", "Robotics", "OpenCV"],
     liveUrl: null,
-    githubUrl: "https://github.com/UNSW-MTRN3100/micromouse-lightning-mcqueen",
+    githubUrl: "https://github.com/z5360700/micromouse-from2024",
     date: "May 2024 - August 2024",
     features: [
       "Autonomous maze navigation using sensor fusion",
@@ -701,8 +701,7 @@ export default function ProjectDetailClient() {
                           <Smile className="inline-block ml-1 h-5 w-5" />
                         </p>
                         <p className="text-foreground/70 max-w-3xl mx-auto">
-                          I hope you enjoy some more miscellaneous pictures I took. Click any image to view it in full
-                          size.
+                          I hope you enjoy some more miscellaneous pictures I took.
                         </p>
                       </div>
                       <h3 className="text-3xl font-bold mb-6 text-center">Miscellaneous Pictures</h3>
