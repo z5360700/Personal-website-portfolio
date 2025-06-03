@@ -76,7 +76,7 @@ export default function Projects() {
               transition={{ duration: 0.5, delay: index * 0.2 }}
             >
               <Card className="overflow-hidden h-full flex flex-col">
-                <div className="relative h-64 w-full overflow-hidden">
+                <div className="relative h-[28rem] w-full overflow-hidden">
                   <Image
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}
@@ -102,8 +102,8 @@ export default function Projects() {
                   </div>
 
                   <div className="flex flex-wrap gap-4 mt-auto">
-                    {project.id === 1 ? (
-                      // For construction project, don't show GitHub button
+                    {project.id === 1 || project.id === 4 ? (
+                      // For construction project and PC cooling project, don't show GitHub button
                       <Button variant="ghost" size="sm" asChild className="ml-auto hover:bg-muted/80">
                         <Link href={`/projects/${project.id}`} className="flex items-center gap-1">
                           Details

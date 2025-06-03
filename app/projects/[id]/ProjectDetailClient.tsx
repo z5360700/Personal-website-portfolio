@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, ExternalLink, Github, ChevronDown } from "lucide-react"
+import { ArrowLeft, ExternalLink, Github } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import BeforeAfterSlider from "@/components/before-after-slider"
@@ -226,13 +226,13 @@ const projectsData = [
     id: 4,
     title: "Custom Cooling Funnels for PC Hardware",
     description:
-      "Designed and 3D-printed cooling funnels using ABS material to direct airflow for CPU and GPU components, inspired by automotive ducted cooling systems.",
+      "Designed and 3D-printed cooling funnels using PLA material to direct airflow for GPU components, inspired by automotive ducted cooling systems.",
     longDescription: `
     This project was inspired by ducted cooling systems found in automotive applications, where air is directed precisely to components that need cooling. The idea emerged from observing that airflow transfer in PC cases isn't well optimized, with much of the intake air not reaching critical components like the GPU effectively.
     
     The project began with identifying the airflow optimization problem in my PC case, where front intake fans weren't efficiently directing cool air to the graphics card. Taking inspiration from automotive ducted parts that channel air directly to specific engine components, I designed custom cooling funnels to create a direct airflow path from the front case fans to the GPU.
     
-    The solution involved precise 3D modeling of the PC case components, designing custom ducting that would fit perfectly within the case constraints, and 3D printing the parts using ABS material for heat resistance and durability.
+    The solution involved precise 3D modeling of the PC case components, designing custom ducting that would fit perfectly within the case constraints, and 3D printing the parts using PLA material for heat resistance and durability.
   `,
     image: "/images/pc-cooling-installed.jpeg",
     designGallery: [
@@ -311,14 +311,14 @@ const projectsData = [
         aspectRatio: "aspect-video",
       },
     ],
-    tags: ["3D Printing", "Fusion360", "ABS Material", "Thermal Management", "CAD Design"],
+    tags: ["3D Printing", "Fusion360", "PLA Material", "Thermal Management", "CAD Design"],
     liveUrl: null,
     githubUrl: null,
     date: "August 2024 - January 2025",
     features: [
       "Custom 3D-modeled PC case components for precise fit",
       "Automotive-inspired ducted airflow design",
-      "ABS material selection for heat resistance and durability",
+      "PLA material selection for ease of printing and durability",
       "Modular design allowing easy installation and removal",
       "Direct airflow channeling from intake fans to GPU",
       "Optimized internal geometry for minimal airflow restriction",
@@ -335,7 +335,7 @@ const projectsData = [
       ],
       manufacturing: [
         "Bambu Studio Slicing Software",
-        "ABS Filament 3D Printing",
+        "PLA Filament 3D Printing",
         "Multi-part Assembly Design",
         "Support Structure Optimization",
         "Print Quality Optimization",
@@ -353,7 +353,7 @@ const projectsData = [
       
       Designing for 3D printing presented constraints in terms of overhang angles, support material requirements, and print bed size limitations. The duct had to be split into multiple parts that could be printed separately and assembled, while maintaining structural integrity and airflow efficiency.
       
-      Material selection was critical, as the ducting would be exposed to warm air from the case fans. ABS was chosen for its higher temperature resistance compared to PLA, but this required careful print settings and bed adhesion management to prevent warping during printing.
+      Material selection was important for this application. PLA was chosen for its ease of printing and good structural properties, making it ideal for prototyping and testing the ducting design.
       
       Validating the effectiveness of the cooling solution required establishing baseline temperature measurements and conducting controlled testing under various load conditions. Ensuring that the ducting actually improved cooling performance rather than just redirecting airflow was essential to the project's success.
     `,
@@ -552,12 +552,12 @@ export default function ProjectDetailClient() {
               {/* Story Timeline */}
               <div className="max-w-6xl mx-auto">
                 <div className="relative">
-                  {/* Timeline line - Covers all story steps including printed components */}
+                  {/* Main timeline line - much longer to ensure it covers everything */}
                   <motion.div
                     initial={{ height: 0 }}
-                    animate={{ height: `${project.storySteps.length * 24}rem` }}
-                    transition={{ duration: 1.5, ease: "easeInOut" }}
-                    className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/20"
+                    animate={{ height: "250rem" }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/20 z-0"
                     style={{ top: 0 }}
                   ></motion.div>
 
@@ -568,7 +568,7 @@ export default function ProjectDetailClient() {
                       initial={{ opacity: 0, y: 50 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-100px" }}
-                      transition={{ duration: 0.5, delay: index * 0.3 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
                       className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
                     >
                       {/* Timeline dot */}
@@ -612,7 +612,7 @@ export default function ProjectDetailClient() {
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.5, delay: 1.5 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
                     className="relative mb-24"
                   >
                     {/* Before/After Slider Section */}
@@ -639,7 +639,7 @@ export default function ProjectDetailClient() {
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.5, delay: 1.8 }}
+                    transition={{ duration: 0.3, delay: 0.15 }}
                     className="relative"
                   >
                     {/* Results content */}
@@ -653,14 +653,6 @@ export default function ProjectDetailClient() {
                     </div>
                   </motion.div>
                 </div>
-              </div>
-
-              {/* Scroll to explore */}
-              <div className="text-center animate-bounce">
-                <p className="text-foreground/60 flex items-center justify-center gap-2">
-                  Scroll to explore more details
-                  <ChevronDown size={16} />
-                </p>
               </div>
             </div>
           ) : (
