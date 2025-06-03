@@ -25,7 +25,7 @@ const projectsData = [
       The project required careful planning, adherence to building codes and regulations, and coordination of multiple trades including electrical, plumbing, and structural work. The transformation showcases both technical construction skills and project management capabilities.
     `,
     image: "/images/construction-after.jpg",
-    beforeImage: "/images/construction-before.jpg",
+    beforeImage: "/images/construction-before-new.png",
     exteriorGallery: [
       "/images/construction-before.jpg",
       "/images/construction-2.jpg",
@@ -521,6 +521,26 @@ export default function ProjectDetailClient() {
                     )}
                   </div>
                 ) : null}
+              </div>
+
+              {/* Before/After Transformation Slider */}
+              <div className="max-w-6xl mx-auto mb-12">
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold mb-4">Complete Transformation</h3>
+                  <p className="text-foreground/70 max-w-3xl mx-auto">
+                    Use the slider below to see the dramatic transformation from the deteriorated starting condition to
+                    the fully renovated modern home.
+                  </p>
+                </div>
+                <div className="relative w-full h-[500px] bg-muted/20 rounded-lg overflow-hidden">
+                  <BeforeAfterSlider
+                    beforeImage="/images/construction-before-new.png"
+                    afterImage="/images/construction-after.jpg"
+                    beforeAlt="Before renovation - deteriorated condition"
+                    afterAlt="After renovation - completed home"
+                    className="h-full w-full"
+                  />
+                </div>
               </div>
 
               {/* Image Galleries */}
