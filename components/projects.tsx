@@ -32,6 +32,16 @@ const projects = [
   },
   {
     id: 3,
+    title: "Custom Cooling Funnels for PC Hardware",
+    description:
+      "Designed and 3D-printed cooling funnels using PLA material to direct airflow for GPU components, inspired by automotive ducted cooling systems.",
+    image: "/images/pc-cooling-installed.jpeg",
+    tags: ["3D Printing", "Fusion360", "PLA Material", "Thermal Management", "CAD Design"],
+    githubUrl: "#",
+    date: "August 2024 - January 2025",
+  },
+  {
+    id: 4,
     title: "Cat Door Monitoring System",
     description:
       "IoT monitoring system using ESP32 and break beam sensors to track cat movement through a pet door, with real-time Telegram notifications to prevent unauthorized access.",
@@ -39,16 +49,6 @@ const projects = [
     tags: ["ESP32", "IoT", "Arduino", "3D Printing", "Telegram Bot", "Break Beam Sensors"],
     githubUrl: "#",
     date: "September 2024 - December 2024",
-  },
-  {
-    id: 4,
-    title: "Custom Cooling Funnels for PC Hardware",
-    description:
-      "Designed and 3D-printed cooling funnels using ABS material to direct airflow for CPU and GPU components, inspired by automotive ducted cooling systems.",
-    image: "/images/pc-cooling-installed.jpeg",
-    tags: ["3D Printing", "Fusion360", "ABS Material", "Thermal Management", "CAD Design"],
-    githubUrl: "#",
-    date: "August 2024 - January 2025",
   },
 ]
 
@@ -103,7 +103,7 @@ export default function Projects() {
                   </div>
 
                   <div className="flex flex-wrap gap-4 mt-auto">
-                    {project.id === 1 || project.id === 4 ? (
+                    {project.id === 1 || project.id === 3 ? (
                       // For construction project and PC cooling project, don't show GitHub button
                       <Button variant="ghost" size="sm" asChild className="ml-auto hover:bg-muted/80">
                         <Link href={`/projects/${project.id}`} className="flex items-center gap-1">

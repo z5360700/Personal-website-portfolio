@@ -223,101 +223,6 @@ The transformation showcases both my technical construction skills and project m
   },
   {
     id: 3,
-    title: "Cat Door Monitoring System",
-    description:
-      "IoT monitoring system using ESP32 and break beam sensors to track cat movement through a pet door, with real-time Telegram notifications to prevent unauthorized access.",
-    longDescription: `
-This project was motivated by our family cat eating too much food and the discovery of another neighborhood cat sneaking into our house. The cat eats downstairs away from the kitchen, and we had caught the intruder cat inside the house around 3 times, prompting the need for a monitoring solution.
-
-The system evolved through two major versions. Version 1 used a PIR sensor but proved unreliable as it was triggered by cockroaches and would activate when opening the door. Version 2 implemented break beam sensors, which worked much more effectively and reliably.
-
-The ESP32 connects via WiFi to send notifications through a Telegram bot, providing real-time alerts whenever the beam is broken. This project was particularly rewarding because within the first 2 days of deployment, I immediately caught the other cat coming into the house and found him in the backyard.
-
-Future versions will include double break beam sensors to determine direction of movement, and potentially RFID tags or camera-based identification using computer vision knowledge gained from the micromouse project.
-`,
-    image: "/images/cat-door-v2-system.png",
-    designGallery: [
-      "/images/cat-door-v1.jpeg",
-      "/images/cat-door-cad-design.jpeg",
-      "/images/cat-door-cad-slicing.jpeg",
-      "/images/cat-door-3d-printed.png",
-      "/images/cat-door-v2-system.png",
-    ],
-    notificationGallery: ["/images/cat-door-telegram-notifications.png"],
-    videoGallery: [
-      {
-        id: "4Ufpr4eA3jw",
-        title: "Cat Door Monitoring System V2 Demonstration",
-        description:
-          "Demonstration of the Version 2 cat door monitoring system using break beam sensors, ESP32, and Telegram notifications.",
-        isShort: false,
-      },
-    ],
-    tags: ["ESP32", "IoT", "Arduino", "3D Printing", "Telegram Bot", "Break Beam Sensors"],
-    liveUrl: null,
-    githubUrl: null,
-    date: "September 2024 - December 2024",
-    features: [
-      "Evolution from PIR sensors (V1) to break beam sensors (V2) for improved reliability",
-      "ESP32 WiFi connectivity for real-time communication",
-      "Telegram bot integration for instant mobile notifications",
-      "Custom 3D printed weatherproof housing designed in Fusion360",
-      "LED status indicators for visual feedback",
-      "Sensor debouncing to prevent false triggers",
-      "Low power consumption for continuous operation",
-      "Immediate detection and notification of unauthorized access",
-      "Timestamped activity logs for behavior analysis",
-      "Modular design for easy maintenance and upgrades",
-    ],
-    technologies: {
-      hardware: [
-        "ESP32 Development Board",
-        "Break Beam Sensors (Transmitter & Receiver)",
-        "LED Status Indicators",
-        "3D Printed PLA Housing",
-        "Breadboard Prototyping",
-        "Weatherproof Connectors",
-      ],
-      software: [
-        "Arduino IDE for ESP32 programming",
-        "WiFi Libraries for network connectivity",
-        "Telegram Bot API integration",
-        "Sensor debouncing algorithms",
-        "Real-time notification system",
-        "Serial communication for debugging",
-      ],
-      design: [
-        "Fusion360 CAD Software",
-        "3D Modeling and Assembly",
-        "Bambu Lab 3D Printing",
-        "Weatherproof Enclosure Design",
-        "Component Integration Planning",
-        "Print Support Optimization",
-      ],
-    },
-    challenges: `
-The primary challenge was eliminating false positives from the initial PIR sensor design. The PIR sensor was too sensitive and would trigger from small animals like cockroaches, as well as when the door itself was opened. This led to the redesign using break beam sensors, which provide much more precise detection.
-
-Designing a weatherproof housing that could accommodate all components while maintaining sensor alignment was another significant challenge. The 3D printed enclosure needed to protect the electronics from outdoor conditions while allowing proper sensor operation.
-
-Implementing reliable WiFi connectivity and Telegram bot integration required careful handling of network timeouts and reconnection logic. The system needed to be robust enough to operate continuously without manual intervention.
-
-Power management was also a consideration, as the system needed to run continuously while minimizing power consumption. Optimizing the ESP32 sleep modes and sensor polling frequency was essential for long-term operation.
-
-Future development will focus on implementing directional detection using dual break beam sensors, which will require more sophisticated timing algorithms to determine whether the cat is entering or leaving the house.
-`,
-    results: `
-The Version 2 system with break beam sensors proved highly effective, providing reliable detection without false positives. Within the first two days of deployment, the system successfully detected and alerted me to the neighborhood cat's intrusion, allowing me to locate and remove the intruder from the backyard.
-
-The Telegram notification system provides excellent real-time monitoring capabilities, with timestamped alerts that help track the cat's movement patterns throughout the day. This data has been valuable for understanding feeding schedules and outdoor activity.
-
-The 3D printed housing has proven durable in outdoor conditions, protecting the electronics while maintaining proper sensor alignment. The modular design has made it easy to perform maintenance and upgrades as needed.
-
-The project successfully solved the original problem of unauthorized access while providing valuable insights into the cat's behavior patterns. The immediate success in catching the intruder cat validated the effectiveness of the monitoring approach.
-`,
-  },
-  {
-    id: 4,
     title: "Custom Cooling Funnels for PC Hardware",
     description:
       "Designed and 3D-printed cooling funnels using PLA material to direct airflow for GPU components, inspired by automotive ducted cooling systems.",
@@ -457,6 +362,101 @@ The solution involved precise 3D modeling of the PC case components, designing c
   An unexpected benefit was the reduction in fan noise, as the GPU's cooling system didn't need to work as hard to maintain safe temperatures. The direct airflow path also reduced dust accumulation on the GPU, as air was now following a more controlled path through the case.
   
   The project demonstrated how principles from automotive cooling systems could be successfully applied to PC hardware cooling, opening up possibilities for further optimization of other components like CPU coolers and memory modules.
+`,
+  },
+  {
+    id: 4,
+    title: "Cat Door Monitoring System",
+    description:
+      "IoT monitoring system using ESP32 and break beam sensors to track cat movement through a pet door, with real-time Telegram notifications to prevent unauthorized access.",
+    longDescription: `
+This project was motivated by our family cat eating too much food and the discovery of another neighborhood cat sneaking into our house. The cat eats downstairs away from the kitchen, and we had caught the intruder cat inside the house around 3 times, prompting the need for a monitoring solution.
+
+The system evolved through two major versions. Version 1 used a PIR sensor but proved unreliable as it was triggered by cockroaches and would activate when opening the door. Version 2 implemented break beam sensors, which worked much more effectively and reliably.
+
+The ESP32 connects via WiFi to send notifications through a Telegram bot, providing real-time alerts whenever the beam is broken. This project was particularly rewarding because within the first 2 days of deployment, I immediately caught the other cat coming into the house and found him in the backyard.
+
+Future versions will include double break beam sensors to determine direction of movement, and potentially RFID tags or camera-based identification using computer vision knowledge gained from the micromouse project.
+`,
+    image: "/images/cat-door-v2-system.png",
+    designGallery: [
+      "/images/cat-door-v1.jpeg",
+      "/images/cat-door-cad-design.jpeg",
+      "/images/cat-door-cad-slicing.jpeg",
+      "/images/cat-door-3d-printed.png",
+      "/images/cat-door-v2-system.png",
+    ],
+    notificationGallery: ["/images/cat-door-telegram-notifications.png"],
+    videoGallery: [
+      {
+        id: "4Ufpr4eA3jw",
+        title: "Cat Door Monitoring System V2 Demonstration",
+        description:
+          "Demonstration of the Version 2 cat door monitoring system using break beam sensors, ESP32, and Telegram notifications.",
+        isShort: false,
+      },
+    ],
+    tags: ["ESP32", "IoT", "Arduino", "3D Printing", "Telegram Bot", "Break Beam Sensors"],
+    liveUrl: null,
+    githubUrl: null,
+    date: "September 2024 - December 2024",
+    features: [
+      "Evolution from PIR sensors (V1) to break beam sensors (V2) for improved reliability",
+      "ESP32 WiFi connectivity for real-time communication",
+      "Telegram bot integration for instant mobile notifications",
+      "Custom 3D printed weatherproof housing designed in Fusion360",
+      "LED status indicators for visual feedback",
+      "Sensor debouncing to prevent false triggers",
+      "Low power consumption for continuous operation",
+      "Immediate detection and notification of unauthorized access",
+      "Timestamped activity logs for behavior analysis",
+      "Modular design for easy maintenance and upgrades",
+    ],
+    technologies: {
+      hardware: [
+        "ESP32 Development Board",
+        "Break Beam Sensors (Transmitter & Receiver)",
+        "LED Status Indicators",
+        "3D Printed PLA Housing",
+        "Breadboard Prototyping",
+        "Weatherproof Connectors",
+      ],
+      software: [
+        "Arduino IDE for ESP32 programming",
+        "WiFi Libraries for network connectivity",
+        "Telegram Bot API integration",
+        "Sensor debouncing algorithms",
+        "Real-time notification system",
+        "Serial communication for debugging",
+      ],
+      design: [
+        "Fusion360 CAD Software",
+        "3D Modeling and Assembly",
+        "Bambu Lab 3D Printing",
+        "Weatherproof Enclosure Design",
+        "Component Integration Planning",
+        "Print Support Optimization",
+      ],
+    },
+    challenges: `
+The primary challenge was eliminating false positives from the initial PIR sensor design. The PIR sensor was too sensitive and would trigger from small animals like cockroaches, as well as when the door itself was opened. This led to the redesign using break beam sensors, which provide much more precise detection.
+
+Designing a weatherproof housing that could accommodate all components while maintaining sensor alignment was another significant challenge. The 3D printed enclosure needed to protect the electronics from outdoor conditions while allowing proper sensor operation.
+
+Implementing reliable WiFi connectivity and Telegram bot integration required careful handling of network timeouts and reconnection logic. The system needed to be robust enough to operate continuously without manual intervention.
+
+Power management was also a consideration, as the system needed to run continuously while minimizing power consumption. Optimizing the ESP32 sleep modes and sensor polling frequency was essential for long-term operation.
+
+Future development will focus on implementing directional detection using dual break beam sensors, which will require more sophisticated timing algorithms to determine whether the cat is entering or leaving the house.
+`,
+    results: `
+The Version 2 system with break beam sensors proved highly effective, providing reliable detection without false positives. Within the first two days of deployment, the system successfully detected and alerted me to the neighborhood cat's intrusion, allowing me to locate and remove the intruder from the backyard.
+
+The Telegram notification system provides excellent real-time monitoring capabilities, with timestamped alerts that help track the cat's movement patterns throughout the day. This data has been valuable for understanding feeding schedules and outdoor activity.
+
+The 3D printed housing has proven durable in outdoor conditions, protecting the electronics while maintaining proper sensor alignment. The modular design has made it easy to perform maintenance and upgrades as needed.
+
+The project successfully solved the original problem of unauthorized access while providing valuable insights into the cat's behavior patterns. The immediate success in catching the intruder cat validated the effectiveness of the monitoring approach.
 `,
   },
 ]
@@ -958,7 +958,7 @@ export default function ProjectDetailClient() {
                 </Tabs>
               </div>
             </div>
-          ) : project.id === 3 ? (
+          ) : project.id === 4 ? (
             // Special layout for Cat Door Monitoring System
             <div className="space-y-12">
               {/* Project Header */}
@@ -1266,7 +1266,7 @@ export default function ProjectDetailClient() {
                 </div>
               </div>
             </div>
-          ) : project.id === 4 ? (
+          ) : project.id === 3 ? (
             // Storytelling layout for PC Cooling project
             <div className="space-y-12">
               {/* Project Header */}
@@ -1562,7 +1562,7 @@ export default function ProjectDetailClient() {
           )}
 
           {project.id !== 1 && (
-            <Tabs defaultValue="features" className="mb-12">
+            <Tabs defaultValue="features" className="mb-12 mt-16">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="features">Key Features</TabsTrigger>
                 <TabsTrigger value="technologies">Technologies</TabsTrigger>
