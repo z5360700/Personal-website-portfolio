@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { ArrowDown, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import WavyLines from "./wavy-lines"
 
 export default function Hero() {
   const [mounted, setMounted] = useState(false)
@@ -19,7 +20,7 @@ export default function Hero() {
   const resumeUrl = "/LoRusso_CV.pdf"
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative pt-16">
+    <section id="home" className="min-h-screen flex items-center justify-center relative pt-16 overflow-hidden">
       <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center gap-12 z-10">
         {/* Profile Image - Made smaller */}
         <motion.div
@@ -102,6 +103,9 @@ export default function Hero() {
           <ArrowDown size={24} />
         </a>
       </div>
+
+      {/* Wavy lines background */}
+      <WavyLines />
 
       {/* Background gradient - updated to work with new background */}
       <div className="absolute inset-0 -z-10 h-full w-full bg-background [background:radial-gradient(125%_125%_at_50%_10%,hsl(var(--background))_40%,#3b82f6_100%)] dark:[background:radial-gradient(125%_125%_at_50%_10%,hsl(var(--background))_40%,#2563eb_100%)]"></div>
