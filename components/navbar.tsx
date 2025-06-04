@@ -35,6 +35,9 @@ export default function Navbar() {
     { name: "Contact", href: "#contact" },
   ]
 
+  // Direct link to the PDF file in the public folder
+  const resumeUrl = "/LoRusso_CV.pdf"
+
   return (
     <header
       className={cn(
@@ -74,7 +77,7 @@ export default function Navbar() {
           </Button>
 
           <Button variant="default" asChild>
-            <a href="/LoRusso_CV.pdf" download="LoRusso_CV.pdf" target="_blank" rel="noopener noreferrer">
+            <a href={resumeUrl} download="Michael_Lo_Russo_Resume.pdf">
               Resume
             </a>
           </Button>
@@ -108,7 +111,7 @@ export default function Navbar() {
               </Link>
             ))}
             <Button variant="default" className="w-full" asChild>
-              <a href="/LoRusso_CV.pdf" download="LoRusso_CV.pdf" target="_blank" rel="noopener noreferrer">
+              <a href={resumeUrl} download="Michael_Lo_Russo_Resume.pdf">
                 Resume
               </a>
             </Button>

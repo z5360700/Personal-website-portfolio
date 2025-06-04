@@ -15,6 +15,9 @@ export default function Hero() {
 
   if (!mounted) return null
 
+  // Direct link to the PDF file in the public folder
+  const resumeUrl = "/LoRusso_CV.pdf"
+
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative pt-16">
       <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center gap-12 z-10">
@@ -77,20 +80,14 @@ export default function Hero() {
               </Button>
             </motion.div>
 
-            {/* Download Resume Button */}
+            {/* Download Resume Button - Direct download of PDF file */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.2 }}
             >
               <Button size="lg" className="px-8 py-6 text-lg font-medium" asChild>
-                <a
-                  href="/LoRusso_CV.pdf"
-                  download="LoRusso_CV.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
+                <a href={resumeUrl} download="Michael_Lo_Russo_Resume.pdf" className="flex items-center gap-2">
                   <Download className="w-5 h-5" />
                   Download Resume
                 </a>

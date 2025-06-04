@@ -24,15 +24,15 @@ const skills = [
   {
     category: "Electronics & Robotics",
     icon: <CircuitBoard className="w-6 h-6" />,
-    items: ["Arduino", "Microcontrollers", "Sensors (LiDAR, IMU)", "Motor Control", "PCB Integration", "IoT Systems"],
+    items: ["Arduino", "ESP32", "Microcontrollers", "Sensors (LiDAR, IMU, Break Beam)", "Motor Control", "IoT Systems"],
   },
   {
     category: "Construction & Building",
     icon: <Building className="w-6 h-6" />,
     items: [
       "Timber Framing",
-      "Electrical Systems",
-      "Plumbing",
+      "Electrical Installation",
+      "Plumbing Systems",
       "Project Management",
       "Building Codes",
       "Safety Standards",
@@ -51,7 +51,7 @@ const skills = [
       "Airflow Analysis",
       "PID Control",
       "Sensor Fusion",
-      "Path Planning",
+      "Path Planning (BFS)",
       "Computer Vision",
     ],
   },
@@ -119,19 +119,19 @@ export default function Skills() {
               <div>
                 <h4 className="text-lg font-semibold mb-3 text-primary">Engineering & Design</h4>
                 <ul className="space-y-2 text-foreground/80">
-                  <li>• Mechatronics system integration</li>
-                  <li>• Autonomous robotics development</li>
-                  <li>• Thermal management solutions</li>
-                  <li>• Structural design and analysis</li>
+                  <li>• Mechatronics system integration and sensor fusion</li>
+                  <li>• Autonomous robotics with maze navigation algorithms</li>
+                  <li>• Thermal management and airflow optimization</li>
+                  <li>• IoT monitoring systems with real-time notifications</li>
                 </ul>
               </div>
               <div>
                 <h4 className="text-lg font-semibold mb-3 text-primary">Project Experience</h4>
                 <ul className="space-y-2 text-foreground/80">
-                  <li>• Complete construction renovation</li>
-                  <li>• Maze navigation robot development</li>
-                  <li>• Custom cooling system design</li>
-                  <li>• Multi-trade project coordination</li>
+                  <li>• Complete residential construction and renovation</li>
+                  <li>• Micromouse robot with LiDAR and computer vision</li>
+                  <li>• Custom PC cooling ducts with 7°C temperature reduction</li>
+                  <li>• ESP32-based cat monitoring with Telegram integration</li>
                 </ul>
               </div>
             </div>
