@@ -25,33 +25,26 @@ export default function About() {
             transition={{ duration: 0.8 }}
             className="relative w-full max-w-lg mx-auto lg:mx-0 mt-8"
           >
-            {/* Image container with photo */}
+            {/* Card deck container */}
             <div className="relative w-full h-96 lg:h-[500px]">
-              <div className="absolute inset-0 border-4 border-primary translate-x-4 translate-y-4 rounded-lg"></div>
+              {/* Background decorative border */}
 
-              {/* Interactive image container */}
-              <div
-                className="relative h-full w-full overflow-hidden rounded-lg border-4 border-white shadow-xl"
-                onMouseMove={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect()
-                  const x = e.clientX - rect.left
-                  const halfWidth = rect.width / 2
-
-                  if (x < halfWidth) {
-                    setActiveImage("personal")
-                  } else {
-                    setActiveImage("samsung")
-                  }
+              {/* Samsung photo card (back card) */}
+              <motion.div
+                className="absolute inset-0 cursor-pointer"
+                style={{
+                  zIndex: activeImage === "samsung" ? 20 : 10,
                 }}
+                animate={{
+                  x: activeImage === "samsung" ? 0 : 25,
+                  y: activeImage === "samsung" ? 0 : 20,
+                  rotate: activeImage === "samsung" ? 0 : 3,
+                  scale: activeImage === "samsung" ? 1 : 0.95,
+                }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                onMouseEnter={() => setActiveImage("samsung")}
               >
-                {/* Samsung image */}
-                <div
-                  className="absolute inset-0 transition-all duration-500 ease-in-out z-10"
-                  style={{
-                    opacity: activeImage === "samsung" ? 1 : 0,
-                    transform: `scale(${activeImage === "samsung" ? 1 : 0.9})`,
-                  }}
-                >
+                <div className="relative h-full w-full overflow-hidden rounded-lg border-4 border-white shadow-xl">
                   <Image
                     src="/images/michael-samsung.png"
                     alt="Michael Lo Russo at Samsung"
@@ -59,16 +52,26 @@ export default function About() {
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
+                  {/* Card label */}
                 </div>
+              </motion.div>
 
-                {/* Personal image */}
-                <div
-                  className="absolute inset-0 transition-all duration-500 ease-in-out z-20"
-                  style={{
-                    opacity: activeImage === "personal" ? 1 : 0,
-                    transform: `scale(${activeImage === "personal" ? 1 : 0.9})`,
-                  }}
-                >
+              {/* Personal photo card (front card) */}
+              <motion.div
+                className="absolute inset-0 cursor-pointer"
+                style={{
+                  zIndex: activeImage === "personal" ? 20 : 10,
+                }}
+                animate={{
+                  x: activeImage === "personal" ? 0 : -25,
+                  y: activeImage === "personal" ? 0 : -20,
+                  rotate: activeImage === "personal" ? 0 : -3,
+                  scale: activeImage === "personal" ? 1 : 0.95,
+                }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                onMouseEnter={() => setActiveImage("personal")}
+              >
+                <div className="relative h-full w-full overflow-hidden rounded-lg border-4 border-white shadow-xl">
                   <Image
                     src="/images/about-michael.jpeg"
                     alt="Michael Lo Russo in a restaurant setting"
@@ -77,12 +80,13 @@ export default function About() {
                     priority
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
+                  {/* Card label */}
                 </div>
+              </motion.div>
 
-                {/* Hover instruction */}
-                <div className="absolute bottom-4 left-0 right-0 text-center text-white text-sm bg-black/50 py-1 z-30">
-                  Move cursor to switch photos
-                </div>
+              {/* Hover instruction */}
+              <div className="absolute -bottom-16 left-0 right-0 text-center text-foreground/60 text-sm">
+                Hover over photos to bring them forward
               </div>
             </div>
           </motion.div>
@@ -124,7 +128,7 @@ export default function About() {
                 title="C++"
               >
                 <svg viewBox="0 0 24 24" className="w-8 h-8" fill="#00599C">
-                  <path d="M22.394 6c-.167-.29-.398-.543-.652-.69L12.926.22c-.509-.294-1.34-.294-1.848 0L2.26 5.31c-.508.293-.923 1.013-.923 1.6v10.18c0 .294.104.62.271.91.167.29.398.543.652.69l8.816 5.09c.508.293 1.34.293 1.848 0l8.816-5.09c.254-.147.485-.4.652-.69.167-.29.27-.616.27-.91V6.91c.003-.294-.1-.62-.268-.91zM12 19.109c-3.92 0-7.109-3.189-7.109-7.109S8.08 4.891 12 4.891a7.133 7.133 0 016.156 3.552l-3.076 1.781A3.567 3.567 0 0012 8.445c-1.96 0-3.554 1.595-3.554 3.555S10.04 15.555 12 15.555a3.57 3.57 0 003.08-1.778l3.077 1.78A7.135 7.135 0 0112 19.109zm7.109-6.714h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79v.79zm2.962 0h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79v.79z" />
+                  <path d="M22.394 6c-.167-.29-.398-.543-.652-.69L12.926.22c-.509-.294-1.34-.294-1.848 0L2.26 5.31c-.508.293-.923 1.013-.923 1.6v10.18c0 .294.104.62.271.91.167.29.398.543.652.69l8.816 5.09c.508.293 1.34.293 1.848 0l8.816-5.09c.254-.147.485-.4.652-.69.167-.29.27-.616.27-.91V6.91c.003-.294-.1-.62-.268-.91zM12 19.109c-3.92 0-7.109-3.189-7.109-7.109S8.08 4.891 12 4.891a7.133 7.133 0 016.156 3.552l-3.076 1.781A3.567 3.567 0 0012 8.445c-1.96 0-3.554 1.595-3.554 3.555S10.04 15.555 12 15.555a3.57 3.57 0 003.08-1.778l3.077 1.80A7.135 7.135 0 0112 19.109zm7.109-6.714h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79v.79zm2.962 0h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79v.79z" />
                 </svg>
               </motion.div>
 
