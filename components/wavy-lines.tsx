@@ -39,7 +39,7 @@ export default function WavyLines() {
               ease: "easeInOut",
               repeat: Number.POSITIVE_INFINITY,
               repeatType: "reverse",
-              delay: i * 0.1,
+              delay: i * 0.05,
             }}
           />
         ))}
@@ -64,7 +64,7 @@ export default function WavyLines() {
               ease: "easeInOut",
               repeat: Number.POSITIVE_INFINITY,
               repeatType: "reverse",
-              delay: i * 0.15,
+              delay: i * 0.08,
             }}
           />
         ))}

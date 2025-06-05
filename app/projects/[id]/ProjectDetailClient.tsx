@@ -1309,7 +1309,7 @@ export default function ProjectDetailClient() {
                     initial={{ height: 0 }}
                     animate={{ height: "250rem" }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/20 z-0"
+                    className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/20 z-0 hidden md:block"
                     style={{ top: 0 }}
                   ></motion.div>
 
