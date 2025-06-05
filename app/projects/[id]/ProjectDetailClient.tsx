@@ -1037,10 +1037,16 @@ export default function ProjectDetailClient() {
                 <div className="max-w-4xl mx-auto mb-12">
                   <div className="text-center mb-8">
                     <h3 className="text-2xl font-bold mb-4">System Demonstration</h3>
-                    <p className="text-foreground/70 max-w-3xl mx-auto">
+                    <p className="text-foreground/70 max-w-3xl mx-auto mb-4">
                       Watch the Version 2 cat door monitoring system in action, demonstrating the break beam sensor
                       detection and real-time notifications.
                     </p>
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 max-w-2xl mx-auto">
+                      <p className="text-blue-800 dark:text-blue-200 text-center">
+                        Notice how the <span className="text-sky-400 font-medium">blue LED turns on</span> when the cat
+                        passes through.
+                      </p>
+                    </div>
                   </div>
                   <div className="space-y-6">
                     {project.videoGallery.map((video, index) => (
