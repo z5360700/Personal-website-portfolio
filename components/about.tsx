@@ -36,8 +36,8 @@ export default function About() {
                   zIndex: activeImage === "samsung" ? 20 : 10,
                 }}
                 animate={{
-                  x: activeImage === "samsung" ? 0 : 25,
-                  y: activeImage === "samsung" ? 0 : 20,
+                  x: activeImage === "samsung" ? 0 : 40,
+                  y: activeImage === "samsung" ? 0 : 30,
                   rotate: activeImage === "samsung" ? 0 : 3,
                   scale: activeImage === "samsung" ? 1 : 0.95,
                 }}
@@ -63,8 +63,8 @@ export default function About() {
                   zIndex: activeImage === "personal" ? 20 : 10,
                 }}
                 animate={{
-                  x: activeImage === "personal" ? 0 : -25,
-                  y: activeImage === "personal" ? 0 : -20,
+                  x: activeImage === "personal" ? 0 : -40,
+                  y: activeImage === "personal" ? 0 : -30,
                   rotate: activeImage === "personal" ? 0 : -3,
                   scale: activeImage === "personal" ? 1 : 0.95,
                 }}
