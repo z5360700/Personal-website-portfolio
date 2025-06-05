@@ -18,15 +18,15 @@ export default function About() {
           <div className="w-20 h-1 bg-primary mx-auto"></div>
         </div>
 
-        <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
             transition={{ duration: 0.8 }}
-            className="relative w-full max-w-lg mx-auto lg:mx-0 mt-8"
+            className="relative w-full max-w-lg mx-auto lg:mx-0 mt-8 mb-8 lg:mb-0"
           >
             {/* Card deck container */}
-            <div className="relative w-full h-96 lg:h-[500px]">
+            <div className="relative w-full h-72 sm:h-80 md:h-96 lg:h-[500px]">
               {/* Background decorative border */}
 
               {/* Samsung photo card (back card) */}
@@ -85,7 +85,7 @@ export default function About() {
               </motion.div>
 
               {/* Hover instruction */}
-              <div className="absolute -bottom-16 left-0 right-0 text-center text-foreground/60 text-sm">
+              <div className="absolute -bottom-12 sm:-bottom-14 lg:-bottom-16 left-0 right-0 text-center text-foreground/60 text-sm">
                 Hover over photos to bring them forward
               </div>
             </div>
