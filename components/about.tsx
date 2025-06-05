@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import Image from "next/image"
 import { useInView } from "framer-motion"
 import { motion } from "framer-motion"
@@ -8,6 +8,7 @@ import { motion } from "framer-motion"
 export default function About() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const [activeImage, setActiveImage] = useState<"personal" | "samsung">("personal")
 
   return (
     <section id="about" className="py-20 bg-muted/30">
@@ -27,15 +28,61 @@ export default function About() {
             {/* Image container with photo */}
             <div className="relative w-full h-96 lg:h-[500px]">
               <div className="absolute inset-0 border-4 border-primary translate-x-4 translate-y-4 rounded-lg"></div>
-              <div className="relative h-full w-full overflow-hidden rounded-lg border-4 border-white shadow-xl">
-                <Image
-                  src="/images/about-michael.jpeg"
-                  alt="Michael Lo Russo in a restaurant setting"
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
+
+              {/* Interactive image container */}
+              <div
+                className="relative h-full w-full overflow-hidden rounded-lg border-4 border-white shadow-xl"
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect()
+                  const x = e.clientX - rect.left
+                  const halfWidth = rect.width / 2
+
+                  if (x < halfWidth) {
+                    setActiveImage("personal")
+                  } else {
+                    setActiveImage("samsung")
+                  }
+                }}
+              >
+                {/* Samsung image */}
+                <div
+                  className="absolute inset-0 transition-all duration-500 ease-in-out z-10"
+                  style={{
+                    opacity: activeImage === "samsung" ? 1 : 0,
+                    transform: `scale(${activeImage === "samsung" ? 1 : 0.9})`,
+                  }}
+                >
+                  <Image
+                    src="/images/michael-samsung.png"
+                    alt="Michael Lo Russo at Samsung"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </div>
+
+                {/* Personal image */}
+                <div
+                  className="absolute inset-0 transition-all duration-500 ease-in-out z-20"
+                  style={{
+                    opacity: activeImage === "personal" ? 1 : 0,
+                    transform: `scale(${activeImage === "personal" ? 1 : 0.9})`,
+                  }}
+                >
+                  <Image
+                    src="/images/about-michael.jpeg"
+                    alt="Michael Lo Russo in a restaurant setting"
+                    fill
+                    className="object-cover"
+                    priority
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </div>
+
+                {/* Hover instruction */}
+                <div className="absolute bottom-4 left-0 right-0 text-center text-white text-sm bg-black/50 py-1 z-30">
+                  Move cursor to switch photos
+                </div>
               </div>
             </div>
           </motion.div>
