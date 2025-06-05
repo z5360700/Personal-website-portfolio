@@ -268,7 +268,7 @@ The solution involved precise 3D modeling of the PC case components, designing c
           "First, I created a precise 3D model of my PC case in Fusion360, ensuring all dimensions were accurate for a perfect fit.",
         image: "/images/pc-case-model.png",
         highlight: "",
-        aspectRatio: "aspect-square", // 3D model view
+        aspectRatio: "aspect-video", // Changed from aspect-square to aspect-video
       },
       {
         title: "Adding Components",
@@ -276,7 +276,7 @@ The solution involved precise 3D modeling of the PC case components, designing c
           "Next, I modeled the GPU and intake fan positions to understand the exact path the air needed to travel.",
         image: "/images/pc-case-with-gpu.png",
         highlight: "Understanding the spatial relationship between components was essential for effective duct design.",
-        aspectRatio: "aspect-square", // 3D model view
+        aspectRatio: "aspect-video", // Changed from aspect-square to aspect-video
       },
       {
         title: "Designing the Duct",
