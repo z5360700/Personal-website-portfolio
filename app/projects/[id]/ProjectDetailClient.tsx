@@ -1323,8 +1323,8 @@ export default function ProjectDetailClient() {
                       transition={{ duration: 0.3, delay: index * 0.05 }}
                       className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
                     >
-                      {/* Timeline dot */}
-                      <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background z-10"></div>
+                      {/* Timeline dot - hidden on mobile */}
+                      <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background z-10 hidden md:block"></div>
 
                       {/* Content */}
                       <div
