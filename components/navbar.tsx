@@ -36,7 +36,7 @@ export default function Navbar() {
   ]
 
   // Direct link to the PDF file in the public folder
-  const resumeUrl = "/LoRusso_CV.pdf"
+  const resumeUrl = "/Michael_LoRusso_CV.pdf"
 
   return (
     <header
