@@ -1307,7 +1307,7 @@ export default function ProjectDetailClient() {
                   {/* Main timeline line - much longer to ensure it covers everything */}
                   <motion.div
                     initial={{ height: 0 }}
-                    animate={{ height: "120rem" }}
+                    animate={{ height: "220rem" }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
                     className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/20 z-0 hidden md:block"
                     style={{ top: 0 }}
