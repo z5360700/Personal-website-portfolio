@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   title: "Michael Lo Russo - Portfolio",
   description: "Engineering portfolio showcasing projects in mechanical engineering, robotics, and construction.",
   generator: "v0.dev",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
 }
 
 export default function RootLayout({
