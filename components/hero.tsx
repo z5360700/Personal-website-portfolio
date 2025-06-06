@@ -17,7 +17,7 @@ export default function Hero() {
   if (!mounted) return null
 
   // Direct link to the PDF file in the public folder
-  const resumeUrl = "/LoRusso_CV.pdf"
+  const resumeUrl = "/Michael_LoRusso_CV.pdf"
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative pt-16 overflow-hidden">
