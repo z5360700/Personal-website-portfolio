@@ -82,7 +82,6 @@ The transformation showcases both my technical construction skills and project m
     tags: ["Construction", "Renovation", "Project Management", "Building Codes"],
     liveUrl: null,
     githubUrl: null,
-    date: "May 2024 - February 2025",
     features: [
       "Complete structural assessment and planning",
       "Foundation and framing construction using timber frame techniques",
@@ -176,7 +175,6 @@ The transformation showcases both my technical construction skills and project m
     tags: ["C++", "Python", "Arduino", "Computer Vision", "Robotics", "OpenCV"],
     liveUrl: null,
     githubUrl: "https://github.com/z5360700/micromouse-from2024",
-    date: "May 2024 - August 2024",
     features: [
       "Autonomous maze navigation using sensor fusion",
       "Real-time occupancy map generation with computer vision",
@@ -313,7 +311,6 @@ The solution involved precise 3D modeling of the PC case components, designing c
     tags: ["3D Printing", "Fusion360", "PLA Material", "Thermal Management", "CAD Design"],
     liveUrl: null,
     githubUrl: null,
-    date: "August 2024 - January 2025",
     features: [
       "Custom 3D-modeled PC case components for precise fit",
       "Automotive-inspired ducted airflow design",
@@ -399,7 +396,6 @@ Future versions will include double break beam sensors to determine direction of
     tags: ["ESP32", "IoT", "Arduino", "3D Printing", "Telegram Bot", "Break Beam Sensors"],
     liveUrl: null,
     githubUrl: null,
-    date: "September 2024 - December 2024",
     features: [
       "Evolution from PIR sensors (V1) to break beam sensors (V2) for improved reliability",
       "ESP32 WiFi connectivity for real-time communication",
@@ -549,12 +545,6 @@ export default function ProjectDetailClient() {
                     <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
                   )}
                 </div>
-
-                {project.date && (
-                  <p className="text-foreground/70 mb-4">
-                    <span className="font-medium">Timeline:</span> {project.date}
-                  </p>
-                )}
 
                 <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
 
@@ -798,12 +788,6 @@ export default function ProjectDetailClient() {
                   )}
                 </div>
 
-                {project.date && (
-                  <p className="text-foreground/70 mb-4">
-                    <span className="font-medium">Timeline:</span> {project.date}
-                  </p>
-                )}
-
                 <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
 
                 <div className="flex flex-wrap justify-center gap-2 mb-8">
@@ -969,12 +953,6 @@ export default function ProjectDetailClient() {
                     <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
                   )}
                 </div>
-
-                {project.date && (
-                  <p className="text-foreground/70 mb-4">
-                    <span className="font-medium">Timeline:</span> {project.date}
-                  </p>
-                )}
 
                 <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
 
@@ -1284,12 +1262,6 @@ export default function ProjectDetailClient() {
                   )}
                 </div>
 
-                {project.date && (
-                  <p className="text-foreground/70 mb-4">
-                    <span className="font-medium">Timeline:</span> {project.date}
-                  </p>
-                )}
-
                 <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
 
                 <div className="flex flex-wrap justify-center gap-2 mb-8">
@@ -1506,12 +1478,6 @@ export default function ProjectDetailClient() {
                     <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
                   )}
                 </div>
-
-                {project.date && (
-                  <p className="text-foreground/70 mb-4">
-                    <span className="font-medium">Timeline:</span> {project.date}
-                  </p>
-                )}
 
                 <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
 

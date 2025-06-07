@@ -18,7 +18,6 @@ const projects = [
     image: "/images/construction-after.jpg",
     tags: ["Construction", "Renovation", "Project Management", "Building Codes"],
     githubUrl: "#",
-    date: "May 2024 - February 2025",
   },
   {
     id: 2,
@@ -28,7 +27,6 @@ const projects = [
     image: "/images/micromouse-robot.jpeg",
     tags: ["C++", "Python", "Arduino", "Computer Vision", "Robotics", "OpenCV"],
     githubUrl: "https://github.com/z5360700/micromouse-from2024",
-    date: "May 2024 - August 2024",
   },
   {
     id: 3,
@@ -38,7 +36,6 @@ const projects = [
     image: "/images/pc-cooling-installed.jpeg",
     tags: ["3D Printing", "Fusion360", "PLA Material", "Thermal Management", "CAD Design"],
     githubUrl: "#",
-    date: "August 2024 - January 2025",
   },
   {
     id: 4,
@@ -48,7 +45,6 @@ const projects = [
     image: "/images/cat-door-v2-system.png",
     tags: ["ESP32", "IoT", "Arduino", "3D Printing", "Telegram Bot", "Break Beam Sensors"],
     githubUrl: "#",
-    date: "September 2024 - December 2024",
   },
 ]
 
@@ -84,11 +80,6 @@ export default function Projects() {
                     fill
                     className="object-cover transition-transform hover:scale-105 duration-300"
                   />
-                  {project.date && (
-                    <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                      {project.date}
-                    </div>
-                  )}
                 </div>
                 <CardContent className="flex flex-col flex-grow p-6">
                   <h3 className="text-xl font-bold mb-2">{project.title}</h3>
