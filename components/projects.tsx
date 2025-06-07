@@ -1,13 +1,15 @@
 "use client"
 
+import type React from "react"
+
 import { useRef } from "react"
 import Image from "next/image"
-import Link from "next/link"
 import { useInView } from "framer-motion"
 import { motion } from "framer-motion"
 import { Github, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { useRouter } from "next/navigation"
 
 const projects = [
   {
@@ -51,6 +53,16 @@ const projects = [
 export default function Projects() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const router = useRouter()
+
+  const handleProjectClick = (projectId: number) => {
+    router.push(`/projects/${projectId}`)
+  }
+
+  const handleGithubClick = (e: React.MouseEvent, githubUrl: string) => {
+    e.stopPropagation()
+    window.open(githubUrl, "_blank", "noopener,noreferrer")
+  }
 
   return (
     <section id="projects" className="py-20">
@@ -72,17 +84,22 @@ export default function Projects() {
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
               transition={{ duration: 0.5, delay: index * 0.2 }}
             >
-              <Card className="overflow-hidden h-full flex flex-col">
+              <Card
+                className="overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
+                onClick={() => handleProjectClick(project.id)}
+              >
                 <div className="relative h-[28rem] w-full overflow-hidden">
                   <Image
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}
                     fill
-                    className="object-cover transition-transform hover:scale-105 duration-300"
+                    className="object-cover transition-transform group-hover:scale-105 duration-300"
                   />
                 </div>
                 <CardContent className="flex flex-col flex-grow p-6">
-                  <h3 className="text-xl font-bold mb-2">{project.title}</h3>
+                  <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors duration-300">
+                    {project.title}
+                  </h3>
                   <p className="text-foreground/70 mb-4 flex-grow">{project.description}</p>
 
                   <div className="flex flex-wrap gap-2 mb-4">
@@ -96,31 +113,25 @@ export default function Projects() {
                   <div className="flex flex-wrap gap-4 mt-auto">
                     {project.id === 1 || project.id === 3 ? (
                       // For construction project and PC cooling project, don't show GitHub button
-                      <Button variant="ghost" size="sm" asChild className="ml-auto hover:bg-muted/80">
-                        <Link href={`/projects/${project.id}`} className="flex items-center gap-1">
-                          Details
-                          <ArrowRight size={14} />
-                        </Link>
-                      </Button>
+                      <div className="ml-auto bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors duration-300 flex items-center gap-2 font-medium">
+                        View Details
+                        <ArrowRight size={16} />
+                      </div>
                     ) : (
                       <>
-                        <Button variant="outline" size="sm" asChild>
-                          <a
-                            href={project.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2"
-                          >
-                            <Github size={16} />
-                            Code
-                          </a>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-2"
+                          onClick={(e) => handleGithubClick(e, project.githubUrl)}
+                        >
+                          <Github size={16} />
+                          Code
                         </Button>
-                        <Button variant="ghost" size="sm" asChild className="ml-auto hover:bg-muted/80">
-                          <Link href={`/projects/${project.id}`} className="flex items-center gap-1">
-                            Details
-                            <ArrowRight size={14} />
-                          </Link>
-                        </Button>
+                        <div className="ml-auto bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors duration-300 flex items-center gap-2 font-medium">
+                          View Details
+                          <ArrowRight size={16} />
+                        </div>
                       </>
                     )}
                   </div>
