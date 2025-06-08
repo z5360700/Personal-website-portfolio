@@ -66,7 +66,7 @@ export default function Projects() {
 
   return (
     <section id="projects" className="py-20">
-      <div className="container mx-auto px-4 max-w-full overflow-hidden">
+      <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">My Projects</h2>
           <div className="w-20 h-1 bg-primary mx-auto mb-6"></div>
@@ -88,7 +88,7 @@ export default function Projects() {
                 className="overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
                 onClick={() => handleProjectClick(project.id)}
               >
-                <div className="relative h-[32rem] w-full overflow-hidden">
+                <div className="relative h-[28rem] w-full overflow-hidden">
                   <Image
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}

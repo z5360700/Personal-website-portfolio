@@ -13,7 +13,7 @@ export default function WavyLines() {
   if (!mounted) return null
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none max-w-full">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <svg
         className="absolute inset-0 w-full h-full text-slate-600/25 dark:text-slate-300/30"
         viewBox="0 0 1400 900"
