@@ -108,7 +108,7 @@ export default function EnhancedBeforeAfterSlider({
       <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-6 md:p-8 border border-gray-200 dark:border-gray-700">
         <div
           ref={containerRef}
-          className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] rounded-xl overflow-hidden cursor-col-resize bg-muted/20"
+          className="relative w-full h-[300px] sm:h-[400px] md:h-[600px] lg:h-[700px] rounded-xl overflow-hidden cursor-col-resize bg-muted/20"
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
         >

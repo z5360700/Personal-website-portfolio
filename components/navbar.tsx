@@ -16,9 +16,6 @@ export default function Navbar() {
   const { theme, setTheme } = useTheme()
   const pathname = usePathname()
 
-  // Check if we're on a project page
-  const isProjectPage = pathname?.startsWith("/projects/")
-
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
@@ -33,11 +30,11 @@ export default function Navbar() {
   }, [])
 
   const navLinks = [
-    { name: "Home", href: isProjectPage ? "/#home" : "#home" },
-    { name: "About", href: isProjectPage ? "/#about" : "#about" },
-    { name: "Projects", href: isProjectPage ? "/#projects" : "#projects" },
-    { name: "Skills", href: isProjectPage ? "/#skills" : "#skills" },
-    { name: "Contact", href: isProjectPage ? "/#contact" : "#contact" },
+    { name: "Home", href: "/#home" },
+    { name: "About", href: "/#about" },
+    { name: "Projects", href: "/#projects" },
+    { name: "Skills", href: "/#skills" },
+    { name: "Contact", href: "/#contact" },
   ]
 
   // Direct link to the PDF file in the public folder
