@@ -88,12 +88,12 @@ export default function Projects() {
                 className="overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
                 onClick={() => handleProjectClick(project.id)}
               >
-                <div className="relative h-[28rem] w-full overflow-hidden">
+                <div className="relative h-[20rem] sm:h-[24rem] md:h-[28rem] w-full overflow-hidden">
                   <Image
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}
                     fill
-                    className="object-cover transition-transform group-hover:scale-105 duration-300"
+                    className="object-contain sm:object-cover transition-transform group-hover:scale-105 duration-300"
                   />
                 </div>
                 <CardContent className="flex flex-col flex-grow p-6">

@@ -525,7 +525,7 @@ export default function ProjectDetailClient() {
 
   return (
     <>
-      <main className="min-h-screen pt-20 pb-16">
+      <main className="min-h-screen pt-20 pb-16 overflow-x-hidden">
         <div className="container mx-auto px-4">
           <Button variant="ghost" className="mb-6" asChild>
             <Link href="/" className="flex items-center">

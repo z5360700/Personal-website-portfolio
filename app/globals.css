@@ -60,3 +60,12 @@
     @apply scroll-smooth;
   }
 }
+
+@layer base {
+  html,
+  body {
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+  }
+}

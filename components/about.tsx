@@ -26,7 +26,7 @@ export default function About() {
             className="relative w-full max-w-lg mx-auto lg:mx-0 mt-8 mb-8 lg:mb-0"
           >
             {/* Card deck container */}
-            <div className="relative w-full h-80 sm:h-96 md:h-[450px] lg:h-[500px]">
+            <div className="relative w-full h-[400px] sm:h-96 md:h-[450px] lg:h-[500px]">
               {/* Background decorative border */}
 
               {/* Samsung photo card (back card) */}
