@@ -23,10 +23,10 @@ export default function About() {
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
             transition={{ duration: 0.8 }}
-            className="relative w-full max-w-lg mx-auto lg:mx-0 mt-8 mb-8 lg:mb-0"
+            className="relative w-full max-w-xs sm:max-w-sm md:max-w-lg mx-auto lg:mx-0 mt-8 mb-8 lg:mb-0"
           >
             {/* Card deck container */}
-            <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-[450px] xl:h-[500px]">
+            <div className="relative w-full h-48 sm:h-64 md:h-80 lg:h-[450px] xl:h-[500px]">
               {/* Background decorative border */}
 
               {/* Samsung photo card (back card) */}

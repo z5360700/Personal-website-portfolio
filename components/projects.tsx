@@ -88,7 +88,7 @@ export default function Projects() {
                 className="overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
                 onClick={() => handleProjectClick(project.id)}
               >
-                <div className="relative h-[28rem] w-full overflow-hidden">
+                <div className="relative h-[32rem] w-full overflow-hidden">
                   <Image
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}
