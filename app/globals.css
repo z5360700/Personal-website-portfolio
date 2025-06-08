@@ -47,6 +47,14 @@
     --input: 240 3.7% 15.9%;
     --ring: 221 83% 53%; /* Blue */
   }
+
+  /* Add this to prevent horizontal scrolling */
+  html,
+  body {
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+  }
 }
 
 @layer base {
