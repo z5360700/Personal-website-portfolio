@@ -1275,197 +1275,200 @@ export default function ProjectDetailClient() {
 
               {/* Story Timeline */}
               <div className="max-w-6xl mx-auto">
-                <div className="relative">
-                  {/* Main timeline line - much longer to ensure it covers everything */}
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: "220rem" }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/20 z-0 hidden md:block"
-                    style={{ top: 0 }}
-                  ></motion.div>
-
-                  {/* Story steps */}
-                  {project.storySteps.map((step, index) => (
+                {/* Background that covers story steps only */}
+                <div className="relative bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900/30 dark:to-slate-800/30 rounded-2xl p-8 mb-16">
+                  <div className="relative">
+                    {/* Main timeline line - much longer to ensure it covers everything */}
                     <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 50 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-100px" }}
-                      transition={{ duration: 0.3, delay: index * 0.05 }}
-                      className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
-                    >
-                      {/* Timeline dot - hidden on mobile */}
-                      <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background z-10 hidden md:block"></div>
+                      initial={{ height: 0 }}
+                      animate={{ height: "200rem" }}
+                      transition={{ duration: 0.5, ease: "easeInOut" }}
+                      className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/20 z-0 hidden md:block"
+                      style={{ top: 0 }}
+                    ></motion.div>
 
-                      {/* Content */}
-                      <div
-                        className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}
+                    {/* Story steps */}
+                    {project.storySteps.map((step, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                        className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
                       >
-                        <div className={`${index % 2 === 0 ? "md:order-2" : "md:order-1"}`}>
-                          <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
-                          <p className="text-foreground/80 mb-4">{step.description}</p>
-                          {step.highlight && (
-                            <div className="bg-primary/10 border-l-4 border-primary p-4 rounded">
-                              <p className="italic text-foreground/90">{step.highlight}</p>
+                        {/* Timeline dot - hidden on mobile */}
+                        <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background z-10 hidden md:block"></div>
+
+                        {/* Content */}
+                        <div
+                          className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}
+                        >
+                          <div className={`${index % 2 === 0 ? "md:order-2" : "md:order-1"}`}>
+                            <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
+                            <p className="text-foreground/80 mb-4">{step.description}</p>
+                            {step.highlight && (
+                              <div className="bg-primary/10 border-l-4 border-primary p-4 rounded">
+                                <p className="italic text-foreground/90">{step.highlight}</p>
+                              </div>
+                            )}
+                          </div>
+                          <div className={`${index % 2 === 0 ? "md:order-1" : "md:order-2"}`}>
+                            <div
+                              className={`relative ${step.aspectRatio || "aspect-video"} rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer bg-muted/20`}
+                            >
+                              <Image
+                                src={step.image || "/placeholder.svg"}
+                                alt={step.title}
+                                fill
+                                className="object-contain p-2"
+                                onClick={() => step.image && openLightbox([step.image], 0, step.title)}
+                              />
                             </div>
-                          )}
-                        </div>
-                        <div className={`${index % 2 === 0 ? "md:order-1" : "md:order-2"}`}>
-                          <div
-                            className={`relative ${step.aspectRatio || "aspect-video"} rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer bg-muted/20`}
-                          >
-                            <Image
-                              src={step.image || "/placeholder.svg"}
-                              alt={step.title}
-                              fill
-                              className="object-contain p-2"
-                              onClick={() => step.image && openLightbox([step.image], 0, step.title)}
-                            />
                           </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  ))}
-
-                  {/* Gap section - no timeline line */}
-                  <div className="mb-24"></div>
-
-                  {/* Before/After Installation Comparison - Standalone section */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.3, delay: 0.1 }}
-                    className="relative mb-24"
-                  >
-                    {/* Before/After Slider Section */}
-                    <div className="text-center">
-                      <h3 className="text-2xl font-bold mb-6">Installation Comparison</h3>
-                      <p className="text-foreground/70 mb-6 max-w-3xl mx-auto">
-                        Use the slider below to compare the PC before and after installing the custom cooling ducts.
-                        Notice how the ducts create a direct airflow path from the front intake fans to the GPU.
-                      </p>
-                      <div className="relative w-full max-w-4xl mx-auto h-[600px] bg-muted/20 rounded-lg overflow-hidden">
-                        <BeforeAfterSlider
-                          beforeImage="/images/pc-without-ducting.jpeg"
-                          afterImage="/images/pc-cooling-installed.jpeg"
-                          beforeAlt="PC without cooling ducts"
-                          afterAlt="PC with cooling ducts installed"
-                          className="h-full w-full"
-                        />
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* Testing Methodology Section */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.3, delay: 0.12 }}
-                    className="relative mb-24"
-                  >
-                    <div className="text-center">
-                      <h3 className="text-2xl font-bold mb-6">Testing Methodology</h3>
-                      <div className="max-w-4xl mx-auto bg-muted/30 p-8 rounded-lg">
-                        <p className="text-foreground/80 mb-4">
-                          To validate the effectiveness of the cooling ducts, comprehensive testing was conducted under
-                          controlled conditions. Both configurations were tested in an identical setup within a 21°C
-                          room temperature environment.
-                        </p>
-                        <p className="text-foreground/80 mb-4">
-                          The testing utilized MSI Afterburner for real-time monitoring and data logging, while
-                          Kombustor v4.1.31.0 was used for stress testing the GPU. Each test session lasted 8 minutes to
-                          ensure the system reached thermal steady state.
-                        </p>
-                        <p className="text-foreground/80">
-                          The results showed a significant 7°C temperature difference at steady state between the ducted
-                          and non-ducted configurations. Importantly, both the core clock and memory clock frequencies
-                          remained stable throughout testing, indicating no thermal throttling occurred in either
-                          configuration.
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* Test Results Comparison */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.3, delay: 0.13 }}
-                    className="relative mb-24"
-                  >
-                    <div className="text-center">
-                      <h3 className="text-2xl font-bold mb-6">Performance Test Results</h3>
-                      <p className="text-foreground/70 mb-8 max-w-3xl mx-auto">
-                        Side-by-side comparison of GPU monitoring data showing temperature, usage, clock speeds, and
-                        power consumption during identical 8-minute stress tests.
-                      </p>
-
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-                        {/* With Ducting Results */}
-                        <div className="space-y-4">
-                          <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-lg bg-muted/20">
-                            <Image
-                              src="/images/gpu-test-with-ducting.png"
-                              alt="GPU monitoring data with ducted cooling"
-                              fill
-                              className="object-contain p-2"
-                              onClick={() =>
-                                openLightbox(["/images/gpu-test-with-ducting.png"], 0, "GPU test with ducting")
-                              }
-                            />
-                          </div>
-                          <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                            <h4 className="font-bold text-green-800 dark:text-green-200 mb-2">With Ducted Cooling</h4>
-                            <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
-                              <li>• Max Temperature: 63°C</li>
-                              <li>• Core Clock: 2610 MHz (stable)</li>
-                              <li>• Memory Clock: 10502 MHz</li>
-                              <li>• Power Draw: ~197W</li>
-                            </ul>
-                          </div>
-                        </div>
-
-                        {/* Without Ducting Results */}
-                        <div className="space-y-4">
-                          <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-lg bg-muted/20">
-                            <Image
-                              src="/images/gpu-test-without-ducting.png"
-                              alt="GPU monitoring data without ducted cooling"
-                              fill
-                              className="object-contain p-2"
-                              onClick={() =>
-                                openLightbox(["/images/gpu-test-without-ducting.png"], 0, "GPU test without ducting")
-                              }
-                            />
-                          </div>
-                          <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
-                            <h4 className="font-bold text-red-800 dark:text-red-200 mb-2">Without Ducted Cooling</h4>
-                            <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
-                              <li>• Max Temperature: 70°C</li>
-                              <li>• Core Clock: 2530 MHz (stable)</li>
-                              <li>• Memory Clock: 10502 MHz</li>
-                              <li>• Power Draw: ~197W</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-8 max-w-4xl mx-auto bg-primary/5 p-6 rounded-lg border border-primary/20">
-                        <h4 className="text-lg font-bold mb-3">Key Benefits</h4>
-                        <p className="text-foreground/80">
-                          The 7°C temperature reduction is particularly beneficial because it allows the GPU's cooling
-                          fans to operate at lower speeds while maintaining the same thermal performance. This results
-                          in significantly quieter operation during demanding workloads, improving the overall user
-                          experience without sacrificing performance.
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
+
+                {/* Gap section - no timeline line */}
+                <div className="mb-24"></div>
+
+                {/* Before/After Installation Comparison - Standalone section */}
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                  className="relative mb-24"
+                >
+                  {/* Before/After Slider Section */}
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold mb-6">Installation Comparison</h3>
+                    <p className="text-foreground/70 mb-6 max-w-3xl mx-auto">
+                      Use the slider below to compare the PC before and after installing the custom cooling ducts.
+                      Notice how the ducts create a direct airflow path from the front intake fans to the GPU.
+                    </p>
+                    <div className="relative w-full max-w-4xl mx-auto h-[600px] bg-muted/20 rounded-lg overflow-hidden">
+                      <BeforeAfterSlider
+                        beforeImage="/images/pc-without-ducting.jpeg"
+                        afterImage="/images/pc-cooling-installed.jpeg"
+                        beforeAlt="PC without cooling ducts"
+                        afterAlt="PC with cooling ducts installed"
+                        className="h-full w-full"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Testing Methodology Section */}
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.3, delay: 0.12 }}
+                  className="relative mb-24"
+                >
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold mb-6">Testing Methodology</h3>
+                    <div className="max-w-4xl mx-auto bg-muted/30 p-8 rounded-lg">
+                      <p className="text-foreground/80 mb-4">
+                        To validate the effectiveness of the cooling ducts, comprehensive testing was conducted under
+                        controlled conditions. Both configurations were tested in an identical setup within a 21°C room
+                        temperature environment.
+                      </p>
+                      <p className="text-foreground/80 mb-4">
+                        The testing utilized MSI Afterburner for real-time monitoring and data logging, while Kombustor
+                        v4.1.31.0 was used for stress testing the GPU. Each test session lasted 8 minutes to ensure the
+                        system reached thermal steady state.
+                      </p>
+                      <p className="text-foreground/80">
+                        The results showed a significant 7°C temperature difference at steady state between the ducted
+                        and non-ducted configurations. Importantly, both the core clock and memory clock frequencies
+                        remained stable throughout testing, indicating no thermal throttling occurred in either
+                        configuration.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Test Results Comparison */}
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.3, delay: 0.13 }}
+                  className="relative mb-24"
+                >
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold mb-6">Performance Test Results</h3>
+                    <p className="text-foreground/70 mb-8 max-w-3xl mx-auto">
+                      Side-by-side comparison of GPU monitoring data showing temperature, usage, clock speeds, and power
+                      consumption during identical 8-minute stress tests.
+                    </p>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                      {/* With Ducting Results */}
+                      <div className="space-y-4">
+                        <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-lg bg-muted/20">
+                          <Image
+                            src="/images/gpu-test-with-ducting.png"
+                            alt="GPU monitoring data with ducted cooling"
+                            fill
+                            className="object-contain p-2"
+                            onClick={() =>
+                              openLightbox(["/images/gpu-test-with-ducting.png"], 0, "GPU test with ducting")
+                            }
+                          />
+                        </div>
+                        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                          <h4 className="font-bold text-green-800 dark:text-green-200 mb-2">With Ducted Cooling</h4>
+                          <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
+                            <li>• Max Temperature: 63°C</li>
+                            <li>• Core Clock: 2610 MHz (stable)</li>
+                            <li>• Memory Clock: 10502 MHz</li>
+                            <li>• Power Draw: ~197W</li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      {/* Without Ducting Results */}
+                      <div className="space-y-4">
+                        <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-lg bg-muted/20">
+                          <Image
+                            src="/images/gpu-test-without-ducting.png"
+                            alt="GPU monitoring data without ducted cooling"
+                            fill
+                            className="object-contain p-2"
+                            onClick={() =>
+                              openLightbox(["/images/gpu-test-without-ducting.png"], 0, "GPU test without ducting")
+                            }
+                          />
+                        </div>
+                        <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
+                          <h4 className="font-bold text-red-800 dark:text-red-200 mb-2">Without Ducted Cooling</h4>
+                          <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
+                            <li>• Max Temperature: 70°C</li>
+                            <li>• Core Clock: 2530 MHz (stable)</li>
+                            <li>• Memory Clock: 10502 MHz</li>
+                            <li>• Power Draw: ~197W</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-8 max-w-4xl mx-auto bg-primary/5 p-6 rounded-lg border border-primary/20">
+                      <h4 className="text-lg font-bold mb-3">Key Benefits</h4>
+                      <p className="text-foreground/80">
+                        The 7°C temperature reduction is particularly beneficial because it allows the GPU's cooling
+                        fans to operate at lower speeds while maintaining the same thermal performance. This results in
+                        significantly quieter operation during demanding workloads, improving the overall user
+                        experience without sacrificing performance.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
             </div>
           ) : (

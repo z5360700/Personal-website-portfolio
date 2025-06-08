@@ -113,7 +113,7 @@ export default function Projects() {
                   <div className="flex flex-wrap gap-4 mt-auto">
                     {project.id === 1 || project.id === 3 ? (
                       // For construction project and PC cooling project, don't show GitHub button
-                      <div className="ml-auto bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors duration-300 flex items-center gap-2 font-medium">
+                      <div className="ml-auto bg-slate-700 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors duration-300 flex items-center gap-2 font-medium">
                         View Details
                         <ArrowRight size={16} />
                       </div>
@@ -128,7 +128,7 @@ export default function Projects() {
                           <Github size={16} />
                           Code
                         </Button>
-                        <div className="ml-auto bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors duration-300 flex items-center gap-2 font-medium">
+                        <div className="ml-auto bg-slate-700 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors duration-300 flex items-center gap-2 font-medium">
                           View Details
                           <ArrowRight size={16} />
                         </div>
