@@ -26,7 +26,7 @@ export default function About() {
             className="relative w-full max-w-lg mx-auto lg:mx-0 mt-8 mb-8 lg:mb-0"
           >
             {/* Card deck container */}
-            <div className="relative w-full h-80 sm:h-96 md:h-[450px] lg:h-[500px]">
+            <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-[450px] xl:h-[500px]">
               {/* Background decorative border */}
 
               {/* Samsung photo card (back card) */}
@@ -36,10 +36,10 @@ export default function About() {
                   zIndex: activeImage === "samsung" ? 20 : 10,
                 }}
                 animate={{
-                  x: activeImage === "samsung" ? 0 : 40,
-                  y: activeImage === "samsung" ? 0 : 30,
-                  rotate: activeImage === "samsung" ? 0 : 3,
-                  scale: activeImage === "samsung" ? 1 : 0.95,
+                  x: activeImage === "samsung" ? 0 : 20,
+                  y: activeImage === "samsung" ? 0 : 15,
+                  rotate: activeImage === "samsung" ? 0 : 2,
+                  scale: activeImage === "samsung" ? 1 : 0.97,
                 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 onMouseEnter={() => setActiveImage("samsung")}
@@ -63,10 +63,10 @@ export default function About() {
                   zIndex: activeImage === "personal" ? 20 : 10,
                 }}
                 animate={{
-                  x: activeImage === "personal" ? 0 : -40,
-                  y: activeImage === "personal" ? 0 : -30,
-                  rotate: activeImage === "personal" ? 0 : -3,
-                  scale: activeImage === "personal" ? 1 : 0.95,
+                  x: activeImage === "personal" ? 0 : -20,
+                  y: activeImage === "personal" ? 0 : -15,
+                  rotate: activeImage === "personal" ? 0 : -2,
+                  scale: activeImage === "personal" ? 1 : 0.97,
                 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 onMouseEnter={() => setActiveImage("personal")}
@@ -85,7 +85,7 @@ export default function About() {
               </motion.div>
 
               {/* Hover instruction */}
-              <div className="absolute -bottom-12 sm:-bottom-14 lg:-bottom-16 left-0 right-0 text-center text-foreground/60 text-sm">
+              <div className="absolute -bottom-8 sm:-bottom-12 lg:-bottom-16 left-0 right-0 text-center text-foreground/60 text-xs sm:text-sm">
                 Hover over photos to bring them forward
               </div>
             </div>
