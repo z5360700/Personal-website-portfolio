@@ -1276,7 +1276,7 @@ export default function ProjectDetailClient() {
               {/* Story Timeline */}
               <div className="max-w-6xl mx-auto">
                 {/* Background that covers story steps only */}
-                <div className="relative bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900/30 dark:to-slate-800/30 rounded-2xl p-8 mb-16">
+                <div className="relative bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900/20 dark:to-slate-800/20 rounded-2xl p-8 mb-16 border border-slate-200/50 dark:border-slate-700/30 shadow-sm">
                   <div className="relative">
                     {/* Main timeline line - much longer to ensure it covers everything */}
                     <motion.div
@@ -1295,10 +1295,10 @@ export default function ProjectDetailClient() {
                         animate={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.3, delay: index * 0.05 }}
-                        className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
+                        className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"} bg-white/60 dark:bg-gray-800/60 p-6 rounded-xl shadow-sm border border-gray-200/40 dark:border-gray-600/40`}
                       >
                         {/* Timeline dot - hidden on mobile */}
-                        <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background z-10 hidden md:block"></div>
+                        <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-primary border-4 border-white dark:border-gray-800 z-10 hidden md:block shadow-lg"></div>
 
                         {/* Content */}
                         <div
