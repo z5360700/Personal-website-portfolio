@@ -525,8 +525,8 @@ export default function ProjectDetailClient() {
 
   return (
     <>
-      <main className="min-h-screen pt-20 pb-16">
-        <div className="container mx-auto px-4">
+      <main className="min-h-screen pt-20 pb-16 overflow-x-hidden">
+        <div className="container mx-auto px-4 max-w-full">
           <Button variant="ghost" className="mb-6" asChild>
             <Link href="/" className="flex items-center">
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -536,17 +536,17 @@ export default function ProjectDetailClient() {
 
           {/* Special layout for Construction Project with full-width slider */}
           {project.id === 1 ? (
-            <div className="space-y-8">
+            <div className="space-y-8 w-full">
               {/* Project Header */}
-              <div className="text-center max-w-4xl mx-auto">
+              <div className="text-center max-w-4xl mx-auto px-4">
                 <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center">{project.title}</h1>
                   {project.course && (
                     <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
                   )}
                 </div>
 
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+                <p className="text-base sm:text-lg text-foreground/80 mb-6">{project.description}</p>
 
                 <div className="flex flex-wrap justify-center gap-2 mb-8">
                   {project.tags.map((tag) => (
@@ -557,9 +557,9 @@ export default function ProjectDetailClient() {
                 </div>
               </div>
               {/* Project Description */}
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-card dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-border mb-6">
-                  <div className="prose dark:prose-invert max-w-none">
+              <div className="max-w-4xl mx-auto px-4">
+                <div className="bg-card dark:bg-slate-800 p-4 sm:p-6 rounded-lg shadow-lg border border-border mb-6">
+                  <div className="prose dark:prose-invert max-w-none text-sm sm:text-base">
                     <p>{project.longDescription}</p>
                   </div>
                 </div>
@@ -596,7 +596,7 @@ export default function ProjectDetailClient() {
                 ) : null}
               </div>
               {/* Enhanced Before/After Transformation Slider */}
-              <div className="max-w-7xl mx-auto mb-12">
+              <div className="w-full max-w-7xl mx-auto mb-12 px-4">
                 <EnhancedBeforeAfterSlider
                   beforeImage="/images/construction-before-new.png"
                   afterImage="/images/construction-after.jpg"
@@ -607,16 +607,22 @@ export default function ProjectDetailClient() {
                 />
               </div>
               {/* Key Features, Skills & Tools, and Challenges Tabs */}
-              <div className="max-w-6xl mx-auto mb-8">
+              <div className="max-w-6xl mx-auto mb-8 px-4">
                 <Tabs defaultValue="features">
                   <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="features">Key Features</TabsTrigger>
-                    <TabsTrigger value="technologies">Skills & Tools</TabsTrigger>
-                    <TabsTrigger value="challenges">Challenges</TabsTrigger>
+                    <TabsTrigger value="features" className="text-xs sm:text-sm">
+                      Key Features
+                    </TabsTrigger>
+                    <TabsTrigger value="technologies" className="text-xs sm:text-sm">
+                      Skills & Tools
+                    </TabsTrigger>
+                    <TabsTrigger value="challenges" className="text-xs sm:text-sm">
+                      Challenges
+                    </TabsTrigger>
                   </TabsList>
-                  <TabsContent value="features" className="p-6 border rounded-md mt-2">
-                    <h2 className="text-xl font-bold mb-4">Key Features</h2>
-                    <ul className="space-y-2">
+                  <TabsContent value="features" className="p-4 sm:p-6 border rounded-md mt-2">
+                    <h2 className="text-lg sm:text-xl font-bold mb-4">Key Features</h2>
+                    <ul className="space-y-2 text-sm sm:text-base">
                       {project.features.map((feature, index) => (
                         <li key={index} className="flex items-start">
                           <span className="mr-2 text-primary">•</span>
@@ -625,13 +631,15 @@ export default function ProjectDetailClient() {
                       ))}
                     </ul>
                   </TabsContent>
-                  <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
-                    <h2 className="text-xl font-bold mb-4">Skills & Tools Used</h2>
+                  <TabsContent value="technologies" className="p-4 sm:p-6 border rounded-md mt-2">
+                    <h2 className="text-lg sm:text-xl font-bold mb-4">Skills & Tools Used</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {Object.entries(project.technologies).map(([category, items]) => (
                         <div key={category}>
-                          <h3 className="font-bold mb-2 capitalize">{category.replace(/([A-Z])/g, " $1").trim()}</h3>
-                          <ul className="space-y-1">
+                          <h3 className="font-bold mb-2 capitalize text-sm sm:text-base">
+                            {category.replace(/([A-Z])/g, " $1").trim()}
+                          </h3>
+                          <ul className="space-y-1 text-sm sm:text-base">
                             {items.map((item, index) => (
                               <li key={index} className="flex items-start">
                                 <span className="mr-2 text-primary">•</span>
@@ -643,9 +651,9 @@ export default function ProjectDetailClient() {
                       ))}
                     </div>
                   </TabsContent>
-                  <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
-                    <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
-                    <div className="prose dark:prose-invert max-w-none">
+                  <TabsContent value="challenges" className="p-4 sm:p-6 border rounded-md mt-2">
+                    <h2 className="text-lg sm:text-xl font-bold mb-4">Challenges & Solutions</h2>
+                    <div className="prose dark:prose-invert max-w-none text-sm sm:text-base">
                       <p>{project.challenges}</p>
                     </div>
                   </TabsContent>
@@ -653,16 +661,16 @@ export default function ProjectDetailClient() {
               </div>
 
               {/* Photo Galleries with Clear Grouping */}
-              <div className="space-y-32">
+              <div className="space-y-16 sm:space-y-32 w-full">
                 {/* Group 1: Construction Progress */}
-                <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
+                <div className="bg-gray-50 dark:bg-gray-900/50 py-8 sm:py-12 px-4 sm:px-6 rounded-xl shadow-sm w-full">
                   <div className="max-w-6xl mx-auto">
-                    <h3 className="text-3xl font-bold mb-6 text-center">Construction Progress</h3>
-                    <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-center">
+                    <h3 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-center">Construction Progress</h3>
+                    <p className="text-foreground/70 max-w-3xl mx-auto mb-6 sm:mb-8 text-center text-sm sm:text-base">
                       Follow the journey from the initial stages to the near-complete exterior. Click any image to view
                       it in full size.
                     </p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
                       {project.exteriorGallery.map((image, index) => (
                         <div
                           key={index}
@@ -683,14 +691,14 @@ export default function ProjectDetailClient() {
                 </div>
 
                 {/* Group 2: Interior Finishes */}
-                <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
+                <div className="bg-gray-50 dark:bg-gray-900/50 py-8 sm:py-12 px-4 sm:px-6 rounded-xl shadow-sm w-full">
                   <div className="max-w-6xl mx-auto">
-                    <h3 className="text-3xl font-bold mb-6 text-center">Interior Finishes</h3>
-                    <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-center">
+                    <h3 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-center">Interior Finishes</h3>
+                    <p className="text-foreground/70 max-w-3xl mx-auto mb-6 sm:mb-8 text-center text-sm sm:text-base">
                       Explore the details of the newly renovated interior spaces, showcasing modern design and quality
                       craftsmanship. Click any image to view it in full size.
                     </p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
                       {project.interiorGallery.map((image, index) => (
                         <div
                           key={index}
@@ -712,14 +720,16 @@ export default function ProjectDetailClient() {
 
                 {/* Group 3: Finished Product Photos */}
                 {project.finishedProductGallery && project.finishedProductGallery.length > 0 && (
-                  <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
+                  <div className="bg-gray-50 dark:bg-gray-900/50 py-8 sm:py-12 px-4 sm:px-6 rounded-xl shadow-sm w-full">
                     <div className="max-w-6xl mx-auto">
-                      <h3 className="text-3xl font-bold mb-6 text-center">Finished Product Photos</h3>
-                      <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-center">
+                      <h3 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-center">
+                        Finished Product Photos
+                      </h3>
+                      <p className="text-foreground/70 max-w-3xl mx-auto mb-6 sm:mb-8 text-center text-sm sm:text-base">
                         Step inside and see the final results of the renovation. These photos highlight the completed
                         interiors and overall quality of the finished home. Click any image to view it in full size.
                       </p>
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
                         {project.finishedProductGallery.map((image, index) => (
                           <div
                             key={index}
@@ -742,19 +752,21 @@ export default function ProjectDetailClient() {
 
                 {/* Group 4: Miscellaneous Pictures */}
                 {project.miscellaneousGallery && project.miscellaneousGallery.length > 0 && (
-                  <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
+                  <div className="bg-gray-50 dark:bg-gray-900/50 py-8 sm:py-12 px-4 sm:px-6 rounded-xl shadow-sm w-full">
                     <div className="max-w-6xl mx-auto">
                       <div className="text-center mb-6">
-                        <p className="text-lg text-foreground/80 mb-2 flex items-center justify-center">
+                        <p className="text-base sm:text-lg text-foreground/80 mb-2 flex items-center justify-center flex-wrap">
                           If you made it this far in the project it means you liked it!{" "}
                           <Smile className="inline-block ml-1 h-5 w-5" />
                         </p>
-                        <p className="text-foreground/70 max-w-3xl mx-auto">
+                        <p className="text-foreground/70 max-w-3xl mx-auto text-sm sm:text-base">
                           I hope you enjoy some more miscellaneous pictures I took.
                         </p>
                       </div>
-                      <h3 className="text-3xl font-bold mb-6 text-center">Miscellaneous Pictures</h3>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                      <h3 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-center">
+                        Miscellaneous Pictures
+                      </h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
                         {project.miscellaneousGallery.map((image, index) => (
                           <div
                             key={index}
@@ -778,17 +790,17 @@ export default function ProjectDetailClient() {
             </div>
           ) : project.id === 2 ? (
             // Special layout for Micromouse project
-            <div className="space-y-12">
+            <div className="space-y-12 w-full">
               {/* Project Header */}
-              <div className="text-center max-w-4xl mx-auto">
+              <div className="text-center max-w-4xl mx-auto px-4">
                 <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center">{project.title}</h1>
                   {project.course && (
                     <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
                   )}
                 </div>
 
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+                <p className="text-base sm:text-lg text-foreground/80 mb-6">{project.description}</p>
 
                 <div className="flex flex-wrap justify-center gap-2 mb-8">
                   {project.tags.map((tag) => (
@@ -800,15 +812,15 @@ export default function ProjectDetailClient() {
               </div>
 
               {/* Main Project Image */}
-              <div className="max-w-4xl mx-auto mb-12">
+              <div className="max-w-4xl mx-auto mb-12 px-4">
                 <div className="relative aspect-video rounded-lg overflow-hidden">
                   <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
                 </div>
               </div>
 
               {/* Project Description */}
-              <div className="max-w-4xl mx-auto">
-                <div className="prose dark:prose-invert max-w-none mb-8">
+              <div className="max-w-4xl mx-auto px-4">
+                <div className="prose dark:prose-invert max-w-none mb-8 text-sm sm:text-base">
                   <p>{project.longDescription}</p>
                 </div>
 
@@ -845,22 +857,22 @@ export default function ProjectDetailClient() {
               </div>
 
               {/* Video Demonstrations Section */}
-              <div className="max-w-6xl mx-auto mb-12">
+              <div className="max-w-6xl mx-auto mb-12 px-4">
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold mb-4">Project Demonstrations</h3>
-                  <p className="text-foreground/70 max-w-3xl mx-auto">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-4">Project Demonstrations</h3>
+                  <p className="text-foreground/70 max-w-3xl mx-auto text-sm sm:text-base">
                     Watch the micromouse robot in action, demonstrating key features like PID control and autonomous
                     maze navigation.
                   </p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                   {/* Left column - First two videos */}
-                  <div className="space-y-8">
+                  <div className="space-y-6 sm:space-y-8">
                     {project.videoGallery.slice(0, 2).map((video, index) => (
                       <div key={index} className="space-y-4">
                         <VideoEmbed videoId={video.id} title={video.title} isShort={video.isShort} />
                         <div>
-                          <h3 className="font-bold text-lg mb-2">{video.title}</h3>
+                          <h3 className="font-bold text-base sm:text-lg mb-2">{video.title}</h3>
                           <p className="text-foreground/70 text-sm">{video.description}</p>
                         </div>
                       </div>
@@ -875,7 +887,7 @@ export default function ProjectDetailClient() {
                       isShort={project.videoGallery[2].isShort}
                     />
                     <div>
-                      <h3 className="font-bold text-lg mb-2">{project.videoGallery[2].title}</h3>
+                      <h3 className="font-bold text-base sm:text-lg mb-2">{project.videoGallery[2].title}</h3>
                       <p className="text-foreground/70 text-sm">{project.videoGallery[2].description}</p>
                     </div>
                   </div>
@@ -883,7 +895,7 @@ export default function ProjectDetailClient() {
               </div>
 
               {/* Hardware and Software Galleries */}
-              <div className="max-w-6xl mx-auto">
+              <div className="max-w-6xl mx-auto px-4">
                 <Tabs defaultValue="hardware" className="mb-12">
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="hardware">Hardware</TabsTrigger>
@@ -891,12 +903,12 @@ export default function ProjectDetailClient() {
                   </TabsList>
                   <TabsContent value="hardware" className="mt-6">
                     <div className="text-center mb-6">
-                      <h3 className="text-xl font-bold mb-2">Hardware Components</h3>
-                      <p className="text-foreground/70">
+                      <h3 className="text-lg sm:text-xl font-bold mb-2">Hardware Components</h3>
+                      <p className="text-foreground/70 text-sm sm:text-base">
                         Explore the physical components and assembly of the micromouse robot.
                       </p>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
                       {project.hardwareGallery.map((image, index) => (
                         <div
                           key={index}
@@ -916,12 +928,12 @@ export default function ProjectDetailClient() {
                   </TabsContent>
                   <TabsContent value="software" className="mt-6">
                     <div className="text-center mb-6">
-                      <h3 className="text-xl font-bold mb-2">Software Implementation</h3>
-                      <p className="text-foreground/70">
+                      <h3 className="text-lg sm:text-xl font-bold mb-2">Software Implementation</h3>
+                      <p className="text-foreground/70 text-sm sm:text-base">
                         View the code implementation, algorithms, and software architecture.
                       </p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                       {project.softwareGallery.map((image, index) => (
                         <div
                           key={index}
@@ -944,17 +956,17 @@ export default function ProjectDetailClient() {
             </div>
           ) : project.id === 4 ? (
             // Special layout for Cat Door Monitoring System
-            <div className="space-y-12">
+            <div className="space-y-12 w-full">
               {/* Project Header */}
-              <div className="text-center max-w-4xl mx-auto">
+              <div className="text-center max-w-4xl mx-auto px-4">
                 <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center">{project.title}</h1>
                   {project.course && (
                     <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
                   )}
                 </div>
 
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+                <p className="text-base sm:text-lg text-foreground/80 mb-6">{project.description}</p>
 
                 <div className="flex flex-wrap justify-center gap-2 mb-8">
                   {project.tags.map((tag) => (
@@ -966,15 +978,15 @@ export default function ProjectDetailClient() {
               </div>
 
               {/* Main Project Image */}
-              <div className="max-w-4xl mx-auto mb-12">
+              <div className="max-w-4xl mx-auto mb-12 px-4">
                 <div className="relative aspect-video rounded-lg overflow-hidden">
                   <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
                 </div>
               </div>
 
               {/* Project Description */}
-              <div className="max-w-4xl mx-auto">
-                <div className="prose dark:prose-invert max-w-none mb-8">
+              <div className="max-w-4xl mx-auto px-4">
+                <div className="prose dark:prose-invert max-w-none mb-8 text-sm sm:text-base">
                   <p>{project.longDescription}</p>
                 </div>
 
@@ -1012,15 +1024,15 @@ export default function ProjectDetailClient() {
 
               {/* Video Demonstration Section */}
               {project.videoGallery && project.videoGallery.length > 0 && (
-                <div className="max-w-4xl mx-auto mb-12">
+                <div className="max-w-4xl mx-auto mb-12 px-4">
                   <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold mb-4">System Demonstration</h3>
-                    <p className="text-foreground/70 max-w-3xl mx-auto mb-4">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-4">System Demonstration</h3>
+                    <p className="text-foreground/70 max-w-3xl mx-auto mb-4 text-sm sm:text-base">
                       Watch the Version 2 cat door monitoring system in action, demonstrating the break beam sensor
                       detection and real-time notifications.
                     </p>
                     <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 max-w-2xl mx-auto">
-                      <p className="text-blue-800 dark:text-blue-200 text-center">
+                      <p className="text-blue-800 dark:text-blue-200 text-center text-sm sm:text-base">
                         Notice how the <span className="text-sky-400 font-medium">blue LED turns on</span> when the cat
                         passes through.
                       </p>
@@ -1031,8 +1043,8 @@ export default function ProjectDetailClient() {
                       <div key={index} className="space-y-4">
                         <VideoEmbed videoId={video.id} title={video.title} isShort={video.isShort} />
                         <div className="text-center">
-                          <h3 className="font-bold text-lg mb-2">{video.title}</h3>
-                          <p className="text-foreground/70">{video.description}</p>
+                          <h3 className="font-bold text-base sm:text-lg mb-2">{video.title}</h3>
+                          <p className="text-foreground/70 text-sm sm:text-base">{video.description}</p>
                         </div>
                       </div>
                     ))}
@@ -1041,23 +1053,23 @@ export default function ProjectDetailClient() {
               )}
 
               {/* Project Evolution Story */}
-              <div className="max-w-6xl mx-auto mb-12">
+              <div className="max-w-6xl mx-auto mb-12 px-4">
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold mb-4">Project Evolution: From V1 to V2</h3>
-                  <p className="text-foreground/70 max-w-3xl mx-auto">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-4">Project Evolution: From V1 to V2</h3>
+                  <p className="text-foreground/70 max-w-3xl mx-auto text-sm sm:text-base">
                     Follow the development journey from the initial PIR sensor design to the final break beam sensor
                     solution.
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-start">
                   {/* Version 1 Story */}
                   <div className="space-y-6">
-                    <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border border-red-200 dark:border-red-800">
-                      <h4 className="text-xl font-bold text-red-800 dark:text-red-200 mb-3">
+                    <div className="bg-red-50 dark:bg-red-900/20 p-4 sm:p-6 rounded-lg border border-red-200 dark:border-red-800">
+                      <h4 className="text-lg sm:text-xl font-bold text-red-800 dark:text-red-200 mb-3">
                         Version 1: PIR Sensor (Failed)
                       </h4>
-                      <p className="text-red-700 dark:text-red-300 mb-4">
+                      <p className="text-red-700 dark:text-red-300 mb-4 text-sm sm:text-base">
                         The initial design used a PIR (Passive Infrared) sensor to detect motion through the cat door.
                         However, this approach proved unreliable due to false triggers from small animals like
                         cockroaches and activation when the door itself was opened.
@@ -1074,7 +1086,7 @@ export default function ProjectDetailClient() {
                           sizes="(max-width: 1024px) 100vw, 50vw"
                         />
                       </div>
-                      <p className="text-sm text-red-600 dark:text-red-400 mt-2 italic">
+                      <p className="text-xs sm:text-sm text-red-600 dark:text-red-400 mt-2 italic">
                         Click image to view full size - Version 1 setup with PIR sensor mounted above the cat door
                       </p>
                     </div>
@@ -1082,11 +1094,11 @@ export default function ProjectDetailClient() {
 
                   {/* Version 2 Story */}
                   <div className="space-y-6">
-                    <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
-                      <h4 className="text-xl font-bold text-green-800 dark:text-green-200 mb-3">
+                    <div className="bg-green-50 dark:bg-green-900/20 p-4 sm:p-6 rounded-lg border border-green-200 dark:border-green-800">
+                      <h4 className="text-lg sm:text-xl font-bold text-green-800 dark:text-green-200 mb-3">
                         Version 2: Break Beam Sensor (Success)
                       </h4>
-                      <p className="text-green-700 dark:text-green-300 mb-4">
+                      <p className="text-green-700 dark:text-green-300 mb-4 text-sm sm:text-base">
                         The redesigned system uses break beam sensors that create an invisible infrared beam across the
                         door opening. This provides much more precise detection with virtually no false positives,
                         successfully solving the reliability issues of Version 1.
@@ -1105,7 +1117,7 @@ export default function ProjectDetailClient() {
                           sizes="(max-width: 1024px) 100vw, 50vw"
                         />
                       </div>
-                      <p className="text-sm text-green-600 dark:text-green-400 mt-2 italic">
+                      <p className="text-xs sm:text-sm text-green-600 dark:text-green-400 mt-2 italic">
                         Click image to view full size - Version 2 system with ESP32, break beam sensors, and Arduino IDE
                         code
                       </p>
@@ -1115,16 +1127,16 @@ export default function ProjectDetailClient() {
               </div>
 
               {/* Design and Manufacturing Process */}
-              <div className="max-w-6xl mx-auto mb-12">
+              <div className="max-w-6xl mx-auto mb-12 px-4">
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold mb-4">Design & Manufacturing Process</h3>
-                  <p className="text-foreground/70 max-w-3xl mx-auto">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-4">Design & Manufacturing Process</h3>
+                  <p className="text-foreground/70 max-w-3xl mx-auto text-sm sm:text-base">
                     The project required custom 3D printed housing to protect the electronics while maintaining sensor
                     alignment.
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                   <div className="space-y-3">
                     <div
                       className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
@@ -1139,8 +1151,10 @@ export default function ProjectDetailClient() {
                       />
                     </div>
                     <div className="text-center">
-                      <h4 className="font-bold mb-1">CAD Design</h4>
-                      <p className="text-sm text-foreground/70">3D modeling the sensor housing in Fusion360</p>
+                      <h4 className="font-bold mb-1 text-sm sm:text-base">CAD Design</h4>
+                      <p className="text-xs sm:text-sm text-foreground/70">
+                        3D modeling the sensor housing in Fusion360
+                      </p>
                     </div>
                   </div>
 
@@ -1158,8 +1172,8 @@ export default function ProjectDetailClient() {
                       />
                     </div>
                     <div className="text-center">
-                      <h4 className="font-bold mb-1">Print Preparation</h4>
-                      <p className="text-sm text-foreground/70">Slicing software with support structures</p>
+                      <h4 className="font-bold mb-1 text-sm sm:text-base">Print Preparation</h4>
+                      <p className="text-xs sm:text-sm text-foreground/70">Slicing software with support structures</p>
                     </div>
                   </div>
 
@@ -1177,8 +1191,8 @@ export default function ProjectDetailClient() {
                       />
                     </div>
                     <div className="text-center">
-                      <h4 className="font-bold mb-1">3D Printing</h4>
-                      <p className="text-sm text-foreground/70">Completed housing on Bambu Lab printer</p>
+                      <h4 className="font-bold mb-1 text-sm sm:text-base">3D Printing</h4>
+                      <p className="text-xs sm:text-sm text-foreground/70">Completed housing on Bambu Lab printer</p>
                     </div>
                   </div>
 
@@ -1198,23 +1212,25 @@ export default function ProjectDetailClient() {
                       />
                     </div>
                     <div className="text-center">
-                      <h4 className="font-bold mb-1">Real-time Alerts</h4>
-                      <p className="text-sm text-foreground/70">Telegram notifications showing detection events</p>
+                      <h4 className="font-bold mb-1 text-sm sm:text-base">Real-time Alerts</h4>
+                      <p className="text-xs sm:text-sm text-foreground/70">
+                        Telegram notifications showing detection events
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Results and Success Story */}
-              <div className="max-w-4xl mx-auto mb-12">
-                <div className="bg-primary/5 p-8 rounded-lg border border-primary/20">
-                  <h3 className="text-2xl font-bold mb-4 text-center">Immediate Success</h3>
+              <div className="max-w-4xl mx-auto mb-12 px-4">
+                <div className="bg-primary/5 p-6 sm:p-8 rounded-lg border border-primary/20">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-4 text-center">Immediate Success</h3>
                   <div className="prose dark:prose-invert max-w-none text-center">
-                    <p className="text-lg mb-4">
+                    <p className="text-base sm:text-lg mb-4">
                       The project was incredibly rewarding because within the first 2 days of deployment, I immediately
                       caught the neighborhood cat coming into the house and found him in the backyard!
                     </p>
-                    <p className="text-foreground/80">
+                    <p className="text-foreground/80 text-sm sm:text-base">
                       The system now provides reliable monitoring of our cat's movement patterns while successfully
                       preventing unauthorized access from the intruder cat. The real-time Telegram notifications allow
                       us to track feeding schedules and ensure our cat's food is protected.
@@ -1224,13 +1240,13 @@ export default function ProjectDetailClient() {
               </div>
 
               {/* Future Development */}
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-muted/30 p-8 rounded-lg">
-                  <h3 className="text-2xl font-bold mb-4 text-center">Future Enhancements</h3>
+              <div className="max-w-4xl mx-auto px-4">
+                <div className="bg-muted/30 p-6 sm:p-8 rounded-lg">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-4 text-center">Future Enhancements</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <h4 className="font-bold mb-2 text-primary">Next Version Features</h4>
-                      <ul className="space-y-2 text-foreground/80">
+                      <h4 className="font-bold mb-2 text-primary text-sm sm:text-base">Next Version Features</h4>
+                      <ul className="space-y-2 text-foreground/80 text-sm sm:text-base">
                         <li>• Double break beam sensors for directional detection</li>
                         <li>• Determine if cat is entering or leaving</li>
                         <li>• RFID tags for individual cat identification</li>
@@ -1238,8 +1254,8 @@ export default function ProjectDetailClient() {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-bold mb-2 text-primary">Technical Improvements</h4>
-                      <ul className="space-y-2 text-foreground/80">
+                      <h4 className="font-bold mb-2 text-primary text-sm sm:text-base">Technical Improvements</h4>
+                      <ul className="space-y-2 text-foreground/80 text-sm sm:text-base">
                         <li>• Enhanced weatherproofing for outdoor durability</li>
                         <li>• Battery backup for continuous operation</li>
                         <li>• Data logging for behavior analysis</li>
@@ -1252,17 +1268,17 @@ export default function ProjectDetailClient() {
             </div>
           ) : project.id === 3 ? (
             // Storytelling layout for PC Cooling project
-            <div className="space-y-12">
+            <div className="space-y-12 w-full">
               {/* Project Header */}
-              <div className="text-center max-w-4xl mx-auto">
+              <div className="text-center max-w-4xl mx-auto px-4">
                 <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center">{project.title}</h1>
                   {project.course && (
                     <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
                   )}
                 </div>
 
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+                <p className="text-base sm:text-lg text-foreground/80 mb-6">{project.description}</p>
 
                 <div className="flex flex-wrap justify-center gap-2 mb-8">
                   {project.tags.map((tag) => (
@@ -1274,9 +1290,9 @@ export default function ProjectDetailClient() {
               </div>
 
               {/* Story Timeline */}
-              <div className="max-w-6xl mx-auto">
+              <div className="max-w-6xl mx-auto px-4">
                 {/* Background that covers story steps only */}
-                <div className="relative bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900/30 dark:to-slate-800/30 rounded-2xl p-8 mb-16">
+                <div className="relative bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900/30 dark:to-slate-800/30 rounded-2xl p-6 sm:p-8 mb-16">
                   <div className="relative">
                     {/* Main timeline line - much longer to ensure it covers everything */}
                     <motion.div
@@ -1295,21 +1311,21 @@ export default function ProjectDetailClient() {
                         animate={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.3, delay: index * 0.05 }}
-                        className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
+                        className={`relative mb-16 sm:mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
                       >
                         {/* Timeline dot - hidden on mobile */}
                         <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background z-10 hidden md:block"></div>
 
                         {/* Content */}
                         <div
-                          className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}
+                          className={`grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-center ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}
                         >
                           <div className={`${index % 2 === 0 ? "md:order-2" : "md:order-1"}`}>
-                            <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
-                            <p className="text-foreground/80 mb-4">{step.description}</p>
+                            <h3 className="text-xl sm:text-2xl font-bold mb-3">{step.title}</h3>
+                            <p className="text-foreground/80 mb-4 text-sm sm:text-base">{step.description}</p>
                             {step.highlight && (
-                              <div className="bg-primary/10 border-l-4 border-primary p-4 rounded">
-                                <p className="italic text-foreground/90">{step.highlight}</p>
+                              <div className="bg-primary/10 border-l-4 border-primary p-3 sm:p-4 rounded">
+                                <p className="italic text-foreground/90 text-sm sm:text-base">{step.highlight}</p>
                               </div>
                             )}
                           </div>
@@ -1333,7 +1349,7 @@ export default function ProjectDetailClient() {
                 </div>
 
                 {/* Gap section - no timeline line */}
-                <div className="mb-24"></div>
+                <div className="mb-16 sm:mb-24"></div>
 
                 {/* Before/After Installation Comparison - Standalone section */}
                 <motion.div
@@ -1341,16 +1357,16 @@ export default function ProjectDetailClient() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.3, delay: 0.1 }}
-                  className="relative mb-24"
+                  className="relative mb-16 sm:mb-24"
                 >
                   {/* Before/After Slider Section */}
                   <div className="text-center">
-                    <h3 className="text-2xl font-bold mb-6">Installation Comparison</h3>
-                    <p className="text-foreground/70 mb-6 max-w-3xl mx-auto">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-6">Installation Comparison</h3>
+                    <p className="text-foreground/70 mb-6 max-w-3xl mx-auto text-sm sm:text-base">
                       Use the slider below to compare the PC before and after installing the custom cooling ducts.
                       Notice how the ducts create a direct airflow path from the front intake fans to the GPU.
                     </p>
-                    <div className="relative w-full max-w-4xl mx-auto h-[600px] bg-muted/20 rounded-lg overflow-hidden">
+                    <div className="relative w-full max-w-4xl mx-auto h-[400px] sm:h-[600px] bg-muted/20 rounded-lg overflow-hidden">
                       <BeforeAfterSlider
                         beforeImage="/images/pc-without-ducting.jpeg"
                         afterImage="/images/pc-cooling-installed.jpeg"
@@ -1368,22 +1384,22 @@ export default function ProjectDetailClient() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.3, delay: 0.12 }}
-                  className="relative mb-24"
+                  className="relative mb-16 sm:mb-24"
                 >
                   <div className="text-center">
-                    <h3 className="text-2xl font-bold mb-6">Testing Methodology</h3>
-                    <div className="max-w-4xl mx-auto bg-muted/30 p-8 rounded-lg">
-                      <p className="text-foreground/80 mb-4">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-6">Testing Methodology</h3>
+                    <div className="max-w-4xl mx-auto bg-muted/30 p-6 sm:p-8 rounded-lg">
+                      <p className="text-foreground/80 mb-4 text-sm sm:text-base">
                         To validate the effectiveness of the cooling ducts, comprehensive testing was conducted under
                         controlled conditions. Both configurations were tested in an identical setup within a 21°C room
                         temperature environment.
                       </p>
-                      <p className="text-foreground/80 mb-4">
+                      <p className="text-foreground/80 mb-4 text-sm sm:text-base">
                         The testing utilized MSI Afterburner for real-time monitoring and data logging, while Kombustor
                         v4.1.31.0 was used for stress testing the GPU. Each test session lasted 8 minutes to ensure the
                         system reached thermal steady state.
                       </p>
-                      <p className="text-foreground/80">
+                      <p className="text-foreground/80 text-sm sm:text-base">
                         The results showed a significant 7°C temperature difference at steady state between the ducted
                         and non-ducted configurations. Importantly, both the core clock and memory clock frequencies
                         remained stable throughout testing, indicating no thermal throttling occurred in either
@@ -1399,16 +1415,16 @@ export default function ProjectDetailClient() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.3, delay: 0.13 }}
-                  className="relative mb-24"
+                  className="relative mb-16 sm:mb-24"
                 >
                   <div className="text-center">
-                    <h3 className="text-2xl font-bold mb-6">Performance Test Results</h3>
-                    <p className="text-foreground/70 mb-8 max-w-3xl mx-auto">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-6">Performance Test Results</h3>
+                    <p className="text-foreground/70 mb-6 sm:mb-8 max-w-3xl mx-auto text-sm sm:text-base">
                       Side-by-side comparison of GPU monitoring data showing temperature, usage, clock speeds, and power
                       consumption during identical 8-minute stress tests.
                     </p>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto">
                       {/* With Ducting Results */}
                       <div className="space-y-4">
                         <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-lg bg-muted/20">
@@ -1423,8 +1439,10 @@ export default function ProjectDetailClient() {
                           />
                         </div>
                         <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                          <h4 className="font-bold text-green-800 dark:text-green-200 mb-2">With Ducted Cooling</h4>
-                          <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
+                          <h4 className="font-bold text-green-800 dark:text-green-200 mb-2 text-sm sm:text-base">
+                            With Ducted Cooling
+                          </h4>
+                          <ul className="text-xs sm:text-sm text-green-700 dark:text-green-300 space-y-1">
                             <li>• Max Temperature: 63°C</li>
                             <li>• Core Clock: 2610 MHz (stable)</li>
                             <li>• Memory Clock: 10502 MHz</li>
@@ -1447,8 +1465,10 @@ export default function ProjectDetailClient() {
                           />
                         </div>
                         <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
-                          <h4 className="font-bold text-red-800 dark:text-red-200 mb-2">Without Ducted Cooling</h4>
-                          <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
+                          <h4 className="font-bold text-red-800 dark:text-red-200 mb-2 text-sm sm:text-base">
+                            Without Ducted Cooling
+                          </h4>
+                          <ul className="text-xs sm:text-sm text-red-700 dark:text-red-300 space-y-1">
                             <li>• Max Temperature: 70°C</li>
                             <li>• Core Clock: 2530 MHz (stable)</li>
                             <li>• Memory Clock: 10502 MHz</li>
@@ -1458,9 +1478,9 @@ export default function ProjectDetailClient() {
                       </div>
                     </div>
 
-                    <div className="mt-8 max-w-4xl mx-auto bg-primary/5 p-6 rounded-lg border border-primary/20">
-                      <h4 className="text-lg font-bold mb-3">Key Benefits</h4>
-                      <p className="text-foreground/80">
+                    <div className="mt-6 sm:mt-8 max-w-4xl mx-auto bg-primary/5 p-4 sm:p-6 rounded-lg border border-primary/20">
+                      <h4 className="text-base sm:text-lg font-bold mb-3">Key Benefits</h4>
+                      <p className="text-foreground/80 text-sm sm:text-base">
                         The 7°C temperature reduction is particularly beneficial because it allows the GPU's cooling
                         fans to operate at lower speeds while maintaining the same thermal performance. This results in
                         significantly quieter operation during demanding workloads, improving the overall user
@@ -1473,16 +1493,16 @@ export default function ProjectDetailClient() {
             </div>
           ) : (
             /* Regular layout for other projects */
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-12 w-full px-4">
               <div className="lg:col-span-1">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">{project.title}</h1>
                   {project.course && (
                     <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
                   )}
                 </div>
 
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+                <p className="text-base sm:text-lg text-foreground/80 mb-6">{project.description}</p>
 
                 <div className="flex flex-wrap gap-2 mb-6">
                   {project.tags.map((tag) => (
@@ -1492,7 +1512,7 @@ export default function ProjectDetailClient() {
                   ))}
                 </div>
 
-                <div className="prose dark:prose-invert max-w-none mb-8">
+                <div className="prose dark:prose-invert max-w-none mb-8 text-sm sm:text-base">
                   <p>{project.longDescription}</p>
                 </div>
 
@@ -1537,48 +1557,58 @@ export default function ProjectDetailClient() {
           )}
 
           {project.id !== 1 && (
-            <Tabs defaultValue="features" className="mb-12 mt-16">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="features">Key Features</TabsTrigger>
-                <TabsTrigger value="technologies">Technologies</TabsTrigger>
-                <TabsTrigger value="challenges">Challenges</TabsTrigger>
-              </TabsList>
-              <TabsContent value="features" className="p-6 border rounded-md mt-2">
-                <h2 className="text-xl font-bold mb-4">Key Features</h2>
-                <ul className="space-y-2">
-                  {project.features.map((feature, index) => (
-                    <li key={index} className="flex items-start">
-                      <span className="mr-2 text-primary">•</span>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </TabsContent>
-              <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
-                <h2 className="text-xl font-bold mb-4">Technologies Used</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {Object.entries(project.technologies).map(([category, items]) => (
-                    <div key={category}>
-                      <h3 className="font-bold mb-2 capitalize">{category.replace(/([A-Z])/g, " $1").trim()}</h3>
-                      <ul className="space-y-1">
-                        {items.map((item, index) => (
-                          <li key={index} className="flex items-start">
-                            <span className="mr-2 text-primary">•</span>
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </TabsContent>
-              <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
-                <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
-                <div className="prose dark:prose-invert max-w-none">
-                  <p>{project.challenges}</p>
-                </div>
-              </TabsContent>
-            </Tabs>
+            <div className="px-4">
+              <Tabs defaultValue="features" className="mb-12 mt-16">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="features" className="text-xs sm:text-sm">
+                    Key Features
+                  </TabsTrigger>
+                  <TabsTrigger value="technologies" className="text-xs sm:text-sm">
+                    Technologies
+                  </TabsTrigger>
+                  <TabsTrigger value="challenges" className="text-xs sm:text-sm">
+                    Challenges
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="features" className="p-4 sm:p-6 border rounded-md mt-2">
+                  <h2 className="text-lg sm:text-xl font-bold mb-4">Key Features</h2>
+                  <ul className="space-y-2 text-sm sm:text-base">
+                    {project.features.map((feature, index) => (
+                      <li key={index} className="flex items-start">
+                        <span className="mr-2 text-primary">•</span>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </TabsContent>
+                <TabsContent value="technologies" className="p-4 sm:p-6 border rounded-md mt-2">
+                  <h2 className="text-lg sm:text-xl font-bold mb-4">Technologies Used</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {Object.entries(project.technologies).map(([category, items]) => (
+                      <div key={category}>
+                        <h3 className="font-bold mb-2 capitalize text-sm sm:text-base">
+                          {category.replace(/([A-Z])/g, " $1").trim()}
+                        </h3>
+                        <ul className="space-y-1 text-sm sm:text-base">
+                          {items.map((item, index) => (
+                            <li key={index} className="flex items-start">
+                              <span className="mr-2 text-primary">•</span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="challenges" className="p-4 sm:p-6 border rounded-md mt-2">
+                  <h2 className="text-lg sm:text-xl font-bold mb-4">Challenges & Solutions</h2>
+                  <div className="prose dark:prose-invert max-w-none text-sm sm:text-base">
+                    <p>{project.challenges}</p>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
           )}
         </div>
       </main>
