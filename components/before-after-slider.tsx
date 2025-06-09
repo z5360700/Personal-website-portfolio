@@ -94,7 +94,7 @@ export default function BeforeAfterSlider({
   return (
     <div
       ref={containerRef}
-      className={cn("relative w-full h-64 md:h-96 rounded-lg overflow-hidden cursor-col-resize", className)}
+      className={cn("relative w-full h-full rounded-lg overflow-hidden cursor-col-resize", className)}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
     >

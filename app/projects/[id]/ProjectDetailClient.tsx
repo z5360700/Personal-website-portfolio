@@ -1350,7 +1350,7 @@ export default function ProjectDetailClient() {
                       Use the slider below to compare the PC before and after installing the custom cooling ducts.
                       Notice how the ducts create a direct airflow path from the front intake fans to the GPU.
                     </p>
-                    <div className="relative w-full max-w-4xl mx-auto h-[600px] bg-muted/20 rounded-lg overflow-hidden">
+                    <div className="relative w-full max-w-6xl mx-auto h-[500px] md:h-[700px] lg:h-[800px] bg-muted/20 rounded-lg overflow-hidden">
                       <BeforeAfterSlider
                         beforeImage="/images/pc-without-ducting.jpeg"
                         afterImage="/images/pc-cooling-installed.jpeg"
