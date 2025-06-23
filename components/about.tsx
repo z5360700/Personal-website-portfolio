@@ -54,7 +54,7 @@ export default function About() {
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
             transition={{ duration: 0.8 }}
-            className="relative w-full max-w-lg mx-auto lg:mx-0 mt-8 mb-8 lg:mb-0"
+            className="relative w-full max-w-lg mx-auto lg:mx-0 mt-8 mb-16 lg:mb-0"
           >
             {/* Card deck container */}
             <motion.div
@@ -159,13 +159,13 @@ export default function About() {
             </motion.div>
 
             {/* Instructions - responsive text */}
-            <div className="absolute -bottom-12 sm:-bottom-14 lg:-bottom-16 left-0 right-0 text-center text-foreground/60 text-sm">
+            <div className="absolute -bottom-16 sm:-bottom-18 lg:-bottom-20 left-0 right-0 text-center text-foreground/60 text-sm">
               <span className="hidden md:inline">Hover over photos to bring them forward</span>
               <span className="md:hidden">Swipe left or right to browse photos</span>
             </div>
 
             {/* Mobile navigation dots */}
-            <div className="flex justify-center gap-2 mt-4 md:hidden">
+            <div className="flex justify-center gap-2 mt-8 md:hidden">
               {images.map((image, index) => (
                 <button
                   key={image}
