@@ -13,24 +13,6 @@ export default function Footer() {
             <span>Portfolio</span>
           </Link>
 
-          <div className="flex flex-wrap justify-center gap-6 mb-8">
-            <Link href="#home" className="text-foreground/70 hover:text-foreground transition-colors">
-              Home
-            </Link>
-            <Link href="#about" className="text-foreground/70 hover:text-foreground transition-colors">
-              About
-            </Link>
-            <Link href="#projects" className="text-foreground/70 hover:text-foreground transition-colors">
-              Projects
-            </Link>
-            <Link href="#skills" className="text-foreground/70 hover:text-foreground transition-colors">
-              Skills
-            </Link>
-            <Link href="#contact" className="text-foreground/70 hover:text-foreground transition-colors">
-              Contact
-            </Link>
-          </div>
-
           <div className="text-foreground/60 text-sm">
             <p>© 2025 Michael Lo Russo. All rights reserved.</p>
           </div>
