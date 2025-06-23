@@ -20,9 +20,6 @@ export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
 
-  // Check if we're on a project page
-  const isProjectPage = pathname?.startsWith("/projects/")
-
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
@@ -40,19 +37,8 @@ export default function Navbar() {
     e.preventDefault()
     setIsOpen(false) // Close mobile menu
 
-    if (isProjectPage) {
-      // If on project page, navigate to home first, then scroll
-      router.push(`/#${sectionId}`)
-    } else {
-      // If on home page, just scroll to section
-      const element = document.getElementById(sectionId)
-      if (element) {
-        element.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        })
-      }
-    }
+    // ALWAYS navigate to home page with hash - regardless of current page
+    router.push(`/#${sectionId}`)
   }
 
   const navLinks = [
