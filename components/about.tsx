@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, useCallback } from "react"
 import Image from "next/image"
 import { useInView } from "framer-motion"
 import { motion } from "framer-motion"
@@ -9,6 +9,22 @@ export default function About() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [activeImage, setActiveImage] = useState<"personal" | "samsung" | "store">("personal")
+  const [isTransitioning, setIsTransitioning] = useState(false)
+
+  const handleImageChange = useCallback(
+    (newImage: "personal" | "samsung" | "store") => {
+      if (isTransitioning || newImage === activeImage) return
+
+      setIsTransitioning(true)
+      setActiveImage(newImage)
+
+      // Reset transition lock after animation completes
+      setTimeout(() => {
+        setIsTransitioning(false)
+      }, 500) // Slightly longer than the 0.4s animation
+    },
+    [activeImage, isTransitioning],
+  )
 
   return (
     <section id="about" className="py-20 bg-muted/30">
@@ -34,13 +50,13 @@ export default function About() {
                   zIndex: activeImage === "personal" ? 30 : activeImage === "samsung" ? 15 : 10,
                 }}
                 animate={{
-                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? -50 : -80,
-                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? -20 : -35,
-                  rotate: activeImage === "personal" ? 0 : activeImage === "samsung" ? -4 : -6,
+                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? -50 : -100,
+                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? -20 : -40,
+                  rotate: activeImage === "personal" ? 0 : activeImage === "samsung" ? -4 : -8,
                   scale: activeImage === "personal" ? 1 : 0.95,
                 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
-                onMouseEnter={() => setActiveImage("personal")}
+                onMouseEnter={() => handleImageChange("personal")}
               >
                 <div className="relative h-full w-full overflow-hidden rounded-lg border-4 border-white shadow-xl">
                   <Image
@@ -68,13 +84,13 @@ export default function About() {
                           : 20,
                 }}
                 animate={{
-                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? 50 : -30,
-                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? 20 : -15,
-                  rotate: activeImage === "samsung" ? 0 : activeImage === "personal" ? 4 : -2,
+                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? 50 : -50,
+                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? 20 : -20,
+                  rotate: activeImage === "samsung" ? 0 : activeImage === "personal" ? 4 : -4,
                   scale: activeImage === "samsung" ? 1 : 0.95,
                 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
-                onMouseEnter={() => setActiveImage("samsung")}
+                onMouseEnter={() => handleImageChange("samsung")}
               >
                 <div className="relative h-full w-full overflow-hidden rounded-lg border-4 border-white shadow-xl">
                   <Image
@@ -100,7 +116,7 @@ export default function About() {
                   scale: activeImage === "store" ? 1 : 0.95,
                 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
-                onMouseEnter={() => setActiveImage("store")}
+                onMouseEnter={() => handleImageChange("store")}
               >
                 <div className="relative h-full w-full overflow-hidden rounded-lg border-4 border-white shadow-xl">
                   <Image
