@@ -876,7 +876,7 @@ export default function ProjectDetailClient() {
                     />
                     <div>
                       <h3 className="font-bold text-lg mb-2">{project.videoGallery[2].title}</h3>
-                      <p className="text-foreground/70 text-sm">{project.videoGallery[2].description}</p>
+                      <p className="text-foreground/70 text-sm">{project.description}</p>
                     </div>
                   </div>
                 </div>
@@ -1278,33 +1278,48 @@ export default function ProjectDetailClient() {
                 {/* Background that covers story steps only */}
                 <div className="relative bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900/30 dark:to-slate-800/30 rounded-2xl p-8 mb-16">
                   <div className="relative">
-                    {/* Main timeline line - much longer to ensure it covers everything */}
-                    <motion.div
-                      initial={{ height: 0 }}
-                      animate={{ height: "200rem" }}
-                      transition={{ duration: 0.5, ease: "easeInOut" }}
-                      className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/20 z-0 hidden md:block"
-                      style={{ top: 0 }}
-                    ></motion.div>
+                    {/* Main timeline line - properly positioned and sized */}
+                    <div
+                      className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/30 hidden md:block"
+                      style={{
+                        top: "3rem",
+                        height: `${project.storySteps.length * 24}rem`,
+                      }}
+                    ></div>
+
+                    {/* Mobile timeline line - vertical line on the left */}
+                    <div
+                      className="absolute left-8 w-1 bg-primary/30 md:hidden"
+                      style={{
+                        top: "2rem",
+                        height: `${project.storySteps.length * 20}rem`,
+                      }}
+                    ></div>
 
                     {/* Story steps */}
                     {project.storySteps.map((step, index) => (
                       <motion.div
                         key={index}
                         initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.3, delay: index * 0.05 }}
                         className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
                       >
-                        {/* Timeline dot - hidden on mobile */}
-                        <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background z-10 hidden md:block"></div>
+                        {/* Timeline dot - desktop */}
+                        <div className="absolute left-1/2 transform -translate-x-1/2 top-12 w-6 h-6 rounded-full bg-primary border-4 border-background z-10 hidden md:block"></div>
+
+                        {/* Timeline dot - mobile */}
+                        <div className="absolute left-5 transform -translate-x-1/2 top-8 w-6 h-6 rounded-full bg-primary border-4 border-background z-10 md:hidden"></div>
 
                         {/* Content */}
                         <div
                           className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}
                         >
-                          <div className={`${index % 2 === 0 ? "md:order-2" : "md:order-1"}`}>
+                          {/* Text content */}
+                          <div
+                            className={`${index % 2 === 0 ? "md:order-2" : "md:order-1"} ${index % 2 === 0 ? "md:pr-16" : "md:pl-16"} ml-16 md:ml-0`}
+                          >
                             <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
                             <p className="text-foreground/80 mb-4">{step.description}</p>
                             {step.highlight && (
@@ -1313,7 +1328,9 @@ export default function ProjectDetailClient() {
                               </div>
                             )}
                           </div>
-                          <div className={`${index % 2 === 0 ? "md:order-1" : "md:order-2"}`}>
+
+                          {/* Image content */}
+                          <div className={`${index % 2 === 0 ? "md:order-1" : "md:order-2"} ml-16 md:ml-0`}>
                             <div
                               className={`relative ${step.aspectRatio || "aspect-video"} rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer bg-muted/20`}
                             >
@@ -1383,7 +1400,7 @@ export default function ProjectDetailClient() {
                         v4.1.31.0 was used for stress testing the GPU. Each test session lasted 8 minutes to ensure the
                         system reached thermal steady state.
                       </p>
-                      <p className="text-foreground/80">
+                      <p className="text-foreground/80 mb-4">
                         The results showed a significant 7°C temperature difference at steady state between the ducted
                         and non-ducted configurations. Importantly, both the core clock and memory clock frequencies
                         remained stable throughout testing, indicating no thermal throttling occurred in either
