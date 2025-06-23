@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 // Import the MoonIcon and SunIcon from lucide-react
-import { Menu, X, Moon, Sun } from "lucide-react"
+import { Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useTheme } from "next-themes"
@@ -97,32 +97,71 @@ export default function Navbar() {
             <span className="sr-only">Toggle theme</span>
           </Button>
 
-          <button onClick={() => setIsOpen(!isOpen)}>{isOpen ? <X size={24} /> : <Menu size={24} />}</button>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="relative w-6 h-6 flex flex-col justify-center items-center"
+          >
+            <span
+              className={cn(
+                "block w-6 h-0.5 bg-current transition-all duration-300 ease-in-out",
+                isOpen ? "rotate-45 translate-y-0" : "-translate-y-1.5",
+              )}
+            />
+            <span
+              className={cn(
+                "block w-6 h-0.5 bg-current transition-all duration-300 ease-in-out",
+                isOpen ? "opacity-0" : "opacity-100",
+              )}
+            />
+            <span
+              className={cn(
+                "block w-6 h-0.5 bg-current transition-all duration-300 ease-in-out",
+                isOpen ? "-rotate-45 -translate-y-0.5" : "translate-y-1.5",
+              )}
+            />
+          </button>
         </div>
       </div>
 
       {/* Mobile Navigation Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-gray-300 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-          <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="text-foreground/80 hover:text-foreground py-2 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
-            <Button variant="default" className="w-full" asChild>
-              <a href={resumeUrl} download="Michael_Lo_Russo_Resume.pdf">
-                Resume
-              </a>
-            </Button>
-          </div>
+      <div
+        className={cn(
+          "md:hidden bg-gray-300 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 ease-in-out",
+          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0",
+        )}
+      >
+        <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
+          {navLinks.map((link, index) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              className={cn(
+                "text-foreground/80 hover:text-foreground py-2 transition-all duration-200 transform",
+                isOpen ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
+                `transition-delay-[${index * 50}ms]`,
+              )}
+              style={{ transitionDelay: `${index * 50}ms` }}
+              onClick={() => setIsOpen(false)}
+            >
+              {link.name}
+            </Link>
+          ))}
+          <Button
+            variant="default"
+            className={cn(
+              "w-full transition-all duration-200 transform",
+              isOpen ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
+              "transition-delay-[250ms]",
+            )}
+            style={{ transitionDelay: "250ms" }}
+            asChild
+          >
+            <a href={resumeUrl} download="Michael_Lo_Russo_Resume.pdf">
+              Resume
+            </a>
+          </Button>
         </div>
-      )}
+      </div>
     </header>
   )
 }
