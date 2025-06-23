@@ -1287,15 +1287,6 @@ export default function ProjectDetailClient() {
                       }}
                     ></div>
 
-                    {/* Mobile timeline line - vertical line on the left */}
-                    <div
-                      className="absolute left-8 w-1 bg-primary/30 md:hidden"
-                      style={{
-                        top: "2rem",
-                        height: `${project.storySteps.length * 20}rem`,
-                      }}
-                    ></div>
-
                     {/* Story steps */}
                     {project.storySteps.map((step, index) => (
                       <motion.div
@@ -1309,16 +1300,13 @@ export default function ProjectDetailClient() {
                         {/* Timeline dot - desktop */}
                         <div className="absolute left-1/2 transform -translate-x-1/2 top-12 w-6 h-6 rounded-full bg-primary border-4 border-background z-10 hidden md:block"></div>
 
-                        {/* Timeline dot - mobile */}
-                        <div className="absolute left-5 transform -translate-x-1/2 top-8 w-6 h-6 rounded-full bg-primary border-4 border-background z-10 md:hidden"></div>
-
                         {/* Content */}
                         <div
                           className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}
                         >
                           {/* Text content */}
                           <div
-                            className={`${index % 2 === 0 ? "md:order-2" : "md:order-1"} ${index % 2 === 0 ? "md:pr-16" : "md:pl-16"} ml-16 md:ml-0`}
+                            className={`${index % 2 === 0 ? "md:order-2" : "md:order-1"} ${index % 2 === 0 ? "md:pr-16" : "md:pl-16"}`}
                           >
                             <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
                             <p className="text-foreground/80 mb-4">{step.description}</p>
@@ -1330,7 +1318,7 @@ export default function ProjectDetailClient() {
                           </div>
 
                           {/* Image content */}
-                          <div className={`${index % 2 === 0 ? "md:order-1" : "md:order-2"} ml-16 md:ml-0`}>
+                          <div className={`${index % 2 === 0 ? "md:order-1" : "md:order-2"}`}>
                             <div
                               className={`relative ${step.aspectRatio || "aspect-video"} rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer bg-muted/20`}
                             >
