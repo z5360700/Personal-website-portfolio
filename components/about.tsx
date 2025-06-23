@@ -8,7 +8,7 @@ import { motion } from "framer-motion"
 export default function About() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
-  const [activeImage, setActiveImage] = useState<"personal" | "samsung">("personal")
+  const [activeImage, setActiveImage] = useState<"personal" | "samsung" | "store">("personal")
 
   return (
     <section id="about" className="py-20 bg-muted/30">
@@ -27,45 +27,16 @@ export default function About() {
           >
             {/* Card deck container */}
             <div className="relative w-full h-[400px] sm:h-96 md:h-[450px] lg:h-[500px]">
-              {/* Background decorative border */}
-
-              {/* Samsung photo card (back card) */}
+              {/* Personal photo card */}
               <motion.div
                 className="absolute inset-0 cursor-pointer"
                 style={{
-                  zIndex: activeImage === "samsung" ? 20 : 10,
+                  zIndex: activeImage === "personal" ? 30 : activeImage === "samsung" ? 15 : 10,
                 }}
                 animate={{
-                  x: activeImage === "samsung" ? 0 : 40,
-                  y: activeImage === "samsung" ? 0 : 30,
-                  rotate: activeImage === "samsung" ? 0 : 3,
-                  scale: activeImage === "samsung" ? 1 : 0.95,
-                }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-                onMouseEnter={() => setActiveImage("samsung")}
-              >
-                <div className="relative h-full w-full overflow-hidden rounded-lg border-4 border-white shadow-xl">
-                  <Image
-                    src="/images/michael-samsung.png"
-                    alt="Michael Lo Russo at Samsung"
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                  {/* Card label */}
-                </div>
-              </motion.div>
-
-              {/* Personal photo card (front card) */}
-              <motion.div
-                className="absolute inset-0 cursor-pointer"
-                style={{
-                  zIndex: activeImage === "personal" ? 20 : 10,
-                }}
-                animate={{
-                  x: activeImage === "personal" ? 0 : -40,
-                  y: activeImage === "personal" ? 0 : -30,
-                  rotate: activeImage === "personal" ? 0 : -3,
+                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? -50 : -80,
+                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? -20 : -35,
+                  rotate: activeImage === "personal" ? 0 : activeImage === "samsung" ? -4 : -6,
                   scale: activeImage === "personal" ? 1 : 0.95,
                 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -80,7 +51,65 @@ export default function About() {
                     priority
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
-                  {/* Card label */}
+                </div>
+              </motion.div>
+
+              {/* Samsung office photo card */}
+              <motion.div
+                className="absolute inset-0 cursor-pointer"
+                style={{
+                  zIndex:
+                    activeImage === "samsung"
+                      ? 30
+                      : activeImage === "personal"
+                        ? 25
+                        : activeImage === "store"
+                          ? 15
+                          : 20,
+                }}
+                animate={{
+                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? 50 : -30,
+                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? 20 : -15,
+                  rotate: activeImage === "samsung" ? 0 : activeImage === "personal" ? 4 : -2,
+                  scale: activeImage === "samsung" ? 1 : 0.95,
+                }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                onMouseEnter={() => setActiveImage("samsung")}
+              >
+                <div className="relative h-full w-full overflow-hidden rounded-lg border-4 border-white shadow-xl">
+                  <Image
+                    src="/images/michael-samsung.png"
+                    alt="Michael Lo Russo at Samsung Office"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Samsung Store photo card */}
+              <motion.div
+                className="absolute inset-0 cursor-pointer"
+                style={{
+                  zIndex: activeImage === "store" ? 30 : activeImage === "samsung" ? 25 : 10,
+                }}
+                animate={{
+                  x: activeImage === "store" ? 0 : activeImage === "samsung" ? 50 : 80,
+                  y: activeImage === "store" ? 0 : activeImage === "samsung" ? 20 : 35,
+                  rotate: activeImage === "store" ? 0 : activeImage === "samsung" ? 4 : 6,
+                  scale: activeImage === "store" ? 1 : 0.95,
+                }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                onMouseEnter={() => setActiveImage("store")}
+              >
+                <div className="relative h-full w-full overflow-hidden rounded-lg border-4 border-white shadow-xl">
+                  <Image
+                    src="/images/michael-samsung-store.jpeg"
+                    alt="Michael Lo Russo at Samsung Store"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
                 </div>
               </motion.div>
 
