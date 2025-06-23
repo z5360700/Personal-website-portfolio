@@ -10,11 +10,21 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background">
       <Navbar />
-      <Hero />
-      <About />
-      <Projects />
-      <Skills />
-      <Contact />
+      <section id="home">
+        <Hero />
+      </section>
+      <section id="about">
+        <About />
+      </section>
+      <section id="projects">
+        <Projects />
+      </section>
+      <section id="skills">
+        <Skills />
+      </section>
+      <section id="contact">
+        <Contact />
+      </section>
       <Footer />
     </main>
   )

@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Suspense } from "react"
+import { NavigationHandler } from "@/components/navigation-handler"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Suspense fallback={null}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <NavigationHandler />
             {children}
             <Analytics />
             <SpeedInsights />

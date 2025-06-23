@@ -1,7 +1,10 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 // Import the MoonIcon and SunIcon from lucide-react
 import { Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -15,6 +18,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const { theme, setTheme } = useTheme()
   const pathname = usePathname()
+  const router = useRouter()
 
   // Check if we're on a project page
   const isProjectPage = pathname?.startsWith("/projects/")
@@ -32,12 +36,31 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  const handleNavClick = (sectionId: string, e: React.MouseEvent) => {
+    e.preventDefault()
+    setIsOpen(false) // Close mobile menu
+
+    if (isProjectPage) {
+      // If on project page, navigate to home first, then scroll
+      router.push(`/#${sectionId}`)
+    } else {
+      // If on home page, just scroll to section
+      const element = document.getElementById(sectionId)
+      if (element) {
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        })
+      }
+    }
+  }
+
   const navLinks = [
-    { name: "Home", href: isProjectPage ? "/#home" : "#home" },
-    { name: "About", href: isProjectPage ? "/#about" : "#about" },
-    { name: "Projects", href: isProjectPage ? "/#projects" : "#projects" },
-    { name: "Skills", href: isProjectPage ? "/#skills" : "#skills" },
-    { name: "Contact", href: isProjectPage ? "/#contact" : "#contact" },
+    { name: "Home", id: "home" },
+    { name: "About", id: "about" },
+    { name: "Projects", id: "projects" },
+    { name: "Skills", id: "skills" },
+    { name: "Contact", id: "contact" },
   ]
 
   // Direct link to the PDF file in the public folder
@@ -60,13 +83,13 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-4">
           {navLinks.map((link) => (
-            <Link
+            <button
               key={link.name}
-              href={link.href}
-              className="text-foreground/80 hover:text-foreground transition-colors"
+              onClick={(e) => handleNavClick(link.id, e)}
+              className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
             >
               {link.name}
-            </Link>
+            </button>
           ))}
 
           {/* Theme toggle button */}
@@ -132,19 +155,18 @@ export default function Navbar() {
       >
         <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
           {navLinks.map((link, index) => (
-            <Link
+            <button
               key={link.name}
-              href={link.href}
+              onClick={(e) => handleNavClick(link.id, e)}
               className={cn(
-                "text-foreground/80 hover:text-foreground py-2 transition-all duration-200 transform",
+                "text-foreground/80 hover:text-foreground py-2 transition-all duration-200 transform text-left",
                 isOpen ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
                 `transition-delay-[${index * 50}ms]`,
               )}
               style={{ transitionDelay: `${index * 50}ms` }}
-              onClick={() => setIsOpen(false)}
             >
               {link.name}
-            </Link>
+            </button>
           ))}
           <Button
             variant="default"
