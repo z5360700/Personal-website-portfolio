@@ -11,6 +11,9 @@ export default function About() {
   const [activeImage, setActiveImage] = useState<"personal" | "samsung" | "store">("personal")
   const [isTransitioning, setIsTransitioning] = useState(false)
 
+  const images = ["personal", "samsung", "store"] as const
+  const currentIndex = images.indexOf(activeImage)
+
   const handleImageChange = useCallback(
     (newImage: "personal" | "samsung" | "store") => {
       if (isTransitioning || newImage === activeImage) return
@@ -24,6 +27,18 @@ export default function About() {
       }, 500) // Slightly longer than the 0.4s animation
     },
     [activeImage, isTransitioning],
+  )
+
+  const handleSwipe = useCallback(
+    (direction: "left" | "right") => {
+      if (isTransitioning) return
+
+      const newIndex =
+        direction === "left" ? (currentIndex + 1) % images.length : (currentIndex - 1 + images.length) % images.length
+
+      handleImageChange(images[newIndex])
+    },
+    [currentIndex, handleImageChange, isTransitioning],
   )
 
   return (
@@ -42,7 +57,20 @@ export default function About() {
             className="relative w-full max-w-lg mx-auto lg:mx-0 mt-8 mb-8 lg:mb-0"
           >
             {/* Card deck container */}
-            <div className="relative w-full h-[400px] sm:h-96 md:h-[450px] lg:h-[500px]">
+            <motion.div
+              className="relative w-full h-[400px] sm:h-96 md:h-[450px] lg:h-[500px]"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              onDragEnd={(_, info) => {
+                const threshold = 50
+                if (info.offset.x > threshold) {
+                  handleSwipe("right")
+                } else if (info.offset.x < -threshold) {
+                  handleSwipe("left")
+                }
+              }}
+            >
               {/* Personal photo card */}
               <motion.div
                 className="absolute inset-0 cursor-pointer"
@@ -128,11 +156,26 @@ export default function About() {
                   />
                 </div>
               </motion.div>
+            </motion.div>
 
-              {/* Hover instruction */}
-              <div className="absolute -bottom-12 sm:-bottom-14 lg:-bottom-16 left-0 right-0 text-center text-foreground/60 text-sm">
-                Hover over photos to bring them forward
-              </div>
+            {/* Instructions - responsive text */}
+            <div className="absolute -bottom-12 sm:-bottom-14 lg:-bottom-16 left-0 right-0 text-center text-foreground/60 text-sm">
+              <span className="hidden md:inline">Hover over photos to bring them forward</span>
+              <span className="md:hidden">Swipe left or right to browse photos</span>
+            </div>
+
+            {/* Mobile navigation dots */}
+            <div className="flex justify-center gap-2 mt-4 md:hidden">
+              {images.map((image, index) => (
+                <button
+                  key={image}
+                  onClick={() => handleImageChange(image)}
+                  className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                    activeImage === image ? "bg-primary" : "bg-primary/30"
+                  }`}
+                  aria-label={`View ${image} photo`}
+                />
+              ))}
             </div>
           </motion.div>
 
