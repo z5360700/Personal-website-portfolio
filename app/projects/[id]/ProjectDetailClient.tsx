@@ -1,55 +1,83 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import Image from "next/image"
-import Link from "next/link"
-import { ArrowLeft, ExternalLink, Github, Smile } from "lucide-react" // Added Smile icon
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import BeforeAfterSlider from "@/components/before-after-slider"
-import EnhancedBeforeAfterSlider from "@/components/enhanced-before-after-slider"
+import { useState } from "react"
+import { ChevronDown, ChevronUp } from "lucide-react"
+import { Card } from "@/components/ui/card"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import ImageLightbox from "@/components/image-lightbox"
-import VideoEmbed from "@/components/video-embed"
-import { motion } from "framer-motion"
+import EnhancedBeforeAfterSlider from "@/components/enhanced-before-after-slider"
 
-// This would typically come from a database or API
-const projectsData = [
-  {
-    id: 1,
+const projectData = {
+  1: {
     title: "Residential Construction & Renovation",
+    tagline: "Complete home transformation from foundation to finish",
     description:
-      "Complete residential building renovation from foundation to finish, including structural framing, roofing, plumbing, and electrical work.",
-    longDescription: `
-This project involved completely renovating a deteriorated building into a modern home. Working with my father, I gained hands-on experience in all aspects of construction.
-
-From demolition to finishing touches, we handled everything - structural work, roofing, electrical, plumbing, and interior design. The project required careful planning and coordination of different trades.
-
-The transformation showcases both my technical construction skills and project management abilities. Every step was completed with attention to building codes and quality standards.
-`,
-    image: "/images/construction-after.jpg",
-    beforeImage: "/images/construction-before-new.png",
-    exteriorGallery: [
-      "/images/construction-before.jpg",
-      "/images/construction-2.jpg",
-      "/images/construction-4.jpg",
+      "A comprehensive residential renovation project showcasing structural engineering, project management, and construction expertise. This project involved complete renovation of a residential property including foundation work, framing, roofing, plumbing, electrical systems, and interior finishing.",
+    heroImage: "/images/construction-after.jpg",
+    beforeAfter: {
+      before: "/images/construction-before-new.png",
+      after: "/images/construction-after.jpg",
+    },
+    story: [
+      {
+        title: "Planning & Design Phase",
+        description: "Initial assessment and architectural planning",
+        image: "/images/construction-before.jpg",
+        details:
+          "Conducted thorough structural assessment, obtained necessary permits, and developed comprehensive renovation plans. This phase involved working with architects and engineers to ensure all modifications met local building codes and safety requirements.",
+      },
+      {
+        title: "Foundation & Structural Work",
+        description: "Core structural modifications and improvements",
+        image: "/images/construction-1.jpg",
+        details:
+          "Reinforced existing foundation, installed new support beams, and modified load-bearing walls. All work was performed to exceed local building code requirements with proper inspection at each phase.",
+      },
+      {
+        title: "Framing & Roofing",
+        description: "New framing installation and roof reconstruction",
+        image: "/images/construction-2.jpg",
+        details:
+          "Installed new wall framing, ceiling joists, and completely rebuilt the roof structure. Used engineered lumber for enhanced strength and durability.",
+      },
+      {
+        title: "Systems Installation",
+        description: "Electrical, plumbing, and HVAC systems",
+        image: "/images/construction-3.jpg",
+        details:
+          "Complete rewiring of electrical systems, new plumbing installation, and HVAC system upgrade. All systems designed for energy efficiency and modern safety standards.",
+      },
+      {
+        title: "Interior Finishing",
+        description: "Drywall, flooring, and interior details",
+        image: "/images/construction-4.jpg",
+        details:
+          "Professional drywall installation, hardwood flooring, custom cabinetry, and interior painting. Focus on high-quality finishes and attention to detail.",
+      },
+      {
+        title: "Final Completion",
+        description: "Project completion and final inspections",
+        image: "/images/construction-5.jpg",
+        details:
+          "Final walkthrough, quality assurance checks, and official inspections. Project completed on time and within budget with all permits properly closed.",
+      },
+    ],
+    gallery: [
       "/images/construction-1.jpg",
+      "/images/construction-2.jpg",
       "/images/construction-3.jpg",
+      "/images/construction-4.jpg",
       "/images/construction-5.jpg",
-      "/images/construction-primed-exterior.jpeg",
-      "/images/construction-after.jpg",
-    ],
-    interiorGallery: [
-      "/images/interior-3.jpg",
-      "/images/interior-5.jpg",
-      "/images/interior-2.jpg",
-      "/images/interior-4.jpg",
       "/images/interior-1.jpg",
-      "/images/interior-7.jpg",
+      "/images/interior-2.jpg",
+      "/images/interior-3.jpg",
+      "/images/interior-4.jpg",
+      "/images/interior-5.jpg",
       "/images/interior-6.jpg",
+      "/images/interior-7.jpg",
       "/images/interior-8.jpg",
-    ],
-    finishedProductGallery: [
       "/images/finished-product-1.jpeg",
       "/images/finished-product-2.jpeg",
       "/images/finished-product-3.jpeg",
@@ -57,8 +85,6 @@ The transformation showcases both my technical construction skills and project m
       "/images/finished-product-5.jpeg",
       "/images/finished-product-6.jpeg",
       "/images/finished-product-7.jpeg",
-    ],
-    miscellaneousGallery: [
       "/images/misc-construction-1.jpeg",
       "/images/misc-construction-2.jpeg",
       "/images/misc-construction-3.jpeg",
@@ -79,1525 +105,576 @@ The transformation showcases both my technical construction skills and project m
       "/images/misc-construction-18.jpeg",
       "/images/misc-construction-19.jpeg",
     ],
-    tags: ["Construction", "Renovation", "Project Management", "Building Codes"],
-    liveUrl: null,
-    githubUrl: null,
-    features: [
-      "Complete structural assessment and planning",
-      "Foundation and framing construction using timber frame techniques",
-      "Roof installation with proper weatherproofing and insulation",
-      "Electrical system installation and compliance with safety standards",
-      "Plumbing installation including water supply and drainage systems",
-      "Exterior cladding and weatherproofing application",
-      "Interior insulation and drywall installation",
-      "Modern kitchen and bathroom installations",
-      "Recessed lighting and electrical finishing",
-      "Luxury vinyl plank flooring installation",
-      "Window and door installation with proper sealing",
-      "Interior and exterior painting and finishing",
-      "Project coordination and timeline management",
-      "Compliance with local building codes and regulations",
+    techStack: [
+      { name: "Project Management", icon: "/images/hammer-logo.png" },
+      { name: "Structural Engineering", icon: "/images/drill-logo.png" },
+      { name: "Building Codes", icon: "/images/hammer-logo.png" },
+      { name: "Construction Management", icon: "/images/drill-logo.png" },
     ],
-    technologies: {
-      construction: [
-        "Timber Frame Construction",
-        "Concrete Foundation Work",
-        "Steel Roofing Systems",
-        "Electrical Wiring & Lighting",
-        "Plumbing Systems",
-        "Insulation Installation",
-      ],
-      tools: ["Power Tools", "Hand Tools", "Measuring Equipment", "Safety Equipment", "Scaffolding", "Ladders"],
-      compliance: ["Building Codes", "Safety Regulations", "Quality Standards", "Project Management"],
-    },
-    challenges: `
-  One of the main challenges was working with the existing foundation while ensuring the new structure met current building standards. This required careful assessment of the existing structure and strategic reinforcement where necessary.
-  
-  The interior renovation presented unique challenges with coordinating electrical, plumbing, and HVAC systems within the existing structure. Proper sequencing of trades was critical to ensure quality workmanship and avoid conflicts between different systems.
-  
-  Weather conditions also posed challenges during the construction phase, requiring flexible scheduling and proper protection of materials and work areas. Coordinating multiple trades and ensuring quality workmanship while maintaining project timelines required strong organizational and communication skills.
-  
-  Ensuring compliance with all building codes and regulations while maintaining cost-effectiveness was another key challenge that required thorough planning and attention to detail throughout the construction process.
-`,
+    challenges: [
+      "Coordinating multiple trades and subcontractors",
+      "Ensuring all work met strict building code requirements",
+      "Managing project timeline and budget constraints",
+      "Dealing with unexpected structural issues discovered during renovation",
+      "Maintaining quality standards while working within tight deadlines",
+    ],
+    learnings: [
+      "Advanced project management and coordination skills",
+      "Deep understanding of building codes and regulations",
+      "Experience with structural engineering principles",
+      "Quality control and inspection processes",
+      "Budget management and cost estimation",
+    ],
   },
-  {
-    id: 2,
+  2: {
     title: "Micromouse Maze Navigation Robot",
+    tagline: "Autonomous maze-solving robot with advanced navigation algorithms",
     description:
-      "Autonomous robot designed to navigate through complex mazes using LiDAR, IMU, and wheel encoders with path planning algorithms and computer vision.",
-    longDescription: `
-  The Micromouse Maze Navigation Robot was developed as part of the MTRN3100 course, focusing on autonomous robotics and navigation systems. This project involved designing and implementing a robot capable of navigating through unknown maze environments efficiently.
-  
-  The robot utilizes multiple sensors including LiDAR for distance measurement, an Inertial Measurement Unit (IMU) for orientation tracking, and wheel encoders for precise movement control. These sensors work together to provide comprehensive environmental awareness and position tracking.
-  
-  A key feature of this project was the implementation of computer vision techniques to generate occupancy maps of the maze in real-time. Using these maps, the robot applies Breadth-First Search (BFS) algorithms to determine optimal paths while avoiding obstacles.
-  
-  The system also includes a manual override feature, allowing users to input directional commands (forward, left, right) for situations where direct control is preferred over autonomous navigation.
-`,
-    image: "/images/micromouse-robot.jpeg",
-    course: "MTRN3100",
-    hardwareGallery: [
-      "/images/micromouse-robot.jpeg",
-      "/images/micromouse-prototype.jpeg",
-      "/images/micromouse-workshop.jpeg",
-      "/images/micromouse-assembled.jpeg",
-      "/images/micromouse-closeup.jpeg",
-      "/images/micromouse-testing-lab.jpeg",
+      "An autonomous robot designed to navigate through complex mazes using advanced sensors and algorithms. The robot employs LiDAR, IMU, and wheel encoders combined with sophisticated path planning algorithms and computer vision to efficiently solve mazes.",
+    heroImage: "/images/micromouse-robot.jpeg",
+    story: [
+      {
+        title: "Design & Planning",
+        description: "Initial robot design and component selection",
+        image: "/images/micromouse-prototype.jpeg",
+        details:
+          "Designed the mechanical structure and selected appropriate sensors including LiDAR for distance measurement, IMU for orientation tracking, and wheel encoders for precise movement control.",
+      },
+      {
+        title: "Hardware Assembly",
+        description: "Building and assembling the robot platform",
+        image: "/images/micromouse-assembled.jpeg",
+        details:
+          "Assembled the robot chassis, mounted sensors, and integrated the control electronics. Ensured proper weight distribution and sensor placement for optimal performance.",
+      },
+      {
+        title: "Algorithm Development",
+        description: "Implementing navigation and pathfinding algorithms",
+        image: "/images/micromouse-algorithm.jpeg",
+        details:
+          "Developed and implemented maze-solving algorithms including flood fill, A* pathfinding, and real-time obstacle avoidance. The algorithms were optimized for speed and accuracy.",
+      },
+      {
+        title: "Programming & Testing",
+        description: "Software development and system integration",
+        image: "/images/micromouse-code1.jpeg",
+        details:
+          "Programmed the robot using C++ and Python, implementing sensor fusion, motor control, and decision-making logic. Extensive testing was performed to refine the algorithms.",
+      },
+      {
+        title: "Laboratory Testing",
+        description: "Testing and validation in controlled environment",
+        image: "/images/micromouse-testing-lab.jpeg",
+        details:
+          "Conducted comprehensive testing in laboratory conditions, fine-tuning sensor calibration and algorithm parameters for optimal maze navigation performance.",
+      },
+      {
+        title: "Competition Performance",
+        description: "Final testing and competition participation",
+        image: "/images/micromouse-workshop.jpeg",
+        details:
+          "Participated in micromouse competitions, achieving successful maze completion with competitive timing. The robot demonstrated reliable navigation and efficient pathfinding.",
+      },
     ],
-    softwareGallery: [
+    gallery: [
+      "/images/micromouse-robot.jpeg",
+      "/images/micromouse-assembled.jpeg",
+      "/images/micromouse-prototype.jpeg",
+      "/images/micromouse-closeup.jpeg",
+      "/images/micromouse-algorithm.jpeg",
       "/images/micromouse-code1.jpeg",
       "/images/micromouse-code2.jpeg",
-      "/images/micromouse-algorithm.jpeg",
+      "/images/micromouse-testing-lab.jpeg",
+      "/images/micromouse-workshop.jpeg",
     ],
-    videoGallery: [
-      {
-        id: "EOZJjVUmMxs",
-        title: "Micromouse Maze Navigation",
-        description:
-          "Full demonstration of the Micromouse robot navigating through a complex maze environment using its sensor array and path planning algorithms.",
-        isShort: false,
-      },
-      {
-        id: "ZRjj2WblTCQ",
-        title: "Early Testing - Accuracy Focus",
-        description:
-          "This video shows early testing of the micromouse robot where we prioritized getting accurate movement over speed. The robot demonstrates precise navigation and turning capabilities.",
-        isShort: false,
-      },
-      {
-        id: "B2lfw8Rdm6E",
-        title: "PID Control Straight Line Demonstration",
-        description:
-          "This video demonstrates the PID controller in action alongside aid from LiDAR values, showing how the robot maintains a straight line path with precise motor control.",
-        isShort: true,
-      },
+    techStack: [
+      { name: "C++", icon: "/images/solidworks-logo.png" },
+      { name: "Python", icon: "/images/matlab-logo.png" },
+      { name: "Arduino", icon: "/images/solidworks-logo.png" },
+      { name: "OpenCV", icon: "/images/matlab-logo.png" },
     ],
-    tags: ["C++", "Python", "Arduino", "Computer Vision", "Robotics", "OpenCV"],
-    liveUrl: null,
-    githubUrl: "https://github.com/z5360700/micromouse-from2024",
-    features: [
-      "Autonomous maze navigation using sensor fusion",
-      "Real-time occupancy map generation with computer vision",
-      "Path planning with Breadth-First Search algorithm",
-      "PID control for precise movement and turning",
-      "Manual override with user-defined input sequences",
-      "Obstacle detection and avoidance",
-      "Real-time data processing on Arduino Nano",
+    challenges: [
+      "Implementing accurate sensor fusion for reliable navigation",
+      "Optimizing pathfinding algorithms for real-time performance",
+      "Calibrating sensors for consistent maze detection",
+      "Managing power consumption for extended operation",
+      "Debugging complex interactions between hardware and software",
     ],
-    technologies: {
-      hardware: [
-        "Arduino Nano microcontroller",
-        "LiDAR sensor for distance measurement",
-        "IMU (Inertial Measurement Unit)",
-        "Wheel encoders for odometry",
-        "DC motors with motor drivers",
-        "Custom PCB for component integration",
-      ],
-      software: [
-        "C++ for embedded systems programming",
-        "Python for high-level control and vision processing",
-        "OpenCV for image processing and map generation",
-        "PID control algorithms",
-        "Breadth-First Search for path planning",
-        "Serial communication protocols",
-      ],
-      tools: [
-        "Arduino IDE",
-        "Python development environment",
-        "Git for version control",
-        "CAD software for mechanical design",
-        "Oscilloscope and multimeter for debugging",
-      ],
-    },
-    challenges: `
-  One of the primary challenges was achieving accurate localization within the maze environment. Small errors in sensor readings or wheel slippage could compound over time, leading to significant position estimation errors. We addressed this by implementing sensor fusion techniques that combined data from multiple sources to improve accuracy.
-  
-  Processing constraints were another significant challenge, as the Arduino Nano has limited computational resources. Optimizing the code for efficiency while maintaining real-time performance required careful algorithm selection and implementation.
-  
-  The integration of computer vision for map generation presented challenges in terms of processing speed and accuracy. We had to balance the resolution of the occupancy map with the processing capabilities of our system to ensure real-time performance.
-  
-  Tuning the PID controllers for consistent performance across different maze surfaces and conditions required extensive testing and parameter adjustment. We developed an adaptive control system that could adjust parameters based on detected surface conditions.
-`,
+    learnings: [
+      "Advanced robotics programming and sensor integration",
+      "Algorithm optimization and real-time system design",
+      "Computer vision and image processing techniques",
+      "Hardware-software integration and debugging",
+      "Competition robotics and performance optimization",
+    ],
   },
-  {
-    id: 3,
+  3: {
     title: "Custom Cooling Funnels for PC Hardware",
+    tagline: "3D-printed airflow optimization for high-performance computing",
     description:
-      "Designed and 3D-printed cooling funnels using PLA material to direct airflow for GPU components, inspired by automotive ducted cooling systems.",
-    longDescription: `
-This project was inspired by ducted cooling systems found in automotive applications, where air is directed precisely to components that need cooling. The idea emerged from observing that airflow transfer in PC cases isn't well optimized, with much of the intake air not reaching critical components like the GPU effectively.
-
-The project began with identifying the airflow optimization problem in my PC case, where front intake fans weren't efficiently directing cool air to the graphics card. Taking inspiration from automotive ducted parts that channel air directly to specific engine components, I designed custom cooling funnels to create a direct airflow path from the front case fans to the GPU.
-
-The solution involved precise 3D modeling of the PC case components, designing custom ducting that would fit perfectly within the case constraints, and 3D printing the parts using PLA material for heat resistance and durability.
-`,
-    image: "/images/pc-cooling-installed.jpeg",
-    designGallery: [
-      "/images/pc-airflow-problem.jpeg",
-      "/images/pc-case-model.png",
-      "/images/pc-case-with-gpu.png",
+      "Designed and manufactured custom cooling funnels using 3D printing technology to optimize airflow in PC cases. The project was inspired by automotive ducted cooling systems and focuses on directing airflow efficiently to GPU components for improved thermal performance.",
+    heroImage: "/images/pc-cooling-installed.jpeg",
+    beforeAfter: {
+      before: "/images/pc-without-ducting.jpeg",
+      after: "/images/pc-cooling-installed.jpeg",
+    },
+    story: [
+      {
+        title: "Problem Identification",
+        description: "Analyzing thermal performance issues",
+        image: "/images/pc-airflow-problem.jpeg",
+        details:
+          "Identified poor airflow patterns in the PC case leading to elevated GPU temperatures. Thermal analysis showed inefficient air circulation and hot spots around critical components.",
+      },
+      {
+        title: "CAD Design Process",
+        description: "3D modeling and design optimization",
+        image: "/images/cooling-duct-design.png",
+        details:
+          "Used Fusion360 to design custom cooling ducts that would direct airflow from case fans directly to GPU intake areas. Multiple iterations were designed to optimize airflow while maintaining case compatibility.",
+      },
+      {
+        title: "3D Printing & Manufacturing",
+        description: "Prototyping and production using PLA material",
+        image: "/images/printed-cooling-parts.jpeg",
+        details:
+          "3D printed the cooling ducts using PLA material for its ease of printing and adequate thermal properties. Multiple prototypes were created to test fit and airflow characteristics.",
+      },
+      {
+        title: "Installation & Integration",
+        description: "Installing the cooling system in PC case",
+        image: "/images/cooling-duct-component.png",
+        details:
+          "Carefully installed the cooling ducts in the PC case, ensuring proper alignment with fans and GPU intake. The installation required precise positioning to maximize airflow efficiency.",
+      },
+      {
+        title: "Performance Testing",
+        description: "Thermal performance validation and optimization",
+        image: "/images/gpu-test-without-ducting.png",
+        details:
+          "Conducted extensive thermal testing comparing performance with and without the cooling ducts. Temperature monitoring showed significant improvements in GPU cooling efficiency.",
+      },
+      {
+        title: "Results & Optimization",
+        description: "Final performance analysis and improvements",
+        image: "/images/gpu-test-with-ducting.png",
+        details:
+          "Achieved measurable temperature reductions and improved thermal stability under load. The ducted cooling system demonstrated clear benefits for high-performance computing applications.",
+      },
+    ],
+    gallery: [
+      "/images/pc-cooling-installed.jpeg",
+      "/images/pc-without-ducting.jpeg",
       "/images/cooling-duct-design.png",
       "/images/cooling-duct-component.png",
+      "/images/printed-cooling-parts.jpeg",
+      "/images/pc-airflow-problem.jpeg",
+      "/images/gpu-test-without-ducting.png",
+      "/images/gpu-test-with-ducting.png",
+      "/images/pc-case-model.png",
+      "/images/pc-case-with-gpu.png",
     ],
-    printingGallery: ["/images/bambu-studio-slicing.png", "/images/printed-cooling-parts.jpeg"],
-    installationGallery: ["/images/pc-without-ducting.jpeg", "/images/pc-cooling-installed.jpeg"],
-    storySteps: [
-      {
-        title: "The Problem",
-        description:
-          "I noticed that airflow in PC cases isn't optimized. Front intake fans push air in, but much of it disperses inside the case rather than reaching the GPU directly.",
-        image: "/images/pc-airflow-problem.jpeg",
-        highlight:
-          "Green arrows show air coming in, red arrows show where it exits - but the path in between isn't direct",
-        aspectRatio: "aspect-[4/3]", // Horizontal PC case photo
-      },
-      {
-        title: "The Inspiration",
-        description:
-          "I drew inspiration from automotive cooling systems, where ducted parts channel air directly to engine components that need cooling the most.",
-        image: "/images/rs3-carbon-intake.jpeg",
-        highlight:
-          "This is an RS3 carbon fiber air intake - in high-performance cars, every bit of airflow is carefully directed where it's needed most.",
-        aspectRatio: "aspect-video",
-      },
-      {
-        title: "Modeling the Case",
-        description:
-          "First, I created a precise 3D model of my PC case in Fusion360, ensuring all dimensions were accurate for a perfect fit.",
-        image: "/images/pc-case-model.png",
-        highlight: "",
-        aspectRatio: "aspect-video", // Changed from aspect-square to aspect-video
-      },
-      {
-        title: "Adding Components",
-        description:
-          "Next, I modeled the GPU and intake fan positions to understand the exact path the air needed to travel.",
-        image: "/images/pc-case-with-gpu.png",
-        highlight: "Understanding the spatial relationship between components was essential for effective duct design.",
-        aspectRatio: "aspect-video", // Changed from aspect-square to aspect-video
-      },
-      {
-        title: "Designing the Duct",
-        description:
-          "I designed a custom cooling funnel that would direct air from the front intake fans straight to the GPU's cooling system.",
-        image: "/images/cooling-duct-design.png",
-        highlight: "The duct features a gradually narrowing design to accelerate airflow as it approaches the GPU.",
-        aspectRatio: "aspect-[3/2]", // 3D model view
-      },
-      {
-        title: "Finalizing Components",
-        description:
-          "The final design included multiple components that would fit together perfectly while being printable on a standard 3D printer bed.",
-        image: "/images/cooling-duct-component.png",
-        highlight: "Each component was designed with both function and printability in mind.",
-        aspectRatio: "aspect-[3/2]", // 3D model view
-      },
-      {
-        title: "Slicing for Printing",
-        description:
-          "Using Bambu Studio, I prepared the 3D models for printing, setting up supports and optimizing print settings for ABS material.",
-        image: "/images/bambu-studio-slicing.png",
-        highlight: "The green areas show support structures needed for successful printing of complex geometries.",
-        aspectRatio: "aspect-[4/3]", // Software screenshot
-      },
-      {
-        title: "Printed Components",
-        description: "After several hours of printing, the cooling duct components were ready for installation.",
-        image: "/images/printed-cooling-parts.jpeg",
-        highlight: "ABS material was chosen for its heat resistance and durability in the warm PC environment.",
-        aspectRatio: "aspect-video",
-      },
+    techStack: [
+      { name: "Fusion360", icon: "/images/fusion360-logo.png" },
+      { name: "3D Printing", icon: "/images/bambu-lab-logo.png" },
+      { name: "PLA Material", icon: "/images/bambu-lab-logo.png" },
+      { name: "Thermal Analysis", icon: "/images/matlab-logo.png" },
     ],
-    tags: ["3D Printing", "Fusion360", "PLA Material", "Thermal Management", "CAD Design"],
-    liveUrl: null,
-    githubUrl: null,
-    features: [
-      "Custom 3D-modeled PC case components for precise fit",
-      "Automotive-inspired ducted airflow design",
-      "PLA material selection for ease of printing and durability",
-      "Modular design allowing easy installation and removal",
-      "Direct airflow channeling from intake fans to GPU",
-      "Optimized internal geometry for minimal airflow restriction",
-      "Split-part design for 3D printing feasibility",
-      "Temperature monitoring and performance validation",
+    challenges: [
+      "Designing ducts that fit within tight PC case constraints",
+      "Optimizing airflow patterns for maximum cooling efficiency",
+      "Ensuring 3D printed parts could withstand thermal cycling",
+      "Balancing airflow direction with noise considerations",
+      "Achieving proper fit and alignment with existing hardware",
     ],
-    technologies: {
-      design: [
-        "Fusion360 CAD Software",
-        "3D Modeling and Assembly",
-        "Airflow Simulation Principles",
-        "Thermal Management Design",
-        "Parametric Design Techniques",
-      ],
-      manufacturing: [
-        "Bambu Studio Slicing Software",
-        "PLA Filament 3D Printing",
-        "Multi-part Assembly Design",
-        "Support Structure Optimization",
-        "Print Quality Optimization",
-      ],
-      testing: [
-        "Temperature Monitoring",
-        "Airflow Measurement",
-        "Performance Benchmarking",
-        "Thermal Imaging Analysis",
-        "System Stability Testing",
-      ],
-    },
-    challenges: `
-  One of the primary challenges was accurately measuring and modeling the internal dimensions of the PC case while accounting for cable management and component clearances. The ducting needed to fit precisely without interfering with other components or restricting access for maintenance.
-  
-  Designing for 3D printing presented constraints in terms of overhang angles, support material requirements, and print bed size limitations. The duct had to be split into multiple parts that could be printed separately and assembled, while maintaining structural integrity and airflow efficiency.
-  
-  Material selection was important for this application. PLA was chosen for its ease of printing and good structural properties, making it ideal for prototyping and testing the ducting design.
-  
-  Validating the effectiveness of the cooling solution required establishing baseline temperature measurements and conducting controlled testing under various load conditions. Ensuring that the ducting actually improved cooling performance rather than just redirecting airflow was essential to the project's success.
-`,
-    results: `
-  The custom cooling ducts proved highly effective, reducing GPU temperatures by 8°C under full load compared to the standard case configuration. This temperature reduction allowed the GPU to maintain higher boost clocks for longer periods, resulting in more consistent performance during demanding tasks like gaming and 3D rendering.
-  
-  An unexpected benefit was the reduction in fan noise, as the GPU's cooling system didn't need to work as hard to maintain safe temperatures. The direct airflow path also reduced dust accumulation on the GPU, as air was now following a more controlled path through the case.
-  
-  The project demonstrated how principles from automotive cooling systems could be successfully applied to PC hardware cooling, opening up possibilities for further optimization of other components like CPU coolers and memory modules.
-`,
+    learnings: [
+      "Advanced CAD design and 3D modeling techniques",
+      "Understanding of fluid dynamics and airflow optimization",
+      "3D printing design considerations and material properties",
+      "Thermal management principles for electronic systems",
+      "Iterative design process and performance validation",
+    ],
   },
-  {
-    id: 4,
+  4: {
     title: "Cat Door Monitoring System",
+    tagline: "IoT-enabled pet monitoring with real-time notifications",
     description:
-      "IoT monitoring system using ESP32 and break beam sensors to track cat movement through a pet door, with real-time Telegram notifications to prevent unauthorized access.",
-    longDescription: `
-This project was motivated by our family cat eating too much food and the discovery of another neighborhood cat sneaking into our house. The cat eats downstairs away from the kitchen, and we had caught the intruder cat inside the house around 3 times, prompting the need for a monitoring solution.
-
-The system evolved through two major versions. Version 1 used a PIR sensor but proved unreliable as it was triggered by cockroaches and would activate when opening the door. Version 2 implemented break beam sensors, which worked much more effectively and reliably.
-
-The ESP32 connects via WiFi to send notifications through a Telegram bot, providing real-time alerts whenever the beam is broken. This project was particularly rewarding because within the first 2 days of deployment, I immediately caught the other cat coming into the house and found him in the backyard.
-
-Future versions will include double break beam sensors to determine direction of movement, and potentially RFID tags or camera-based identification using computer vision knowledge gained from the micromouse project.
-`,
-    image: "/images/cat-door-v2-system.png",
-    designGallery: [
+      "An intelligent IoT monitoring system designed to track cat movement through a pet door using ESP32 microcontroller and break beam sensors. The system provides real-time Telegram notifications and helps prevent unauthorized access while monitoring pet activity patterns.",
+    heroImage: "/images/cat-door-v2-system.png",
+    story: [
+      {
+        title: "System Design",
+        description: "Planning the IoT monitoring architecture",
+        image: "/images/cat-door-cad-design.jpeg",
+        details:
+          "Designed a comprehensive monitoring system using ESP32 as the main controller, break beam sensors for detection, and Telegram API for notifications. The system was planned to be reliable and energy-efficient.",
+      },
+      {
+        title: "3D Modeling & Design",
+        description: "CAD design for sensor housing and mounting",
+        image: "/images/cat-door-cad-slicing.jpeg",
+        details:
+          "Created detailed 3D models for sensor housings and mounting brackets. The design ensured weather resistance and proper sensor alignment for accurate detection.",
+      },
+      {
+        title: "3D Printing & Assembly",
+        description: "Manufacturing components and system assembly",
+        image: "/images/cat-door-3d-printed.png",
+        details:
+          "3D printed all custom components using weather-resistant materials. Assembled the complete system with proper cable management and weatherproofing for outdoor installation.",
+      },
+      {
+        title: "Programming & Integration",
+        description: "ESP32 programming and Telegram bot setup",
+        image: "/images/cat-door-telegram-notifications.png",
+        details:
+          "Programmed the ESP32 to handle sensor inputs, WiFi connectivity, and Telegram API integration. Implemented logic to distinguish between different types of movement and reduce false alarms.",
+      },
+      {
+        title: "Installation & Testing",
+        description: "System deployment and performance validation",
+        image: "/images/cat-door-v1.jpeg",
+        details:
+          "Installed the monitoring system on the pet door and conducted extensive testing. Fine-tuned sensor sensitivity and notification logic based on real-world usage patterns.",
+      },
+      {
+        title: "System Optimization",
+        description: "Performance improvements and feature additions",
+        image: "/images/cat-door-v2-system.png",
+        details:
+          "Upgraded to version 2 with improved reliability, better power management, and additional features like activity logging and pattern recognition for different pets.",
+      },
+    ],
+    gallery: [
+      "/images/cat-door-v2-system.png",
       "/images/cat-door-v1.jpeg",
+      "/images/cat-door-3d-printed.png",
       "/images/cat-door-cad-design.jpeg",
       "/images/cat-door-cad-slicing.jpeg",
-      "/images/cat-door-3d-printed.png",
-      "/images/cat-door-v2-system.png",
+      "/images/cat-door-telegram-notifications.png",
     ],
-    notificationGallery: ["/images/cat-door-telegram-notifications.png"],
-    videoGallery: [
+    techStack: [
+      { name: "ESP32", icon: "/images/solidworks-logo.png" },
+      { name: "Arduino IDE", icon: "/images/matlab-logo.png" },
+      { name: "3D Printing", icon: "/images/bambu-lab-logo.png" },
+      { name: "Telegram Bot API", icon: "/images/solidworks-logo.png" },
+    ],
+    challenges: [
+      "Achieving reliable outdoor operation in various weather conditions",
+      "Minimizing false alarms while maintaining detection accuracy",
+      "Implementing efficient power management for battery operation",
+      "Ensuring stable WiFi connectivity for remote notifications",
+      "Designing weatherproof enclosures for electronic components",
+    ],
+    learnings: [
+      "IoT system design and implementation",
+      "ESP32 programming and sensor integration",
+      "API integration and real-time communication",
+      "3D printing for functional outdoor applications",
+      "Power management and battery optimization techniques",
+    ],
+  },
+  5: {
+    title: "UR5e Robotic Writing System",
+    tagline: "Precision robotic control for mathematical operations and text rendering",
+    description:
+      "A sophisticated MATLAB RTDE program that controls a UR5e collaborative robot to perform precise writing tasks. The system can trace individual digits using Hershey fonts, apply complex transformations including translation and rotation, and render complete mathematical operations in long-form with smooth, human-like motion.",
+    heroImage: "/images/ur5e-math-operation.jpeg",
+    story: [
       {
-        id: "4Ufpr4eA3jw",
-        title: "Cat Door Monitoring System V2 Demonstration",
-        description:
-          "Demonstration of the Version 2 cat door monitoring system using break beam sensors, ESP32, and Telegram notifications.",
-        isShort: false,
+        title: "System Architecture",
+        description: "MATLAB RTDE integration with UR5e robot",
+        image: "/images/ur5e-robot-setup.jpeg",
+        details:
+          "Developed a comprehensive MATLAB program using the Real-Time Data Exchange (RTDE) protocol to communicate with the UR5e robot. The system architecture enables precise control of robot movements with real-time feedback and monitoring.",
+      },
+      {
+        title: "Font Rendering System",
+        description: "Hershey font implementation for digit tracing",
+        image: "/images/ur5e-robot-side-view.jpeg",
+        details:
+          "Implemented Hershey font rendering system that converts text characters into precise robot trajectories. The system handles proper character spacing, pen lift operations between strokes, and maintains consistent writing quality.",
+      },
+      {
+        title: "Transformation Engine",
+        description: "Translation and rotation capabilities",
+        image: "/images/ur5e-complex-equation.jpeg",
+        details:
+          "Developed transformation algorithms that can apply arbitrary X/Y translations and Z-axis rotations to writing operations. Uses transformation matrices to maintain precision while allowing flexible positioning of text and equations.",
+      },
+      {
+        title: "Mathematical Operations",
+        description: "Long-form arithmetic rendering",
+        image: "/images/ur5e-math-operation.jpeg",
+        details:
+          "Created algorithms to solve and render mathematical operations including addition, subtraction, and multiplication in traditional long-form vertical layout. The system properly aligns digits, handles carry operations, and maintains mathematical formatting conventions.",
       },
     ],
-    tags: ["ESP32", "IoT", "Arduino", "3D Printing", "Telegram Bot", "Break Beam Sensors"],
-    liveUrl: null,
-    githubUrl: null,
-    features: [
-      "Evolution from PIR sensors (V1) to break beam sensors (V2) for improved reliability",
-      "ESP32 WiFi connectivity for real-time communication",
-      "Telegram bot integration for instant mobile notifications",
-      "Custom 3D printed weatherproof housing designed in Fusion360",
-      "LED status indicators for visual feedback",
-      "Sensor debouncing to prevent false triggers",
-      "Low power consumption for continuous operation",
-      "Immediate detection and notification of unauthorized access",
-      "Timestamped activity logs for behavior analysis",
-      "Modular design for easy maintenance and upgrades",
+    collapsibleSections: [
+      {
+        title: "Digit Tracing",
+        content:
+          "The system uses Hershey font rendering to convert individual digits into precise robot trajectories. Each character is broken down into vector paths that the robot can follow smoothly. The implementation includes proper character spacing algorithms, automatic pen lift detection between disconnected strokes, and consistent baseline alignment. The font rendering engine supports all digits 0-9 and basic mathematical symbols (+, -, ×, =) with optimized stroke order for efficient robot movement.",
+      },
+      {
+        title: "Translation & Rotation",
+        content:
+          "Advanced transformation capabilities allow the robot to position text and equations anywhere within its workspace. The system implements homogeneous transformation matrices to handle arbitrary X/Y translations and Z-axis rotations while maintaining writing precision. Users can specify translation offsets and rotation angles, and the system automatically adjusts all trajectory points accordingly. This enables flexible layout of complex mathematical expressions and multi-line equations.",
+      },
+      {
+        title: "Mathematical Operations",
+        content:
+          "The system can solve and render complete mathematical operations in traditional long-form vertical format. For addition and subtraction, it properly aligns digits by place value, handles carry and borrow operations, and draws appropriate lines and symbols. Multiplication operations are rendered with partial products properly aligned and summed. The algorithm automatically calculates spacing requirements and positions each element of the operation for clear, readable output.",
+      },
     ],
-    technologies: {
-      hardware: [
-        "ESP32 Development Board",
-        "Break Beam Sensors (Transmitter & Receiver)",
-        "LED Status Indicators",
-        "3D Printed PLA Housing",
-        "Breadboard Prototyping",
-        "Weatherproof Connectors",
-      ],
-      software: [
-        "Arduino IDE for ESP32 programming",
-        "WiFi Libraries for network connectivity",
-        "Telegram Bot API integration",
-        "Sensor debouncing algorithms",
-        "Real-time notification system",
-        "Serial communication for debugging",
-      ],
-      design: [
-        "Fusion360 CAD Software",
-        "3D Modeling and Assembly",
-        "Bambu Lab 3D Printing",
-        "Weatherproof Enclosure Design",
-        "Component Integration Planning",
-        "Print Support Optimization",
-      ],
-    },
-    challenges: `
-The primary challenge was eliminating false positives from the initial PIR sensor design. The PIR sensor was too sensitive and would trigger from small animals like cockroaches, as well as when the door itself was opened. This led to the redesign using break beam sensors, which provide much more precise detection.
-
-Designing a weatherproof housing that could accommodate all components while maintaining sensor alignment was another significant challenge. The 3D printed enclosure needed to protect the electronics from outdoor conditions while allowing proper sensor operation.
-
-Implementing reliable WiFi connectivity and Telegram bot integration required careful handling of network timeouts and reconnection logic. The system needed to be robust enough to operate continuously without manual intervention.
-
-Power management was also a consideration, as the system needed to run continuously while minimizing power consumption. Optimizing the ESP32 sleep modes and sensor polling frequency was essential for long-term operation.
-
-Future development will focus on implementing directional detection using dual break beam sensors, which will require more sophisticated timing algorithms to determine whether the cat is entering or leaving the house.
-`,
-    results: `
-The Version 2 system with break beam sensors proved highly effective, providing reliable detection without false positives. Within the first two days of deployment, the system successfully detected and alerted me to the neighborhood cat's intrusion, allowing me to locate and remove the intruder from the backyard.
-
-The Telegram notification system provides excellent real-time monitoring capabilities, with timestamped alerts that help track the cat's movement patterns throughout the day. This data has been valuable for understanding feeding schedules and outdoor activity.
-
-The 3D printed housing has proven durable in outdoor conditions, protecting the electronics while maintaining proper sensor alignment. The modular design has made it easy to perform maintenance and upgrades as needed.
-
-The project successfully solved the original problem of unauthorized access while providing valuable insights into the cat's behavior patterns. The immediate success in catching the intruder cat validated the effectiveness of the monitoring approach.
-`,
+    gallery: [
+      "/images/ur5e-robot-setup.jpeg",
+      "/images/ur5e-robot-side-view.jpeg",
+      "/images/ur5e-math-operation.jpeg",
+      "/images/ur5e-complex-equation.jpeg",
+    ],
+    techStack: [
+      { name: "MATLAB", icon: "/images/matlab-logo.png" },
+      { name: "UR5e Robot", icon: "/images/solidworks-logo.png" },
+      { name: "RTDE Protocol", icon: "/images/matlab-logo.png" },
+      { name: "RVC Toolbox", icon: "/images/solidworks-logo.png" },
+    ],
+    challenges: [
+      "Implementing smooth trajectory generation for natural writing motion",
+      "Synchronizing pen lift/down operations with robot movement",
+      "Maintaining writing precision across different scales and orientations",
+      "Optimizing path planning to minimize writing time while ensuring quality",
+      "Handling real-time communication and error recovery with RTDE protocol",
+    ],
+    learnings: [
+      "Advanced robotics programming and motion control",
+      "Real-time communication protocols and system integration",
+      "Trajectory planning and smooth motion generation",
+      "Font rendering and vector graphics processing",
+      "Mathematical algorithm implementation for automated problem solving",
+    ],
   },
-]
+}
 
 export default function ProjectDetailClient() {
-  const router = useRouter()
-  const { id } = useParams()
-  const [project, setProject] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const params = useParams()
+  const projectId = params.id as string
+  const project = projectData[projectId as keyof typeof projectData]
 
-  // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false)
-  const [lightboxImages, setLightboxImages] = useState([])
   const [lightboxIndex, setLightboxIndex] = useState(0)
-  const [lightboxAltPrefix, setLightboxAltPrefix] = useState("")
+  const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({})
 
-  useEffect(() => {
-    // In a real app, you would fetch this data from an API
-    const projectId = Array.isArray(id) ? Number.parseInt(id[0]) : Number.parseInt(id as string)
-    const foundProject = projectsData.find((p) => p.id === projectId)
+  if (!project) {
+    return <div>Project not found</div>
+  }
 
-    if (foundProject) {
-      setProject(foundProject)
-    } else {
-      console.error(`Project with ID ${projectId} not found`)
-    }
-    setLoading(false)
-  }, [id])
-
-  const openLightbox = (images, index, altPrefix) => {
-    setLightboxImages(images)
+  const openLightbox = (index: number) => {
     setLightboxIndex(index)
-    setLightboxAltPrefix(altPrefix)
     setLightboxOpen(true)
   }
 
-  const closeLightbox = () => {
-    setLightboxOpen(false)
-  }
-
-  const nextImage = () => {
-    setLightboxIndex((prev) => (prev + 1) % lightboxImages.length)
-  }
-
-  const previousImage = () => {
-    setLightboxIndex((prev) => (prev - 1 + lightboxImages.length) % lightboxImages.length)
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    )
-  }
-
-  if (!project) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
-        <h1 className="text-2xl font-bold mb-4">Project not found</h1>
-        <Button asChild>
-          <Link href="/">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Projects
-          </Link>
-        </Button>
-      </div>
-    )
+  const toggleSection = (sectionTitle: string) => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [sectionTitle]: !prev[sectionTitle],
+    }))
   }
 
   return (
-    <>
-      <main className="min-h-screen pt-20 pb-16 overflow-x-hidden">
-        <div className="container mx-auto px-4">
-          <Button variant="ghost" className="mb-6" asChild>
-            <Link href="/" className="flex items-center">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Projects
-            </Link>
-          </Button>
-
-          {/* Special layout for Construction Project with full-width slider */}
-          {project.id === 1 ? (
-            <div className="space-y-8">
-              {/* Project Header */}
-              <div className="text-center max-w-4xl mx-auto">
-                <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
-                  {project.course && (
-                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
-                  )}
-                </div>
-
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-
-                <div className="flex flex-wrap justify-center gap-2 mb-8">
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              {/* Project Description */}
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-card dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-border mb-6">
-                  <div className="prose dark:prose-invert max-w-none">
-                    <p>{project.longDescription}</p>
-                  </div>
-                </div>
-
-                {project.liveUrl || project.githubUrl ? (
-                  <div className="flex flex-wrap justify-center gap-4 mb-8">
-                    {project.liveUrl && (
-                      <Button asChild>
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink size={16} />
-                          Live Demo
-                        </a>
-                      </Button>
-                    )}
-                    {project.githubUrl && (
-                      <Button variant="outline" asChild>
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <Github size={16} />
-                          View Code
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-                ) : null}
-              </div>
-              {/* Enhanced Before/After Transformation Slider */}
-              <div className="max-w-7xl mx-auto mb-12">
-                <EnhancedBeforeAfterSlider
-                  beforeImage="/images/construction-before-new.png"
-                  afterImage="/images/construction-after.jpg"
-                  beforeAlt="Before renovation - deteriorated condition"
-                  afterAlt="After renovation - completed home"
-                  title="Complete Transformation"
-                  description="Use the slider below to see the dramatic transformation from the deteriorated starting condition to the fully renovated modern home."
-                />
-              </div>
-              {/* Key Features, Skills & Tools, and Challenges Tabs */}
-              <div className="max-w-6xl mx-auto mb-8">
-                <Tabs defaultValue="features">
-                  <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="features">Key Features</TabsTrigger>
-                    <TabsTrigger value="technologies">Skills & Tools</TabsTrigger>
-                    <TabsTrigger value="challenges">Challenges</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="features" className="p-6 border rounded-md mt-2">
-                    <h2 className="text-xl font-bold mb-4">Key Features</h2>
-                    <ul className="space-y-2">
-                      {project.features.map((feature, index) => (
-                        <li key={index} className="flex items-start">
-                          <span className="mr-2 text-primary">•</span>
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </TabsContent>
-                  <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
-                    <h2 className="text-xl font-bold mb-4">Skills & Tools Used</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      {Object.entries(project.technologies).map(([category, items]) => (
-                        <div key={category}>
-                          <h3 className="font-bold mb-2 capitalize">{category.replace(/([A-Z])/g, " $1").trim()}</h3>
-                          <ul className="space-y-1">
-                            {items.map((item, index) => (
-                              <li key={index} className="flex items-start">
-                                <span className="mr-2 text-primary">•</span>
-                                <span>{item}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  </TabsContent>
-                  <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
-                    <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
-                    <div className="prose dark:prose-invert max-w-none">
-                      <p>{project.challenges}</p>
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
-
-              {/* Photo Galleries with Clear Grouping */}
-              <div className="space-y-32">
-                {/* Group 1: Construction Progress */}
-                <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
-                  <div className="max-w-6xl mx-auto">
-                    <h3 className="text-3xl font-bold mb-6 text-center">Construction Progress</h3>
-                    <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-center">
-                      Follow the journey from the initial stages to the near-complete exterior. Click any image to view
-                      it in full size.
-                    </p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {project.exteriorGallery.map((image, index) => (
-                        <div
-                          key={index}
-                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => openLightbox(project.exteriorGallery, index, "Construction progress")}
-                        >
-                          <Image
-                            src={image || "/placeholder.svg"}
-                            alt={`Construction progress ${index + 1}`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Group 2: Interior Finishes */}
-                <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
-                  <div className="max-w-6xl mx-auto">
-                    <h3 className="text-3xl font-bold mb-6 text-center">Interior Finishes</h3>
-                    <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-center">
-                      Explore the details of the newly renovated interior spaces, showcasing modern design and quality
-                      craftsmanship. Click any image to view it in full size.
-                    </p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {project.interiorGallery.map((image, index) => (
-                        <div
-                          key={index}
-                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => openLightbox(project.interiorGallery, index, "Interior finishes")}
-                        >
-                          <Image
-                            src={image || "/placeholder.svg"}
-                            alt={`Interior finish ${index + 1}`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Group 3: Finished Product Photos */}
-                {project.finishedProductGallery && project.finishedProductGallery.length > 0 && (
-                  <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
-                    <div className="max-w-6xl mx-auto">
-                      <h3 className="text-3xl font-bold mb-6 text-center">Finished Product Photos</h3>
-                      <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-center">
-                        Step inside and see the final results of the renovation. These photos highlight the completed
-                        interiors and overall quality of the finished home. Click any image to view it in full size.
-                      </p>
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {project.finishedProductGallery.map((image, index) => (
-                          <div
-                            key={index}
-                            className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                            onClick={() => openLightbox(project.finishedProductGallery, index, "Finished product")}
-                          >
-                            <Image
-                              src={image || "/placeholder.svg"}
-                              alt={`Finished product ${index + 1}`}
-                              fill
-                              className="object-cover"
-                              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Group 4: Miscellaneous Pictures */}
-                {project.miscellaneousGallery && project.miscellaneousGallery.length > 0 && (
-                  <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
-                    <div className="max-w-6xl mx-auto">
-                      <div className="text-center mb-6">
-                        <p className="text-lg text-foreground/80 mb-2 flex items-center justify-center">
-                          If you made it this far in the project it means you liked it!{" "}
-                          <Smile className="inline-block ml-1 h-5 w-5" />
-                        </p>
-                        <p className="text-foreground/70 max-w-3xl mx-auto">
-                          I hope you enjoy some more miscellaneous pictures I took.
-                        </p>
-                      </div>
-                      <h3 className="text-3xl font-bold mb-6 text-center">Miscellaneous Pictures</h3>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                        {project.miscellaneousGallery.map((image, index) => (
-                          <div
-                            key={index}
-                            className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                            onClick={() => openLightbox(project.miscellaneousGallery, index, "Miscellaneous picture")}
-                          >
-                            <Image
-                              src={image || "/placeholder.svg"}
-                              alt={`Miscellaneous picture ${index + 1}`}
-                              fill
-                              className="object-cover"
-                              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : project.id === 2 ? (
-            // Special layout for Micromouse project
-            <div className="space-y-12">
-              {/* Project Header */}
-              <div className="text-center max-w-4xl mx-auto">
-                <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
-                  {project.course && (
-                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
-                  )}
-                </div>
-
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-
-                <div className="flex flex-wrap justify-center gap-2 mb-8">
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Main Project Image */}
-              <div className="max-w-4xl mx-auto mb-12">
-                <div className="relative aspect-video rounded-lg overflow-hidden">
-                  <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
-                </div>
-              </div>
-
-              {/* Project Description */}
-              <div className="max-w-4xl mx-auto">
-                <div className="prose dark:prose-invert max-w-none mb-8">
-                  <p>{project.longDescription}</p>
-                </div>
-
-                {project.liveUrl || project.githubUrl ? (
-                  <div className="flex flex-wrap justify-center gap-4 mb-8">
-                    {project.liveUrl && (
-                      <Button asChild>
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink size={16} />
-                          Live Demo
-                        </a>
-                      </Button>
-                    )}
-                    {project.githubUrl && (
-                      <Button variant="outline" asChild>
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <Github size={16} />
-                          View Code
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-                ) : null}
-              </div>
-
-              {/* Video Demonstrations Section */}
-              <div className="max-w-6xl mx-auto mb-12">
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold mb-4">Project Demonstrations</h3>
-                  <p className="text-foreground/70 max-w-3xl mx-auto">
-                    Watch the micromouse robot in action, demonstrating key features like PID control and autonomous
-                    maze navigation.
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {/* Left column - First two videos */}
-                  <div className="space-y-8">
-                    {project.videoGallery.slice(0, 2).map((video, index) => (
-                      <div key={index} className="space-y-4">
-                        <VideoEmbed videoId={video.id} title={video.title} isShort={video.isShort} />
-                        <div>
-                          <h3 className="font-bold text-lg mb-2">{video.title}</h3>
-                          <p className="text-foreground/70 text-sm">{video.description}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Right column - PID video */}
-                  <div className="space-y-4">
-                    <VideoEmbed
-                      videoId={project.videoGallery[2].id}
-                      title={project.videoGallery[2].title}
-                      isShort={project.videoGallery[2].isShort}
-                    />
-                    <div>
-                      <h3 className="font-bold text-lg mb-2">{project.videoGallery[2].title}</h3>
-                      <p className="text-foreground/70 text-sm">{project.description}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Hardware and Software Galleries */}
-              <div className="max-w-6xl mx-auto">
-                <Tabs defaultValue="hardware" className="mb-12">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="hardware">Hardware</TabsTrigger>
-                    <TabsTrigger value="software">Software</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="hardware" className="mt-6">
-                    <div className="text-center mb-6">
-                      <h3 className="text-xl font-bold mb-2">Hardware Components</h3>
-                      <p className="text-foreground/70">
-                        Explore the physical components and assembly of the micromouse robot.
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {project.hardwareGallery.map((image, index) => (
-                        <div
-                          key={index}
-                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => openLightbox(project.hardwareGallery, index, "Hardware")}
-                        >
-                          <Image
-                            src={image || "/placeholder.svg"}
-                            alt={`Hardware ${index + 1}`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </TabsContent>
-                  <TabsContent value="software" className="mt-6">
-                    <div className="text-center mb-6">
-                      <h3 className="text-xl font-bold mb-2">Software Implementation</h3>
-                      <p className="text-foreground/70">
-                        View the code implementation, algorithms, and software architecture.
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {project.softwareGallery.map((image, index) => (
-                        <div
-                          key={index}
-                          className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => openLightbox(project.softwareGallery, index, "Software")}
-                        >
-                          <Image
-                            src={image || "/placeholder.svg"}
-                            alt={`Software ${index + 1}`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
-            </div>
-          ) : project.id === 4 ? (
-            // Special layout for Cat Door Monitoring System
-            <div className="space-y-12">
-              {/* Project Header */}
-              <div className="text-center max-w-4xl mx-auto">
-                <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
-                  {project.course && (
-                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
-                  )}
-                </div>
-
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-
-                <div className="flex flex-wrap justify-center gap-2 mb-8">
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Main Project Image */}
-              <div className="max-w-4xl mx-auto mb-12">
-                <div className="relative aspect-video rounded-lg overflow-hidden">
-                  <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
-                </div>
-              </div>
-
-              {/* Project Description */}
-              <div className="max-w-4xl mx-auto">
-                <div className="prose dark:prose-invert max-w-none mb-8">
-                  <p>{project.longDescription}</p>
-                </div>
-
-                {project.liveUrl || project.githubUrl ? (
-                  <div className="flex flex-wrap justify-center gap-4 mb-8">
-                    {project.liveUrl && (
-                      <Button asChild>
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink size={16} />
-                          Live Demo
-                        </a>
-                      </Button>
-                    )}
-                    {project.githubUrl && (
-                      <Button variant="outline" asChild>
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <Github size={16} />
-                          View Code
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-                ) : null}
-              </div>
-
-              {/* Video Demonstration Section */}
-              {project.videoGallery && project.videoGallery.length > 0 && (
-                <div className="max-w-4xl mx-auto mb-12">
-                  <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold mb-4">System Demonstration</h3>
-                    <p className="text-foreground/70 max-w-3xl mx-auto mb-4">
-                      Watch the Version 2 cat door monitoring system in action, demonstrating the break beam sensor
-                      detection and real-time notifications.
-                    </p>
-                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 max-w-2xl mx-auto">
-                      <p className="text-blue-800 dark:text-blue-200 text-center">
-                        Notice how the <span className="text-sky-400 font-medium">blue LED turns on</span> when the cat
-                        passes through.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    {project.videoGallery.map((video, index) => (
-                      <div key={index} className="space-y-4">
-                        <VideoEmbed videoId={video.id} title={video.title} isShort={video.isShort} />
-                        <div className="text-center">
-                          <h3 className="font-bold text-lg mb-2">{video.title}</h3>
-                          <p className="text-foreground/70">{video.description}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Project Evolution Story */}
-              <div className="max-w-6xl mx-auto mb-12">
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold mb-4">Project Evolution: From V1 to V2</h3>
-                  <p className="text-foreground/70 max-w-3xl mx-auto">
-                    Follow the development journey from the initial PIR sensor design to the final break beam sensor
-                    solution.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                  {/* Version 1 Story */}
-                  <div className="space-y-6">
-                    <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border border-red-200 dark:border-red-800">
-                      <h4 className="text-xl font-bold text-red-800 dark:text-red-200 mb-3">
-                        Version 1: PIR Sensor (Failed)
-                      </h4>
-                      <p className="text-red-700 dark:text-red-300 mb-4">
-                        The initial design used a PIR (Passive Infrared) sensor to detect motion through the cat door.
-                        However, this approach proved unreliable due to false triggers from small animals like
-                        cockroaches and activation when the door itself was opened.
-                      </p>
-                      <div
-                        className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                        onClick={() => openLightbox(["/images/cat-door-v1.jpeg"], 0, "Version 1 PIR sensor setup")}
-                      >
-                        <Image
-                          src="/images/cat-door-v1.jpeg"
-                          alt="Version 1 with PIR sensor"
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 1024px) 100vw, 50vw"
-                        />
-                      </div>
-                      <p className="text-sm text-red-600 dark:text-red-400 mt-2 italic">
-                        Click image to view full size - Version 1 setup with PIR sensor mounted above the cat door
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Version 2 Story */}
-                  <div className="space-y-6">
-                    <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
-                      <h4 className="text-xl font-bold text-green-800 dark:text-green-200 mb-3">
-                        Version 2: Break Beam Sensor (Success)
-                      </h4>
-                      <p className="text-green-700 dark:text-green-300 mb-4">
-                        The redesigned system uses break beam sensors that create an invisible infrared beam across the
-                        door opening. This provides much more precise detection with virtually no false positives,
-                        successfully solving the reliability issues of Version 1.
-                      </p>
-                      <div
-                        className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                        onClick={() =>
-                          openLightbox(["/images/cat-door-v2-system.png"], 0, "Version 2 break beam sensor system")
-                        }
-                      >
-                        <Image
-                          src="/images/cat-door-v2-system.png"
-                          alt="Version 2 with break beam sensors and ESP32"
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 1024px) 100vw, 50vw"
-                        />
-                      </div>
-                      <p className="text-sm text-green-600 dark:text-green-400 mt-2 italic">
-                        Click image to view full size - Version 2 system with ESP32, break beam sensors, and Arduino IDE
-                        code
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Design and Manufacturing Process */}
-              <div className="max-w-6xl mx-auto mb-12">
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold mb-4">Design & Manufacturing Process</h3>
-                  <p className="text-foreground/70 max-w-3xl mx-auto">
-                    The project required custom 3D printed housing to protect the electronics while maintaining sensor
-                    alignment.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="space-y-3">
-                    <div
-                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => openLightbox(["/images/cat-door-cad-design.jpeg"], 0, "CAD design in Fusion360")}
-                    >
-                      <Image
-                        src="/images/cat-door-cad-design.jpeg"
-                        alt="CAD design in Fusion360"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    </div>
-                    <div className="text-center">
-                      <h4 className="font-bold mb-1">CAD Design</h4>
-                      <p className="text-sm text-foreground/70">3D modeling the sensor housing in Fusion360</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div
-                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => openLightbox(["/images/cat-door-cad-slicing.jpeg"], 0, "3D printing preparation")}
-                    >
-                      <Image
-                        src="/images/cat-door-cad-slicing.jpeg"
-                        alt="3D printing slicing preparation"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    </div>
-                    <div className="text-center">
-                      <h4 className="font-bold mb-1">Print Preparation</h4>
-                      <p className="text-sm text-foreground/70">Slicing software with support structures</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div
-                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => openLightbox(["/images/cat-door-3d-printed.png"], 0, "3D printed housing")}
-                    >
-                      <Image
-                        src="/images/cat-door-3d-printed.png"
-                        alt="3D printed housing on printer bed"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    </div>
-                    <div className="text-center">
-                      <h4 className="font-bold mb-1">3D Printing</h4>
-                      <p className="text-sm text-foreground/70">Completed housing on Bambu Lab printer</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div
-                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() =>
-                        openLightbox(["/images/cat-door-telegram-notifications.png"], 0, "Telegram notifications")
-                      }
-                    >
-                      <Image
-                        src="/images/cat-door-telegram-notifications.png"
-                        alt="Telegram bot notifications on phone"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    </div>
-                    <div className="text-center">
-                      <h4 className="font-bold mb-1">Real-time Alerts</h4>
-                      <p className="text-sm text-foreground/70">Telegram notifications showing detection events</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Results and Success Story */}
-              <div className="max-w-4xl mx-auto mb-12">
-                <div className="bg-primary/5 p-8 rounded-lg border border-primary/20">
-                  <h3 className="text-2xl font-bold mb-4 text-center">Immediate Success</h3>
-                  <div className="prose dark:prose-invert max-w-none text-center">
-                    <p className="text-lg mb-4">
-                      The project was incredibly rewarding because within the first 2 days of deployment, I immediately
-                      caught the neighborhood cat coming into the house and found him in the backyard!
-                    </p>
-                    <p className="text-foreground/80">
-                      The system now provides reliable monitoring of our cat's movement patterns while successfully
-                      preventing unauthorized access from the intruder cat. The real-time Telegram notifications allow
-                      us to track feeding schedules and ensure our cat's food is protected.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Future Development */}
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-muted/30 p-8 rounded-lg">
-                  <h3 className="text-2xl font-bold mb-4 text-center">Future Enhancements</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="font-bold mb-2 text-primary">Next Version Features</h4>
-                      <ul className="space-y-2 text-foreground/80">
-                        <li>• Double break beam sensors for directional detection</li>
-                        <li>• Determine if cat is entering or leaving</li>
-                        <li>• RFID tags for individual cat identification</li>
-                        <li>• Camera-based identification using computer vision</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="font-bold mb-2 text-primary">Technical Improvements</h4>
-                      <ul className="space-y-2 text-foreground/80">
-                        <li>• Enhanced weatherproofing for outdoor durability</li>
-                        <li>• Battery backup for continuous operation</li>
-                        <li>• Data logging for behavior analysis</li>
-                        <li>• Integration with home automation systems</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : project.id === 3 ? (
-            // Storytelling layout for PC Cooling project
-            <div className="space-y-12">
-              {/* Project Header */}
-              <div className="text-center max-w-4xl mx-auto">
-                <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
-                  {project.course && (
-                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
-                  )}
-                </div>
-
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-
-                <div className="flex flex-wrap justify-center gap-2 mb-8">
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Story Timeline */}
-              <div className="max-w-6xl mx-auto">
-                {/* Background that covers story steps only */}
-                <div className="relative bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900/30 dark:to-slate-800/30 rounded-2xl p-8 mb-16">
-                  <div className="relative">
-                    {/* Main timeline line - properly positioned and sized */}
-                    <div
-                      className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/30 hidden md:block"
-                      style={{
-                        top: "3rem",
-                        height: `${project.storySteps.length * 24}rem`,
-                      }}
-                    ></div>
-
-                    {/* Story steps */}
-                    {project.storySteps.map((step, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-100px" }}
-                        transition={{ duration: 0.3, delay: index * 0.05 }}
-                        className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
-                      >
-                        {/* Timeline dot - desktop */}
-                        <div className="absolute left-1/2 transform -translate-x-1/2 top-12 w-6 h-6 rounded-full bg-primary border-4 border-background z-10 hidden md:block"></div>
-
-                        {/* Content */}
-                        <div
-                          className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}
-                        >
-                          {/* Text content */}
-                          <div
-                            className={`${index % 2 === 0 ? "md:order-2" : "md:order-1"} ${index % 2 === 0 ? "md:pr-16" : "md:pl-16"}`}
-                          >
-                            <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
-                            <p className="text-foreground/80 mb-4">{step.description}</p>
-                            {step.highlight && (
-                              <div className="bg-primary/10 border-l-4 border-primary p-4 rounded">
-                                <p className="italic text-foreground/90">{step.highlight}</p>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Image content */}
-                          <div className={`${index % 2 === 0 ? "md:order-1" : "md:order-2"}`}>
-                            <div
-                              className={`relative ${step.aspectRatio || "aspect-video"} rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer bg-muted/20`}
-                            >
-                              <Image
-                                src={step.image || "/placeholder.svg"}
-                                alt={step.title}
-                                fill
-                                className="object-contain p-2"
-                                onClick={() => step.image && openLightbox([step.image], 0, step.title)}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Gap section - no timeline line */}
-                <div className="mb-24"></div>
-
-                {/* Before/After Installation Comparison - Standalone section */}
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
-                  className="relative mb-24"
-                >
-                  {/* Before/After Slider Section */}
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold mb-6">Installation Comparison</h3>
-                    <p className="text-foreground/70 mb-6 max-w-3xl mx-auto">
-                      Use the slider below to compare the PC before and after installing the custom cooling ducts.
-                      Notice how the ducts create a direct airflow path from the front intake fans to the GPU.
-                    </p>
-                    <div className="relative w-full max-w-6xl mx-auto h-[500px] md:h-[700px] lg:h-[800px] bg-muted/20 rounded-lg overflow-hidden">
-                      <BeforeAfterSlider
-                        beforeImage="/images/pc-without-ducting.jpeg"
-                        afterImage="/images/pc-cooling-installed.jpeg"
-                        beforeAlt="PC without cooling ducts"
-                        afterAlt="PC with cooling ducts installed"
-                        className="h-full w-full"
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Testing Methodology Section */}
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.3, delay: 0.12 }}
-                  className="relative mb-24"
-                >
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold mb-6">Testing Methodology</h3>
-                    <div className="max-w-4xl mx-auto bg-muted/30 p-8 rounded-lg">
-                      <p className="text-foreground/80 mb-4">
-                        To validate the effectiveness of the cooling ducts, comprehensive testing was conducted under
-                        controlled conditions. Both configurations were tested in an identical setup within a 21°C room
-                        temperature environment.
-                      </p>
-                      <p className="text-foreground/80 mb-4">
-                        The testing utilized MSI Afterburner for real-time monitoring and data logging, while Kombustor
-                        v4.1.31.0 was used for stress testing the GPU. Each test session lasted 8 minutes to ensure the
-                        system reached thermal steady state.
-                      </p>
-                      <p className="text-foreground/80 mb-4">
-                        The results showed a significant 7°C temperature difference at steady state between the ducted
-                        and non-ducted configurations. Importantly, both the core clock and memory clock frequencies
-                        remained stable throughout testing, indicating no thermal throttling occurred in either
-                        configuration.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Test Results Comparison */}
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.3, delay: 0.13 }}
-                  className="relative mb-24"
-                >
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold mb-6">Performance Test Results</h3>
-                    <p className="text-foreground/70 mb-8 max-w-3xl mx-auto">
-                      Side-by-side comparison of GPU monitoring data showing temperature, usage, clock speeds, and power
-                      consumption during identical 8-minute stress tests.
-                    </p>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-                      {/* With Ducting Results */}
-                      <div className="space-y-4">
-                        <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-lg bg-muted/20">
-                          <Image
-                            src="/images/gpu-test-with-ducting.png"
-                            alt="GPU monitoring data with ducted cooling"
-                            fill
-                            className="object-contain p-2"
-                            onClick={() =>
-                              openLightbox(["/images/gpu-test-with-ducting.png"], 0, "GPU test with ducting")
-                            }
-                          />
-                        </div>
-                        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                          <h4 className="font-bold text-green-800 dark:text-green-200 mb-2">With Ducted Cooling</h4>
-                          <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
-                            <li>• Max Temperature: 63°C</li>
-                            <li>• Core Clock: 2610 MHz (stable)</li>
-                            <li>• Memory Clock: 10502 MHz</li>
-                            <li>• Power Draw: ~197W</li>
-                          </ul>
-                        </div>
-                      </div>
-
-                      {/* Without Ducting Results */}
-                      <div className="space-y-4">
-                        <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-lg bg-muted/20">
-                          <Image
-                            src="/images/gpu-test-without-ducting.png"
-                            alt="GPU monitoring data without ducted cooling"
-                            fill
-                            className="object-contain p-2"
-                            onClick={() =>
-                              openLightbox(["/images/gpu-test-without-ducting.png"], 0, "GPU test without ducting")
-                            }
-                          />
-                        </div>
-                        <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
-                          <h4 className="font-bold text-red-800 dark:text-red-200 mb-2">Without Ducted Cooling</h4>
-                          <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
-                            <li>• Max Temperature: 70°C</li>
-                            <li>• Core Clock: 2530 MHz (stable)</li>
-                            <li>• Memory Clock: 10502 MHz</li>
-                            <li>• Power Draw: ~197W</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-8 max-w-4xl mx-auto bg-primary/5 p-6 rounded-lg border border-primary/20">
-                      <h4 className="text-lg font-bold mb-3">Key Benefits</h4>
-                      <p className="text-foreground/80">
-                        The 7°C temperature reduction is particularly beneficial because it allows the GPU's cooling
-                        fans to operate at lower speeds while maintaining the same thermal performance. This results in
-                        significantly quieter operation during demanding workloads, improving the overall user
-                        experience without sacrificing performance.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          ) : (
-            /* Regular layout for other projects */
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-              <div className="lg:col-span-1">
-                <div className="flex flex-wrap items-center gap-3 mb-2">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
-                  {project.course && (
-                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
-                  )}
-                </div>
-
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="prose dark:prose-invert max-w-none mb-8">
-                  <p>{project.longDescription}</p>
-                </div>
-
-                {project.liveUrl || project.githubUrl ? (
-                  <div className="flex flex-wrap gap-4 mb-8">
-                    {project.liveUrl && (
-                      <Button asChild>
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink size={16} />
-                          Live Demo
-                        </a>
-                      </Button>
-                    )}
-                    {project.githubUrl && (
-                      <Button variant="outline" asChild>
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <Github size={16} />
-                          View Code
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="lg:col-span-1">
-                <div className="relative aspect-video lg:aspect-square rounded-lg overflow-hidden">
-                  <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {project.id !== 1 && (
-            <Tabs defaultValue="features" className="mb-12 mt-16">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="features">Key Features</TabsTrigger>
-                <TabsTrigger value="technologies">Technologies</TabsTrigger>
-                <TabsTrigger value="challenges">Challenges</TabsTrigger>
-              </TabsList>
-              <TabsContent value="features" className="p-6 border rounded-md mt-2">
-                <h2 className="text-xl font-bold mb-4">Key Features</h2>
-                <ul className="space-y-2">
-                  {project.features.map((feature, index) => (
-                    <li key={index} className="flex items-start">
-                      <span className="mr-2 text-primary">•</span>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </TabsContent>
-              <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
-                <h2 className="text-xl font-bold mb-4">Technologies Used</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {Object.entries(project.technologies).map(([category, items]) => (
-                    <div key={category}>
-                      <h3 className="font-bold mb-2 capitalize">{category.replace(/([A-Z])/g, " $1").trim()}</h3>
-                      <ul className="space-y-1">
-                        {items.map((item, index) => (
-                          <li key={index} className="flex items-start">
-                            <span className="mr-2 text-primary">•</span>
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </TabsContent>
-              <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
-                <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
-                <div className="prose dark:prose-invert max-w-none">
-                  <p>{project.challenges}</p>
-                </div>
-              </TabsContent>
-            </Tabs>
-          )}
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src={project.heroImage || "/placeholder.svg"}
+            alt={project.title}
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/50" />
         </div>
-      </main>
+        <div className="relative z-10 text-center text-white px-4">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">{project.title}</h1>
+          <p className="text-xl md:text-2xl max-w-3xl mx-auto">{project.tagline}</p>
+        </div>
+      </section>
 
-      {/* Image Lightbox */}
+      {/* Introduction */}
+      <section className="py-16 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <p className="text-lg md:text-xl leading-relaxed text-foreground/80">{project.description}</p>
+        </div>
+      </section>
+
+      {/* Before/After Slider - Only for projects that have it */}
+      {project.beforeAfter && (
+        <section className="py-16 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <h2 className="text-3xl font-bold text-center mb-12">Before & After</h2>
+            <EnhancedBeforeAfterSlider
+              beforeImage={project.beforeAfter.before}
+              afterImage={project.beforeAfter.after}
+              beforeLabel="Before"
+              afterLabel="After"
+            />
+          </div>
+        </section>
+      )}
+
+      {/* Collapsible Sections - Only for UR5e project */}
+      {project.collapsibleSections && (
+        <section className="py-16 px-4 bg-muted/30">
+          <div className="container mx-auto max-w-4xl">
+            <h2 className="text-3xl font-bold text-center mb-12">Technical Details</h2>
+            <div className="space-y-4">
+              {project.collapsibleSections.map((section, index) => (
+                <Card key={index}>
+                  <Collapsible open={openSections[section.title]} onOpenChange={() => toggleSection(section.title)}>
+                    <CollapsibleTrigger asChild>
+                      <div className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/50 transition-colors">
+                        <h3 className="text-xl font-semibold">{section.title}</h3>
+                        {openSections[section.title] ? (
+                          <ChevronUp className="h-5 w-5" />
+                        ) : (
+                          <ChevronDown className="h-5 w-5" />
+                        )}
+                      </div>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="px-6 pb-6">
+                        <p className="text-foreground/80 leading-relaxed">{section.content}</p>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Project Story Timeline - For projects with story */}
+      {project.story && (
+        <section className="py-16 px-4">
+          <div className="container mx-auto max-w-6xl">
+            <h2 className="text-3xl font-bold text-center mb-16">Project Journey</h2>
+
+            <div className="relative">
+              {/* Timeline line - hidden on mobile, visible on desktop */}
+              <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/20 h-full"></div>
+
+              {project.story.map((step, index) => (
+                <div key={index} className="relative mb-12 md:mb-16">
+                  {/* Timeline dot - hidden on mobile, visible on desktop */}
+                  <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-primary rounded-full border-4 border-background z-10"></div>
+
+                  <div
+                    className={`flex flex-col md:flex-row items-center gap-8 ${
+                      index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                    }`}
+                  >
+                    <div className="w-full md:w-1/2">
+                      <div className="relative h-64 md:h-80 rounded-lg overflow-hidden">
+                        <Image src={step.image || "/placeholder.svg"} alt={step.title} fill className="object-cover" />
+                      </div>
+                    </div>
+
+                    <div className="w-full md:w-1/2 space-y-4">
+                      <h3 className="text-2xl font-bold">{step.title}</h3>
+                      <p className="text-lg text-primary font-medium">{step.description}</p>
+                      <p className="text-foreground/70 leading-relaxed">{step.details}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Image Gallery */}
+      <section className="py-16 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-6xl">
+          <h2 className="text-3xl font-bold text-center mb-12">Project Gallery</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {project.gallery.map((image, index) => (
+              <div
+                key={index}
+                className="relative h-64 rounded-lg overflow-hidden cursor-pointer group"
+                onClick={() => openLightbox(index)}
+              >
+                <Image
+                  src={image || "/placeholder.svg"}
+                  alt={`Gallery image ${index + 1}`}
+                  fill
+                  className="object-cover transition-transform group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Tech Stack */}
+      <section className="py-16 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold text-center mb-12">Technologies Used</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {project.techStack.map((tech, index) => (
+              <div key={index} className="text-center">
+                <div className="relative w-16 h-16 mx-auto mb-4">
+                  <Image src={tech.icon || "/placeholder.svg"} alt={tech.name} fill className="object-contain" />
+                </div>
+                <p className="font-medium">{tech.name}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Challenges & Learnings */}
+      <section className="py-16 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-12">
+            <div>
+              <h2 className="text-3xl font-bold mb-8">Challenges</h2>
+              <ul className="space-y-4">
+                {project.challenges.map((challenge, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-destructive rounded-full mt-2 flex-shrink-0" />
+                    <p className="text-foreground/80">{challenge}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h2 className="text-3xl font-bold mb-8">Key Learnings</h2>
+              <ul className="space-y-4">
+                {project.learnings.map((learning, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <p className="text-foreground/80">{learning}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Lightbox */}
       <ImageLightbox
-        images={lightboxImages}
-        currentIndex={lightboxIndex}
+        images={project.gallery}
         isOpen={lightboxOpen}
-        onClose={closeLightbox}
-        onNext={nextImage}
-        onPrevious={previousImage}
-        altPrefix={lightboxAltPrefix}
+        currentIndex={lightboxIndex}
+        onClose={() => setLightboxOpen(false)}
+        onNext={() => setLightboxIndex((prev) => (prev + 1) % project.gallery.length)}
+        onPrev={() => setLightboxIndex((prev) => (prev - 1 + project.gallery.length) % project.gallery.length)}
       />
-    </>
+    </div>
   )
 }

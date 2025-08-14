@@ -48,6 +48,15 @@ const projects = [
     tags: ["ESP32", "IoT", "Arduino", "3D Printing", "Telegram Bot", "Break Beam Sensors"],
     githubUrl: "#",
   },
+  {
+    id: 5,
+    title: "UR5e Robotic Writing System",
+    description:
+      "MATLAB RTDE program controlling a UR5e robot to trace digits, apply transformations, and render mathematical operations with precise motion control.",
+    image: "/images/ur5e-math-operation.jpeg",
+    tags: ["MATLAB", "UR5e", "Robotics", "RVC Toolbox", "Motion Control", "RTDE"],
+    githubUrl: "#",
+  },
 ]
 
 export default function Projects() {
@@ -111,8 +120,8 @@ export default function Projects() {
                   </div>
 
                   <div className="flex flex-wrap gap-4 mt-auto">
-                    {project.id === 1 || project.id === 3 ? (
-                      // For construction project and PC cooling project, don't show GitHub button
+                    {project.id === 1 || project.id === 3 || project.id === 5 ? (
+                      // For construction, PC cooling, and UR5e projects, don't show GitHub button
                       <div className="ml-auto bg-slate-700 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors duration-300 flex items-center gap-2 font-medium">
                         View Details
                         <ArrowRight size={16} />
@@ -122,7 +131,7 @@ export default function Projects() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-2 bg-transparent"
                           onClick={(e) => handleGithubClick(e, project.githubUrl)}
                         >
                           <Github size={16} />
