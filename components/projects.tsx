@@ -103,6 +103,7 @@ export default function Projects() {
                     alt={project.title}
                     fill
                     className="object-contain sm:object-cover transition-transform group-hover:scale-105 duration-300"
+                    loading="lazy"
                   />
                 </div>
                 <CardContent className="flex flex-col flex-grow p-6">

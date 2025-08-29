@@ -32,7 +32,14 @@ export default function Hero() {
           <div className="relative w-64 h-64 lg:w-80 lg:h-80">
             <div className="absolute inset-0 border-4 border-primary translate-x-4 translate-y-4 rounded-full"></div>
             <div className="relative w-full h-full overflow-hidden rounded-full border-4 border-white shadow-2xl">
-              <Image src="/images/michael-profile.jpg" alt="Michael Lo Russo" fill className="object-cover" priority />
+              <Image
+                src="/images/michael-profile.jpg"
+                alt="Michael Lo Russo"
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 256px, 320px"
+              />
             </div>
           </div>
         </motion.div>

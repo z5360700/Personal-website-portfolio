@@ -200,10 +200,10 @@ export default function About() {
               ideas clearly and work effectively in a team.
             </p>
             <p className="text-foreground/80 leading-relaxed">
-              When I&apos;m not messing around with electronics, you&apos;ll find me at the gym or playing Marvel
-              Rivals. My next big goal is to step into an engineering role where I can collaborate with others, keep
-              learning, and build solutions that genuinely help people. I can&apos;t wait to see where this journey
-              takes me and to keep growing both personally and professionally.
+              When I&apos;m not messing around with electronics, you&apos;ll find me at the gym or playing Mario Kart.
+              My next big goal is to step into an engineering role where I can collaborate with others, keep learning,
+              and build solutions that genuinely help people. I can&apos;t wait to see where this journey takes me and
+              to keep growing both personally and professionally.
             </p>
 
             <div className="flex flex-wrap gap-4 pt-4">
@@ -216,7 +216,7 @@ export default function About() {
                 title="C++"
               >
                 <svg viewBox="0 0 24 24" className="w-8 h-8" fill="#00599C">
-                  <path d="M22.394 6c-.167-.29-.398-.543-.652-.69L12.926.22c-.509-.294-1.34-.294-1.848 0L2.26 5.31c-.508.293-.923 1.013-.923 1.6v10.18c0 .294.104.62.271.91.167.29.398.543.652.69l8.816 5.09c.508.293 1.34.293 1.848 0l8.816-5.09c.254-.147.485-.4.652-.69.167-.29.27-.616.27-.91V6.91c.003-.294-.1-.62-.268-.91zM12 19.109c-3.92 0-7.109-3.189-7.109-7.109S8.08 4.891 12 4.891a7.133 7.133 0 016.156 3.552l-3.076 1.781A3.567 3.567 0 0012 8.445c-1.96 0-3.554 1.595-3.554 3.555S10.04 15.555 12 15.555a3.57 3.57 0 003.08-1.778l3.077 1.80A7.135 7.135 0 0112 19.109zm7.109-6.714h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79v.79zm2.962 0h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79v.79z" />
+                  <path d="M22.394 6c-.167-.29-.398-.543-.652-.69L12.926.22c-.509-.294-1.34-.294-1.848 0L2.26 5.31c-.508.293-.923 1.013-.923 1.6v10.18c0 .294.104.62.271.91.167.29.398.543.652.69l8.816 5.09c.508.293 1.34.293 1.848 0l8.816-5.09c.254-.147.485-.4.652-.69.167-.29.27-.616.27-.91V6.91c.003-.294-.1-.62-.268-.91zM12 19.109c-3.92 0-7.109-3.189-7.109-7.109S8.08 4.891 12 4.891a7.133 7.133 0 016.156 3.552l-3.076 1.781A3.567 3.567 0 0012 8.445c-1.96 0-3.554 1.595-3.554 3.555S10.04 15.555 12 15.555a3.57 3.57 0 003.08-1.778l3.077 1.80A7.135 7.135 0 0112 19.109zm7.109-6.714h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79v.79z" />
                 </svg>
               </motion.div>
 
