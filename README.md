@@ -1,30 +1,46 @@
-# Basic portfolio website
+# Michael Lo Russo - Portfolio Website
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+A modern, responsive portfolio website built with Next.js, TypeScript, and Tailwind CSS.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/lorussom28-7667s-projects/v0-basic-portfolio-website)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/iLjrL5eEuyV)
+## Features
 
-## Overview
+- **Responsive Design**: Optimized for all device sizes
+- **Modern UI**: Clean, professional design with smooth animations
+- **Project Showcase**: Detailed project pages with image galleries
+- **Contact Form**: Functional contact form with EmailJS integration
+- **Dark/Light Mode**: Theme switching capability
+- **Performance Optimized**: Fast loading with Next.js optimizations
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+## Tech Stack
 
-## Deployment
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Email**: EmailJS
+- **Deployment**: Vercel
 
-Your project is live at:
+## Getting Started
 
-**[https://vercel.com/lorussom28-7667s-projects/v0-basic-portfolio-website](https://vercel.com/lorussom28-7667s-projects/v0-basic-portfolio-website)**
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Run the development server: `npm run dev`
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Build your app
+## Project Structure
 
-Continue building your app on:
+\`\`\`
+├── app/                    # Next.js app directory
+├── components/            # React components
+├── public/               # Static assets
+├── lib/                  # Utility functions
+└── styles/              # Global styles
+\`\`\`
 
-**[https://v0.dev/chat/projects/iLjrL5eEuyV](https://v0.dev/chat/projects/iLjrL5eEuyV)**
+## Contact
 
-## How It Works
-
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+- Email: lorussom28@gmail.com
+- LinkedIn: [michael-lo-russo](https://www.linkedin.com/in/michael-lo-russo/)
+- Location: Sydney, Australia

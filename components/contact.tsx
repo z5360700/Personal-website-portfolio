@@ -81,7 +81,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="py-20">
+    <section id="contact" className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Get In Touch</h2>
@@ -100,7 +100,7 @@ export default function Contact() {
           >
             <Card className="h-full">
               <CardContent className="p-6 space-y-6 h-full flex flex-col">
-                <h3 className="text-xl font-bold mb-4">Contact Information</h3>
+                <h3 className="text-xl font-bold mb-4">Let&apos;s Connect</h3>
 
                 <div className="flex items-start gap-4">
                   <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -128,23 +128,20 @@ export default function Contact() {
                 </div>
 
                 <div className="pt-4 mt-auto">
-                  <h4 className="font-medium mb-3">Connect with me</h4>
-                  <div className="flex gap-4">
-                    <a
-                      href="https://www.linkedin.com/in/michael-lo-russo/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 bg-muted rounded-full hover:bg-primary/20 transition-colors"
-                    >
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path
-                          fillRule="evenodd"
-                          d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </a>
-                  </div>
+                  <a
+                    href="https://www.linkedin.com/in/michael-lo-russo/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex p-2 bg-muted rounded-full hover:bg-primary/20 transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        fillRule="evenodd"
+                        d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </a>
                 </div>
               </CardContent>
             </Card>
@@ -200,7 +197,7 @@ export default function Contact() {
                       name="message"
                       value={formData.message}
                       onChange={handleChange}
-                      placeholder="Your message here..."
+                      placeholder="Send me a message for fun lol"
                       rows={5}
                       required
                       disabled={isSubmitting}
@@ -220,7 +217,7 @@ export default function Contact() {
                   {/* Status Messages */}
                   {submitStatus === "success" && (
                     <div className="text-green-600 text-center p-3 bg-green-50 rounded-lg">
-                      ✅ Thank you for your message! I'll get back to you soon.
+                      ✅ Thank you for your message! I&apos;ll get back to you soon.
                     </div>
                   )}
                   {submitStatus === "error" && (

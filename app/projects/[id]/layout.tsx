@@ -1,12 +1,15 @@
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
+import type React from "react"
+import type { Metadata } from "next"
 
-export default function ProjectLayout({ children }) {
-  return (
-    <>
-      <Navbar />
-      {children}
-      <Footer />
-    </>
-  )
+export const metadata: Metadata = {
+  title: "Project Details - Michael Lo Russo",
+  description: "Detailed view of engineering projects by Michael Lo Russo",
+}
+
+export default function ProjectLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return <>{children}</>
 }

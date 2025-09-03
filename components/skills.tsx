@@ -3,68 +3,34 @@
 import { useRef } from "react"
 import { useInView } from "framer-motion"
 import { motion } from "framer-motion"
-import { Code2, Hammer, Wrench, Settings, Layers3, CircuitBoard, Building, Cog } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Code, Wrench, Cpu, Palette } from "lucide-react"
 
-const skills = [
+const skillCategories = [
   {
-    category: "Programming & Software",
-    icon: <Code2 className="w-6 h-6" />,
-    items: ["C++", "Python", "MATLAB", "Arduino IDE", "OpenCV", "Git", "Visual Studio Code", "Embedded Systems"],
+    title: "Programming",
+    icon: <Code className="w-6 h-6" />,
+    skills: ["C++", "Python", "MATLAB", "JavaScript", "TypeScript"],
+    color: "text-blue-500",
   },
   {
-    category: "CAD & 3D Design",
-    icon: <Layers3 className="w-6 h-6" />,
-    items: ["Fusion360", "SolidWorks", "3D Modeling", "Parametric Design", "Assembly Design", "Technical Drawings"],
-  },
-  {
-    category: "Manufacturing & Fabrication",
-    icon: <Settings className="w-6 h-6" />,
-    items: ["3D Printing (PLA/ABS)", "Bambu Studio", "Additive Manufacturing", "Prototyping", "Material Selection"],
-  },
-  {
-    category: "Electronics & Robotics",
-    icon: <CircuitBoard className="w-6 h-6" />,
-    items: ["Arduino", "ESP32", "Microcontrollers", "Sensors (LiDAR, IMU, Break Beam)", "Motor Control", "IoT Systems"],
-  },
-  {
-    category: "Construction & Building",
-    icon: <Building className="w-6 h-6" />,
-    items: [
-      "Timber Framing",
-      "Electrical Installation",
-      "Plumbing Systems",
-      "Project Management",
-      "Building Codes",
-      "Safety Standards",
-    ],
-  },
-  {
-    category: "Tools & Equipment",
-    icon: <Hammer className="w-6 h-6" />,
-    items: ["Power Tools", "Hand Tools", "Measuring Equipment", "Oscilloscope", "Multimeter", "Safety Equipment"],
-  },
-  {
-    category: "Engineering Analysis",
-    icon: <Cog className="w-6 h-6" />,
-    items: [
-      "Thermal Management",
-      "Airflow Analysis",
-      "PID Control",
-      "Sensor Fusion",
-      "Path Planning (BFS)",
-      "Computer Vision",
-    ],
-  },
-  {
-    category: "Professional Skills",
+    title: "Engineering Tools",
     icon: <Wrench className="w-6 h-6" />,
-    items: [
-      "Problem Solving",
-      "Project Coordination",
-      "Technical Communication",
-      "Team Collaboration",
-      "Quality Assurance",
-    ],
+    skills: ["SolidWorks", "Fusion 360", "AutoCAD", "3D Printing", "CNC"],
+    color: "text-green-500",
+  },
+  {
+    title: "Electronics",
+    icon: <Cpu className="w-6 h-6" />,
+    skills: ["Arduino", "Raspberry Pi", "PCB Design", "Sensors", "IoT"],
+    color: "text-purple-500",
+  },
+  {
+    title: "Design",
+    icon: <Palette className="w-6 h-6" />,
+    skills: ["UI/UX", "Figma", "Adobe Creative Suite", "Prototyping"],
+    color: "text-orange-500",
   },
 ]
 
@@ -73,69 +39,39 @@ export default function Skills() {
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
   return (
-    <section id="skills" className="py-20 bg-muted/30">
+    <section id="skills" className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Skills & Technologies</h2>
           <div className="w-20 h-1 bg-primary mx-auto mb-6"></div>
           <p className="max-w-2xl mx-auto text-foreground/80">
-            Here are the engineering skills, technologies, and tools I use to bring ideas from concept to reality.
+            A comprehensive overview of my technical skills and the tools I use to bring ideas to life.
           </p>
         </div>
 
-        <div ref={ref} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {skills.map((skill, index) => (
+        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {skillCategories.map((category, index) => (
             <motion.div
-              key={skill.category}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              key={category.title}
+              initial={{ opacity: 0, y: 50 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-background rounded-lg p-6 shadow-sm border hover:shadow-md transition-shadow duration-300"
             >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-primary/10 rounded-lg text-primary">{skill.icon}</div>
-                <h3 className="text-lg font-bold">{skill.category}</h3>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {skill.items.map((item) => (
-                  <span
-                    key={item}
-                    className="bg-muted px-3 py-1 rounded-full text-sm hover:bg-primary/10 transition-colors duration-200"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
+              <Card className="h-full hover:shadow-lg transition-shadow duration-300">
+                <CardContent className="p-6">
+                  <div className={`${category.color} mb-4`}>{category.icon}</div>
+                  <h3 className="text-xl font-bold mb-4">{category.title}</h3>
+                  <div className="space-y-2">
+                    {category.skills.map((skill) => (
+                      <Badge key={skill} variant="secondary" className="mr-2 mb-2">
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </motion.div>
           ))}
-        </div>
-
-        {/* Additional Skills Highlight */}
-        <div className="mt-16 max-w-4xl mx-auto">
-          <div className="bg-background rounded-lg p-8 shadow-sm border">
-            <h3 className="text-2xl font-bold mb-6 text-center">Core Competencies</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h4 className="text-lg font-semibold mb-3 text-primary">Engineering & Design</h4>
-                <ul className="space-y-2 text-foreground/80">
-                  <li>• Mechatronics system integration and sensor fusion</li>
-                  <li>• Autonomous robotics with maze navigation algorithms</li>
-                  <li>• Thermal management and airflow optimization</li>
-                  <li>• IoT monitoring systems with real-time notifications</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-lg font-semibold mb-3 text-primary">Project Experience</h4>
-                <ul className="space-y-2 text-foreground/80">
-                  <li>• Complete residential construction and renovation</li>
-                  <li>• Micromouse robot with LiDAR and computer vision</li>
-                  <li>• Custom PC cooling ducts with 7°C temperature reduction</li>
-                  <li>• ESP32-based cat monitoring with Telegram integration</li>
-                </ul>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>

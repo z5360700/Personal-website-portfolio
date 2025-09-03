@@ -114,9 +114,6 @@ export default function Hero() {
 
       {/* Wavy lines background */}
       <WavyLines />
-
-      {/* Background gradient - updated to work with new background */}
-      <div className="absolute inset-0 -z-10 h-full w-full bg-background [background:radial-gradient(125%_125%_at_50%_10%,hsl(var(--background))_40%,#3b82f6_100%)] dark:[background:radial-gradient(125%_125%_at_50%_10%,hsl(var(--background))_40%,#2563eb_100%)]"></div>
     </section>
   )
 }

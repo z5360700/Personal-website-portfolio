@@ -7,34 +7,30 @@ export function NavigationHandler() {
   const router = useRouter()
 
   useEffect(() => {
-    // Handle hash navigation when the page loads
-    const handleHashNavigation = () => {
+    const handleHashChange = () => {
       const hash = window.location.hash
       if (hash) {
-        const sectionId = hash.substring(1) // Remove the #
-        const element = document.getElementById(sectionId)
+        const element = document.querySelector(hash)
         if (element) {
-          // Small delay to ensure page is fully loaded
-          setTimeout(() => {
-            element.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            })
-          }, 100)
+          element.scrollIntoView({ behavior: "smooth" })
         }
       }
     }
 
-    // Handle initial load
-    handleHashNavigation()
+    // Handle initial load with hash
+    if (window.location.hash) {
+      setTimeout(handleHashChange, 100)
+    }
 
     // Handle browser back/forward navigation
-    window.addEventListener("hashchange", handleHashNavigation)
+    window.addEventListener("hashchange", handleHashChange)
+    window.addEventListener("popstate", handleHashChange)
 
     return () => {
-      window.removeEventListener("hashchange", handleHashNavigation)
+      window.removeEventListener("hashchange", handleHashChange)
+      window.removeEventListener("popstate", handleHashChange)
     }
-  }, [])
+  }, [router])
 
   return null
 }

@@ -1,7 +1,6 @@
 "use client"
-
-import { useEffect, useCallback } from "react"
 import Image from "next/image"
+import { motion, AnimatePresence } from "framer-motion"
 import { X, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -12,7 +11,6 @@ interface ImageLightboxProps {
   onClose: () => void
   onNext: () => void
   onPrevious: () => void
-  altPrefix?: string
 }
 
 export default function ImageLightbox({
@@ -22,105 +20,75 @@ export default function ImageLightbox({
   onClose,
   onNext,
   onPrevious,
-  altPrefix = "Image",
 }: ImageLightboxProps) {
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (!isOpen) return
-
-      switch (e.key) {
-        case "Escape":
-          onClose()
-          break
-        case "ArrowLeft":
-          onPrevious()
-          break
-        case "ArrowRight":
-          onNext()
-          break
-      }
-    },
-    [isOpen, onClose, onNext, onPrevious],
-  )
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown)
-    return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [handleKeyDown])
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "unset"
-    }
-
-    return () => {
-      document.body.style.overflow = "unset"
-    }
-  }, [isOpen])
-
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
-      {/* Close button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute top-4 right-4 z-10 text-white hover:bg-white/20"
-        onClick={onClose}
-      >
-        <X className="h-6 w-6" />
-      </Button>
-
-      {/* Previous button */}
-      {images.length > 1 && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white hover:bg-white/20"
-          onClick={onPrevious}
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={onClose}
         >
-          <ChevronLeft className="h-8 w-8" />
-        </Button>
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            className="relative max-w-4xl max-h-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative w-full h-full">
+              <Image
+                src={images[currentIndex] || "/placeholder.svg"}
+                alt={`Image ${currentIndex + 1}`}
+                width={800}
+                height={600}
+                className="object-contain max-h-[80vh] w-auto"
+              />
+            </div>
+
+            {/* Close Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-4 right-4 text-white hover:bg-white/20"
+              onClick={onClose}
+            >
+              <X className="w-6 h-6" />
+            </Button>
+
+            {/* Navigation Buttons */}
+            {images.length > 1 && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:bg-white/20"
+                  onClick={onPrevious}
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:bg-white/20"
+                  onClick={onNext}
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </Button>
+              </>
+            )}
+
+            {/* Image Counter */}
+            {images.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                {currentIndex + 1} / {images.length}
+              </div>
+            )}
+          </motion.div>
+        </motion.div>
       )}
-
-      {/* Next button */}
-      {images.length > 1 && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white hover:bg-white/20"
-          onClick={onNext}
-        >
-          <ChevronRight className="h-8 w-8" />
-        </Button>
-      )}
-
-      {/* Image container */}
-      <div className="relative max-w-[90vw] max-h-[90vh] w-full h-full flex items-center justify-center p-4">
-        <div className="relative w-full h-full">
-          <Image
-            src={images[currentIndex] || "/placeholder.svg"}
-            alt={`${altPrefix} ${currentIndex + 1}`}
-            fill
-            className="object-contain"
-            sizes="90vw"
-            priority
-          />
-        </div>
-      </div>
-
-      {/* Image counter */}
-      {images.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm">
-          {currentIndex + 1} of {images.length}
-        </div>
-      )}
-
-      {/* Background overlay - clicking closes the lightbox */}
-      <div className="absolute inset-0 -z-10" onClick={onClose} />
-    </div>
+    </AnimatePresence>
   )
 }
