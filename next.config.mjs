@@ -1,25 +1,61 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true, // Enable SWC minification for improved build times
-  compiler: {
-    removeConsole: process.env.NODE_ENV === "production", // Remove console.log in production
+  // Enable experimental features for better performance
+  experimental: {
+    optimizePackageImports: ['framer-motion', 'lucide-react'],
   },
+  
+  // Image optimization
+  images: {
+    formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 31536000, // 1 year
+    unoptimized: true,
+  },
+  
+  // Compression
+  compress: true,
+  
+  // Enable SWC minification
+  swcMinify: true,
+  
+  // Optimize CSS
+  optimizeFonts: true,
+  
+  // Headers for caching
+  async headers() {
+    return [
+      {
+        source: '/images/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/:path*.{js,css,woff,woff2,eot,ttf,otf}',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ]
+  },
+  
+  // ESLint configuration
   eslint: {
     ignoreDuringBuilds: true,
   },
+  
+  // TypeScript configuration
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Add image optimization settings
-  images: {
-    formats: ["image/avif", "image/webp"], // Serve modern image formats
-    minimumCacheTTL: 60 * 60 * 24 * 7, // Cache images for 7 days
-    domains: ["blob.v0.dev"], // Add external domains if you are using them
-    unoptimized: true,
-  },
-  // Enable compression
-  compress: true,
 }
 
 export default nextConfig

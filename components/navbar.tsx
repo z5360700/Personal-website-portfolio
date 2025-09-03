@@ -45,6 +45,7 @@ export default function Navbar() {
     { name: "Home", id: "home" },
     { name: "About", id: "about" },
     { name: "Projects", id: "projects" },
+    { name: "Skills", id: "skills" },
     { name: "Contact", id: "contact" },
   ]
 
@@ -158,9 +159,9 @@ export default function Navbar() {
             className={cn(
               "w-full transition-all duration-200 transform",
               isOpen ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
-              "transition-delay-[200ms]",
+              "transition-delay-[250ms]",
             )}
-            style={{ transitionDelay: "200ms" }}
+            style={{ transitionDelay: "250ms" }}
             asChild
           >
             <a href={resumeUrl} download="Michael_Lo_Russo_Resume.pdf">

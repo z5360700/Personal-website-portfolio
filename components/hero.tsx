@@ -38,7 +38,8 @@ export default function Hero() {
                 fill
                 className="object-cover"
                 priority
-                sizes="(max-width: 768px) 256px, 320px"
+                sizes="(max-width: 1024px) 256px, 320px"
+                quality={85}
               />
             </div>
           </div>
