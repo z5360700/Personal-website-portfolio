@@ -51,25 +51,25 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-6"
+            className="mb-2"
           >
-            <span className="text-lg md:text-xl font-medium">Hi! I&apos;m</span>
+            <span className="text-lg md:text-xl font-medium text-foreground/70">Hi there! I&apos;m</span>
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 bg-clip-text text-transparent"
           >
-            Michael Lo Russo 👋
+            Michael Lo Russo
           </motion.h1>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="max-w-2xl mb-10"
+            className="max-w-2xl mb-8"
           >
             <p className="text-foreground/70 text-lg">
               I&apos;m an engineering student from Sydney, specialising in Mechatronics, currently in my fourth year at

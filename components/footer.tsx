@@ -41,7 +41,7 @@ export default function Footer() {
               <Github className="w-6 h-6" />
             </a>
           </div>
-          <p className="text-foreground/60 text-sm">© 2024 Michael Lo Russo. Built with Next.js and Tailwind CSS.</p>
+          <p className="text-foreground/60 text-sm">© 2025 Michael Lo Russo. Built with Next.js and Tailwind CSS.</p>
         </motion.div>
       </div>
     </footer>

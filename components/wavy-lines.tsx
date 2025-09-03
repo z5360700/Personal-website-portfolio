@@ -35,11 +35,11 @@ export default function WavyLines() {
               pathOffset: [0, i % 2 === 0 ? 0.3 : -0.3],
             }}
             transition={{
-              duration: 15 + i * 0.8,
+              duration: 8 + i * 0.3, // Slower, more subtle animation
               ease: "easeInOut",
               repeat: Number.POSITIVE_INFINITY,
               repeatType: "reverse",
-              delay: i * 0.05,
+              delay: i * 0.01, // Much smaller delay - reduced from i * 0.05
             }}
           />
         ))}
@@ -60,11 +60,11 @@ export default function WavyLines() {
               pathOffset: [0, i % 2 === 0 ? -0.2 : 0.2],
             }}
             transition={{
-              duration: 20 + i * 1.2,
+              duration: 12 + i * 0.5, // Slower, more subtle animation
               ease: "easeInOut",
               repeat: Number.POSITIVE_INFINITY,
               repeatType: "reverse",
-              delay: i * 0.08,
+              delay: i * 0.02, // Much smaller delay - reduced from i * 0.08
             }}
           />
         ))}

@@ -76,7 +76,7 @@ export default function EnhancedBeforeAfterSlider({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-96 overflow-hidden rounded-lg cursor-col-resize select-none ${className}`}
+      className={`relative w-full h-[500px] md:h-[600px] lg:h-[700px] overflow-hidden rounded-lg cursor-col-resize select-none ${className}`}
       onMouseMove={handleMouseMove}
       onTouchMove={handleTouchMove}
     >

@@ -10,9 +10,16 @@ interface BeforeAfterSliderProps {
   afterImage: string
   beforeAlt: string
   afterAlt: string
+  className?: string
 }
 
-export default function BeforeAfterSlider({ beforeImage, afterImage, beforeAlt, afterAlt }: BeforeAfterSliderProps) {
+export default function BeforeAfterSlider({
+  beforeImage,
+  afterImage,
+  beforeAlt,
+  afterAlt,
+  className = "",
+}: BeforeAfterSliderProps) {
   const [sliderPosition, setSliderPosition] = useState(50)
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,7 +27,7 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, beforeAlt, 
   }
 
   return (
-    <div className="relative w-full h-96 overflow-hidden rounded-lg">
+    <div className={`relative w-full h-[500px] md:h-[600px] lg:h-[700px] overflow-hidden rounded-lg ${className}`}>
       {/* Before Image */}
       <div className="absolute inset-0">
         <Image src={beforeImage || "/placeholder.svg"} alt={beforeAlt} fill className="object-cover" />
