@@ -72,7 +72,8 @@ export default function Hero() {
             className="max-w-2xl mb-8"
           >
             <p className="text-foreground/70 text-lg">
-              I&#39;m an engineering student from Sydney, specialising in Mechatronics, currently in my 4th year at the University of New South Wales.
+              I&#39;m an engineering student from Sydney, specialising in Mechatronics, currently in my 4th year at the
+              University of New South Wales.
             </p>
           </motion.div>
 

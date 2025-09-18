@@ -71,8 +71,8 @@ From demolition to finishing touches, we handled everything - structural work, r
 
 The transformation showcases both my technical construction skills and project management abilities. Every step was completed with attention to building codes and quality standards.
 `,
-    image: "/images/construction-after.jpg",
-    beforeImage: "/images/construction-before-new.png",
+    image: "/images/construction-before-new.png",
+    beforeImage: "/images/construction-after.jpg",
     exteriorGallery: [
       "/images/construction-before.jpg",
       "/images/construction-2.jpg",
@@ -268,8 +268,7 @@ The transformation showcases both my technical construction skills and project m
     title: "Custom Cooling Funnels for PC Hardware",
     description:
       "Designed and 3D-printed cooling funnels using PLA material to direct airflow for GPU components, inspired by automotive ducted cooling systems.",
-    longDescription: `
-This project was inspired by ducted cooling systems found in automotive applications, where air is directed precisely to components that need cooling. The idea emerged from observing that airflow transfer in PC cases isn't well optimized, with much of the intake air not reaching critical components like the GPU effectively.
+    longDescription: `This project was inspired by ducted cooling systems found in automotive applications, where air is directed precisely to components that need cooling. The idea emerged from observing that airflow transfer in PC cases isn't well optimized, with much of the intake air not reaching critical components like the GPU effectively.
 
 The project began with identifying the airflow optimization problem in my PC case, where front intake fans weren't efficiently directing cool air to the graphics card. Taking inspiration from automotive ducted parts that channel air directly to specific engine components, I designed custom cooling funnels to create a direct airflow path from the front case fans to the GPU.
 
@@ -1242,6 +1241,37 @@ function ProjectDetailClient() {
               <div className="prose dark:prose-invert max-w-none">
                 <p className="text-base leading-relaxed">{project.longDescription}</p>
               </div>
+
+              {(project.liveUrl || project.githubUrl) && (
+                <div className="flex flex-wrap justify-center gap-4 mt-6">
+                  {project.liveUrl && (
+                    <Button asChild>
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2"
+                      >
+                        <ExternalLink size={16} />
+                        Live Demo
+                      </a>
+                    </Button>
+                  )}
+                  {project.githubUrl && (
+                    <Button variant="outline" asChild>
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2"
+                      >
+                        <Github size={16} />
+                        View Code
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Video Demonstrations */}
