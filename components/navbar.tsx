@@ -58,7 +58,7 @@ export default function Navbar() {
           href="/"
           className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent hover:scale-105 transition-transform"
         >
-          Portfolio
+          LO RUSSO 
         </Link>
 
         {/* Desktop Navigation */}

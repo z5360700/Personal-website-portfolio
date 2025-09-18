@@ -80,8 +80,7 @@ export default function Projects() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">My Projects</h2>
           <div className="w-20 h-1 bg-primary mx-auto mb-6"></div>
           <p className="max-w-2xl mx-auto text-foreground/80">
-            Here are some of my recent projects. Each project showcases different aspects of my engineering and
-            technical skills.
+            Here are some of my recent projects I am proud about.
           </p>
         </div>
 

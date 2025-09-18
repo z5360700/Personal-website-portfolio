@@ -53,7 +53,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mb-2"
           >
-            <span className="text-lg md:text-xl font-medium text-foreground/70">Hi there! I&apos;m</span>
+            <span className="text-lg md:text-xl font-medium text-foreground/70">Hi! I&#39;m</span>
           </motion.div>
 
           <motion.h1
@@ -72,8 +72,7 @@ export default function Hero() {
             className="max-w-2xl mb-8"
           >
             <p className="text-foreground/70 text-lg">
-              I&apos;m an engineering student from Sydney, specialising in Mechatronics, currently in my fourth year at
-              the University of New South Wales.
+              I&#39;m an engineering student from Sydney, specialising in Mechatronics, currently in my 4th year at the University of New South Wales.
             </p>
           </motion.div>
 
