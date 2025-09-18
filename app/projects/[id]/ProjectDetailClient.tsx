@@ -7,6 +7,8 @@ import Link from "next/link"
 import { ArrowLeft, ExternalLink, Github } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import EnhancedBeforeAfterSlider from "@/components/enhanced-before-after-slider"
+import ImageLightbox from "@/components/image-lightbox"
 
 interface Project {
   id: number
@@ -554,7 +556,19 @@ The project successfully solved the original problem of unauthorized access whil
   },
 ]
 
-export default function ProjectDetailClient() {
+const closeLightbox = () => {
+  setLightboxOpen(false)
+}
+
+const nextImage = () => {
+  setLightboxIndex((prev) => (prev + 1) % lightboxImages.length)
+}
+
+const previousImage = () => {
+  setLightboxIndex((prev) => (prev - 1 + lightboxImages.length) % lightboxImages.length)
+}
+
+function ProjectDetailClient() {
   const router = useRouter()
   const { id } = useParams()
   const [project, setProject] = useState<Project | null>(null)
@@ -618,8 +632,493 @@ export default function ProjectDetailClient() {
           </Link>
         </Button>
 
-        {/* Special layout for UR5e Robotic Writing System */}
-        {project.id === 4 ? (
+        {/* Special layout for Construction project */}
+        {project.id === 1 ? (
+          <div className="space-y-12">
+            {/* Project Header */}
+            <div className="text-center max-w-4xl mx-auto">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
+              <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+              <div className="flex flex-wrap justify-center gap-2 mb-8">
+                {project.tags.map((tag) => (
+                  <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Before/After Slider */}
+            <div className="max-w-6xl mx-auto mb-12">
+              <h2 className="text-2xl font-bold text-center mb-8">Transformation</h2>
+              <EnhancedBeforeAfterSlider
+                beforeImage={project.beforeImage || "/placeholder.svg"}
+                afterImage={project.image}
+                beforeAlt="Before renovation"
+                afterAlt="After renovation"
+              />
+            </div>
+
+            {/* Project Description */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="prose dark:prose-invert max-w-none">
+                <p className="text-lg leading-relaxed">{project.longDescription}</p>
+              </div>
+            </div>
+
+            {/* Photo Galleries */}
+            <div className="max-w-6xl mx-auto space-y-12">
+              {/* Exterior Gallery */}
+              <div>
+                <h2 className="text-2xl font-bold text-center mb-8">Exterior Construction</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {project.exteriorGallery?.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative h-48 rounded-lg overflow-hidden cursor-pointer group"
+                      onClick={() => openLightbox(project.exteriorGallery || [], index, "Exterior construction")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`Exterior construction ${index + 1}`}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Interior Gallery */}
+              <div>
+                <h2 className="text-2xl font-bold text-center mb-8">Interior Work</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {project.interiorGallery?.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative h-48 rounded-lg overflow-hidden cursor-pointer group"
+                      onClick={() => openLightbox(project.interiorGallery || [], index, "Interior work")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`Interior work ${index + 1}`}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Finished Product Gallery */}
+              <div>
+                <h2 className="text-2xl font-bold text-center mb-8">Finished Product</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {project.finishedProductGallery?.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative h-64 rounded-lg overflow-hidden cursor-pointer group"
+                      onClick={() => openLightbox(project.finishedProductGallery || [], index, "Finished product")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`Finished product ${index + 1}`}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Miscellaneous Gallery */}
+              <div>
+                <h2 className="text-2xl font-bold text-center mb-8">Additional Photos</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {project.miscellaneousGallery?.slice(0, 12).map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative h-48 rounded-lg overflow-hidden cursor-pointer group"
+                      onClick={() => openLightbox(project.miscellaneousGallery || [], index, "Additional photos")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`Additional photo ${index + 1}`}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                    </div>
+                  ))}
+                </div>
+                {project.miscellaneousGallery && project.miscellaneousGallery.length > 12 && (
+                  <div className="text-center mt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => openLightbox(project.miscellaneousGallery || [], 0, "Additional photos")}
+                    >
+                      View All {project.miscellaneousGallery.length} Photos
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Project Details Tabs */}
+            <div className="max-w-6xl mx-auto">
+              <Tabs defaultValue="features" className="mb-12">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="features">Key Features</TabsTrigger>
+                  <TabsTrigger value="technologies">Technologies</TabsTrigger>
+                  <TabsTrigger value="challenges">Challenges</TabsTrigger>
+                </TabsList>
+                <TabsContent value="features" className="p-6 border rounded-md mt-2">
+                  <h2 className="text-xl font-bold mb-4">Key Features</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {project.features.map((feature, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                        <span className="text-foreground/80">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
+                  <h2 className="text-xl font-bold mb-4">Technologies Used</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {Object.entries(project.technologies).map(([category, items]) => (
+                      <div key={category}>
+                        <h3 className="font-bold mb-3 text-primary capitalize">
+                          {category.replace(/([A-Z])/g, " $1").trim()}
+                        </h3>
+                        <ul className="space-y-2">
+                          {items.map((item, index) => (
+                            <li key={index} className="flex items-start gap-3">
+                              <div className="w-1.5 h-1.5 bg-foreground/60 rounded-full mt-2 flex-shrink-0" />
+                              <span className="text-foreground/80 text-sm">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
+                  <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
+                  <div className="prose dark:prose-invert max-w-none">
+                    <p className="text-foreground/80 leading-relaxed whitespace-pre-line">{project.challenges}</p>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
+        ) : project.id === 2 ? (
+          /* Micromouse project layout */
+          <div className="space-y-12">
+            {/* Project Header */}
+            <div className="text-center max-w-4xl mx-auto">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
+              {project.course && (
+                <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4">
+                  Course: {project.course}
+                </div>
+              )}
+              <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+              <div className="flex flex-wrap justify-center gap-2 mb-8">
+                {project.tags.map((tag) => (
+                  <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Main Project Image */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="relative aspect-video rounded-lg overflow-hidden">
+                <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
+              </div>
+            </div>
+
+            {/* Project Description */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="prose dark:prose-invert max-w-none">
+                <p className="text-lg leading-relaxed whitespace-pre-line">{project.longDescription}</p>
+              </div>
+            </div>
+
+            {/* GitHub Link */}
+            {project.githubUrl && (
+              <div className="text-center mb-12">
+                <Button asChild>
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <Github size={16} />
+                    View Source Code
+                  </a>
+                </Button>
+              </div>
+            )}
+
+            {/* Video Demonstrations */}
+            <div className="max-w-6xl mx-auto mb-12">
+              <h2 className="text-2xl font-bold text-center mb-8">Video Demonstrations</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {project.videoGallery?.map((video, index) => (
+                  <div key={index} className="space-y-4">
+                    <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${video.id}`}
+                        title={video.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full"
+                      />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="font-bold text-lg mb-2">{video.title}</h3>
+                      <p className="text-foreground/70 text-sm">{video.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Hardware and Software Galleries */}
+            <div className="max-w-6xl mx-auto space-y-12">
+              {/* Hardware Gallery */}
+              <div>
+                <h2 className="text-2xl font-bold text-center mb-8">Hardware Development</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {project.hardwareGallery?.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative h-64 rounded-lg overflow-hidden cursor-pointer group"
+                      onClick={() => openLightbox(project.hardwareGallery || [], index, "Hardware development")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`Hardware development ${index + 1}`}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Software Gallery */}
+              <div>
+                <h2 className="text-2xl font-bold text-center mb-8">Software Development</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {project.softwareGallery?.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative h-64 rounded-lg overflow-hidden cursor-pointer group"
+                      onClick={() => openLightbox(project.softwareGallery || [], index, "Software development")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`Software development ${index + 1}`}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Project Details Tabs */}
+            <div className="max-w-6xl mx-auto">
+              <Tabs defaultValue="features" className="mb-12">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="features">Key Features</TabsTrigger>
+                  <TabsTrigger value="technologies">Technologies</TabsTrigger>
+                  <TabsTrigger value="challenges">Challenges</TabsTrigger>
+                </TabsList>
+                <TabsContent value="features" className="p-6 border rounded-md mt-2">
+                  <h2 className="text-xl font-bold mb-4">Key Features</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {project.features.map((feature, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                        <span className="text-foreground/80">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
+                  <h2 className="text-xl font-bold mb-4">Technologies Used</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {Object.entries(project.technologies).map(([category, items]) => (
+                      <div key={category}>
+                        <h3 className="font-bold mb-3 text-primary capitalize">
+                          {category.replace(/([A-Z])/g, " $1").trim()}
+                        </h3>
+                        <ul className="space-y-2">
+                          {items.map((item, index) => (
+                            <li key={index} className="flex items-start gap-3">
+                              <div className="w-1.5 h-1.5 bg-foreground/60 rounded-full mt-2 flex-shrink-0" />
+                              <span className="text-foreground/80 text-sm">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
+                  <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
+                  <div className="prose dark:prose-invert max-w-none">
+                    <p className="text-foreground/80 leading-relaxed whitespace-pre-line">{project.challenges}</p>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
+        ) : project.id === 3 ? (
+          /* PC Cooling project with story steps layout */
+          <div className="space-y-12">
+            {/* Project Header */}
+            <div className="text-center max-w-4xl mx-auto">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
+              <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+              <div className="flex flex-wrap justify-center gap-2 mb-8">
+                {project.tags.map((tag) => (
+                  <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Main Project Image */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="relative aspect-video rounded-lg overflow-hidden">
+                <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
+              </div>
+            </div>
+
+            {/* Project Description */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="prose dark:prose-invert max-w-none">
+                <p className="text-lg leading-relaxed whitespace-pre-line">{project.longDescription}</p>
+              </div>
+            </div>
+
+            {/* Story Steps */}
+            <div className="max-w-6xl mx-auto mb-12">
+              <h2 className="text-2xl font-bold text-center mb-12">Project Development Story</h2>
+              <div className="space-y-16">
+                {project.storySteps?.map((step, index) => (
+                  <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div className={`space-y-4 ${index % 2 === 1 ? "lg:order-2" : ""}`}>
+                      <div className="flex items-center gap-4">
+                        <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+                          {index + 1}
+                        </div>
+                        <h3 className="text-xl font-bold">{step.title}</h3>
+                      </div>
+                      <p className="text-foreground/80 leading-relaxed">{step.description}</p>
+                      {step.highlight && (
+                        <div className="bg-primary/10 border-l-4 border-primary p-4 rounded-r-lg">
+                          <p className="text-sm text-primary font-medium">{step.highlight}</p>
+                        </div>
+                      )}
+                    </div>
+                    <div className={`${index % 2 === 1 ? "lg:order-1" : ""}`}>
+                      <div
+                        className={`relative ${step.aspectRatio || "aspect-video"} rounded-lg overflow-hidden cursor-pointer group`}
+                        onClick={() => openLightbox([step.image], 0, `Step ${index + 1}`)}
+                      >
+                        <Image
+                          src={step.image || "/placeholder.svg"}
+                          alt={step.title}
+                          fill
+                          className="object-cover transition-transform group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Results Section */}
+            {project.results && (
+              <div className="max-w-4xl mx-auto mb-12">
+                <div className="bg-green-50 dark:bg-green-900/20 p-8 rounded-lg border border-green-200 dark:border-green-800">
+                  <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mb-4">Results & Impact</h2>
+                  <div className="prose dark:prose-invert max-w-none">
+                    <p className="text-green-700 dark:text-green-300 leading-relaxed whitespace-pre-line">
+                      {project.results}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Project Details Tabs */}
+            <div className="max-w-6xl mx-auto">
+              <Tabs defaultValue="features" className="mb-12">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="features">Key Features</TabsTrigger>
+                  <TabsTrigger value="technologies">Technologies</TabsTrigger>
+                  <TabsTrigger value="challenges">Challenges</TabsTrigger>
+                </TabsList>
+                <TabsContent value="features" className="p-6 border rounded-md mt-2">
+                  <h2 className="text-xl font-bold mb-4">Key Features</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {project.features.map((feature, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                        <span className="text-foreground/80">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
+                  <h2 className="text-xl font-bold mb-4">Technologies Used</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {Object.entries(project.technologies).map(([category, items]) => (
+                      <div key={category}>
+                        <h3 className="font-bold mb-3 text-primary capitalize">
+                          {category.replace(/([A-Z])/g, " $1").trim()}
+                        </h3>
+                        <ul className="space-y-2">
+                          {items.map((item, index) => (
+                            <li key={index} className="flex items-start gap-3">
+                              <div className="w-1.5 h-1.5 bg-foreground/60 rounded-full mt-2 flex-shrink-0" />
+                              <span className="text-foreground/80 text-sm">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
+                  <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
+                  <div className="prose dark:prose-invert max-w-none">
+                    <p className="text-foreground/80 leading-relaxed whitespace-pre-line">{project.challenges}</p>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
+        ) : project.id === 4 ? (
+          /* UR5e Robotic Writing System - Keep current simplified layout */
           <div className="space-y-12">
             {/* Project Header */}
             <div className="text-center max-w-4xl mx-auto">
@@ -718,8 +1217,169 @@ export default function ProjectDetailClient() {
               </div>
             </div>
           </div>
+        ) : project.id === 5 ? (
+          /* Cat Door project layout */
+          <div className="space-y-12">
+            {/* Project Header */}
+            <div className="text-center max-w-4xl mx-auto">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
+              <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+              <div className="flex flex-wrap justify-center gap-2 mb-8">
+                {project.tags.map((tag) => (
+                  <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Main Project Image */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="relative aspect-video rounded-lg overflow-hidden">
+                <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
+              </div>
+            </div>
+
+            {/* Project Description */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="prose dark:prose-invert max-w-none">
+                <p className="text-lg leading-relaxed whitespace-pre-line">{project.longDescription}</p>
+              </div>
+            </div>
+
+            {/* Video Demonstration */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <h2 className="text-2xl font-bold text-center mb-8">System Demonstration</h2>
+              {project.videoGallery?.map((video, index) => (
+                <div key={index} className="space-y-4">
+                  <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${video.id}`}
+                      title={video.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-bold text-lg mb-2">{video.title}</h3>
+                    <p className="text-foreground/70">{video.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Design Evolution and Notifications */}
+            <div className="max-w-6xl mx-auto space-y-12">
+              {/* Design Gallery */}
+              <div>
+                <h2 className="text-2xl font-bold text-center mb-8">Design Evolution</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {project.designGallery?.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative h-64 rounded-lg overflow-hidden cursor-pointer group"
+                      onClick={() => openLightbox(project.designGallery || [], index, "Design evolution")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`Design evolution ${index + 1}`}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Notification Gallery */}
+              <div>
+                <h2 className="text-2xl font-bold text-center mb-8">Telegram Notifications</h2>
+                <div className="flex justify-center">
+                  {project.notificationGallery?.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative w-full max-w-md h-96 rounded-lg overflow-hidden cursor-pointer group"
+                      onClick={() => openLightbox(project.notificationGallery || [], index, "Telegram notifications")}
+                    >
+                      <Image
+                        src={image || "/placeholder.svg"}
+                        alt={`Telegram notification ${index + 1}`}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Results Section */}
+            {project.results && (
+              <div className="max-w-4xl mx-auto mb-12">
+                <div className="bg-green-50 dark:bg-green-900/20 p-8 rounded-lg border border-green-200 dark:border-green-800">
+                  <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mb-4">Results & Impact</h2>
+                  <div className="prose dark:prose-invert max-w-none">
+                    <p className="text-green-700 dark:text-green-300 leading-relaxed whitespace-pre-line">
+                      {project.results}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Project Details Tabs */}
+            <div className="max-w-6xl mx-auto">
+              <Tabs defaultValue="features" className="mb-12">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="features">Key Features</TabsTrigger>
+                  <TabsTrigger value="technologies">Technologies</TabsTrigger>
+                  <TabsTrigger value="challenges">Challenges</TabsTrigger>
+                </TabsList>
+                <TabsContent value="features" className="p-6 border rounded-md mt-2">
+                  <h2 className="text-xl font-bold mb-4">Key Features</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {project.features.map((feature, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                        <span className="text-foreground/80">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
+                  <h2 className="text-xl font-bold mb-4">Technologies Used</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {Object.entries(project.technologies).map(([category, items]) => (
+                      <div key={category}>
+                        <h3 className="font-bold mb-3 text-primary capitalize">
+                          {category.replace(/([A-Z])/g, " $1").trim()}
+                        </h3>
+                        <ul className="space-y-2">
+                          {items.map((item, index) => (
+                            <li key={index} className="flex items-start gap-3">
+                              <div className="w-1.5 h-1.5 bg-foreground/60 rounded-full mt-2 flex-shrink-0" />
+                              <span className="text-foreground/80 text-sm">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
+                  <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
+                  <div className="prose dark:prose-invert max-w-none">
+                    <p className="text-foreground/80 leading-relaxed whitespace-pre-line">{project.challenges}</p>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
         ) : (
-          /* Other project layouts remain the same */
+          /* Default project layout for any other projects */
           <div className="space-y-8">
             <div className="text-center max-w-4xl mx-auto">
               <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
@@ -820,7 +1480,20 @@ export default function ProjectDetailClient() {
             </Tabs>
           </div>
         )}
+
+        {/* Image Lightbox */}
+        <ImageLightbox
+          images={lightboxImages}
+          currentIndex={lightboxIndex}
+          isOpen={lightboxOpen}
+          onClose={closeLightbox}
+          onNext={nextImage}
+          onPrevious={previousImage}
+          altPrefix={lightboxAltPrefix}
+        />
       </div>
     </main>
   )
 }
+
+export default ProjectDetailClient

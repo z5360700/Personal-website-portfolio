@@ -70,10 +70,6 @@ export default function Contact() {
           email: "",
           message: "",
         })
-        // Redirect to home page after successful submission
-        setTimeout(() => {
-          window.location.href = "/"
-        }, 2000) // Wait 2 seconds to show success message
       } else {
         throw new Error(`EmailJS returned status: ${result.status}`)
       }
