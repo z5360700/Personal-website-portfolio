@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useRef, useState, useEffect } from "react"
 import { useInView } from "framer-motion"
 import { motion } from "framer-motion"
@@ -20,7 +22,7 @@ export default function Contact() {
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState(null)
+  const [submitStatus, setSubmitStatus] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState("")
 
   // Initialize EmailJS
@@ -28,12 +30,12 @@ export default function Contact() {
     emailjs.init("3kDBty53SrIKYNJe-")
   }, [])
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmitStatus(null)
@@ -74,7 +76,7 @@ export default function Contact() {
     } catch (error) {
       console.error("EmailJS error details:", error)
       setSubmitStatus("error")
-      setErrorMessage(error.message || "Unknown error occurred")
+      setErrorMessage(error instanceof Error ? error.message : "Unknown error occurred")
     } finally {
       setIsSubmitting(false)
     }

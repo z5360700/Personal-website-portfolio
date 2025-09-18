@@ -11,6 +11,7 @@ interface ImageLightboxProps {
   onClose: () => void
   onNext: () => void
   onPrevious: () => void
+  altPrefix?: string
 }
 
 export default function ImageLightbox({
@@ -20,6 +21,7 @@ export default function ImageLightbox({
   onClose,
   onNext,
   onPrevious,
+  altPrefix = "Image",
 }: ImageLightboxProps) {
   return (
     <AnimatePresence>
@@ -41,7 +43,7 @@ export default function ImageLightbox({
             <div className="relative w-full h-full">
               <Image
                 src={images[currentIndex] || "/placeholder.svg"}
-                alt={`Image ${currentIndex + 1}`}
+                alt={`${altPrefix} ${currentIndex + 1}`}
                 width={800}
                 height={600}
                 className="object-contain max-h-[80vh] w-auto"

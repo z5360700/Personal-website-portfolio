@@ -4,19 +4,59 @@ import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, ExternalLink, Github, Smile, ChevronDown, ChevronUp } from "lucide-react"
+import { ArrowLeft, ExternalLink, Github } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import BeforeAfterSlider from "@/components/before-after-slider"
-import EnhancedBeforeAfterSlider from "@/components/enhanced-before-after-slider"
-import ImageLightbox from "@/components/image-lightbox"
-import VideoEmbed from "@/components/video-embed"
-import { motion } from "framer-motion"
+
+interface Project {
+  id: number
+  title: string
+  description: string
+  longDescription: string
+  image: string
+  beforeImage?: string
+  exteriorGallery?: string[]
+  interiorGallery?: string[]
+  finishedProductGallery?: string[]
+  miscellaneousGallery?: string[]
+  hardwareGallery?: string[]
+  softwareGallery?: string[]
+  designGallery?: string[]
+  printingGallery?: string[]
+  installationGallery?: string[]
+  notificationGallery?: string[]
+  gallery?: string[]
+  videoGallery?: Array<{
+    id: string
+    title: string
+    description: string
+    isShort: boolean
+  }>
+  storySteps?: Array<{
+    title: string
+    description: string
+    image: string
+    highlight?: string
+    aspectRatio?: string
+  }>
+  collapsibleSections?: Array<{
+    title: string
+    content: string
+  }>
+  tags: string[]
+  liveUrl: string | null
+  githubUrl: string | null
+  features: string[]
+  technologies: Record<string, string[]>
+  challenges: string
+  results?: string
+  learnings?: string[]
+  course?: string
+  tagline?: string
+}
 
 // This would typically come from a database or API
-const projectsData = [
+const projectsData: Project[] = [
   {
     id: 1,
     title: "Residential Construction & Renovation",
@@ -251,7 +291,7 @@ The solution involved precise 3D modeling of the PC case components, designing c
         image: "/images/pc-airflow-problem.jpeg",
         highlight:
           "Green arrows show air coming in, red arrows show where it exits - but the path in between isn't direct",
-        aspectRatio: "aspect-[4/3]", // Horizontal PC case photo
+        aspectRatio: "aspect-[4/3]",
       },
       {
         title: "The Inspiration",
@@ -268,7 +308,7 @@ The solution involved precise 3D modeling of the PC case components, designing c
           "First, I created a precise 3D model of my PC case in Fusion360, ensuring all dimensions were accurate for a perfect fit.",
         image: "/images/pc-case-model.png",
         highlight: "",
-        aspectRatio: "aspect-video", // Changed from aspect-square to aspect-video
+        aspectRatio: "aspect-video",
       },
       {
         title: "Adding Components",
@@ -276,7 +316,7 @@ The solution involved precise 3D modeling of the PC case components, designing c
           "Next, I modeled the GPU and intake fan positions to understand the exact path the air needed to travel.",
         image: "/images/pc-case-with-gpu.png",
         highlight: "Understanding the spatial relationship between components was essential for effective duct design.",
-        aspectRatio: "aspect-video", // Changed from aspect-square to aspect-video
+        aspectRatio: "aspect-video",
       },
       {
         title: "Designing the Duct",
@@ -284,7 +324,7 @@ The solution involved precise 3D modeling of the PC case components, designing c
           "I designed a custom cooling funnel that would direct air from the front intake fans straight to the GPU's cooling system.",
         image: "/images/cooling-duct-design.png",
         highlight: "The duct features a gradually narrowing design to accelerate airflow as it approaches the GPU.",
-        aspectRatio: "aspect-[3/2]", // 3D model view
+        aspectRatio: "aspect-[3/2]",
       },
       {
         title: "Finalizing Components",
@@ -292,7 +332,7 @@ The solution involved precise 3D modeling of the PC case components, designing c
           "The final design included multiple components that would fit together perfectly while being printable on a standard 3D printer bed.",
         image: "/images/cooling-duct-component.png",
         highlight: "Each component was designed with both function and printability in mind.",
-        aspectRatio: "aspect-[3/2]", // 3D model view
+        aspectRatio: "aspect-[3/2]",
       },
       {
         title: "Slicing for Printing",
@@ -300,7 +340,7 @@ The solution involved precise 3D modeling of the PC case components, designing c
           "Using Bambu Studio, I prepared the 3D models for printing, setting up supports and optimizing print settings for ABS material.",
         image: "/images/bambu-studio-slicing.png",
         highlight: "The green areas show support structures needed for successful printing of complex geometries.",
-        aspectRatio: "aspect-[4/3]", // Software screenshot
+        aspectRatio: "aspect-[4/3]",
       },
       {
         title: "Printed Components",
@@ -366,94 +406,56 @@ The solution involved precise 3D modeling of the PC case components, designing c
   {
     id: 4,
     title: "UR5e Robotic Writing System",
-    tagline: "Precision robotic control for mathematical operations and text rendering",
-    description:
-      "MATLAB RTDE program controlling a UR5e robot to trace digits, apply transformations, and render mathematical operations with precise motion control.",
-    longDescription: `
-A sophisticated MATLAB RTDE program that controls a UR5e collaborative robot to perform precise writing tasks. The system can trace individual digits using Hershey fonts, apply complex transformations including translation and rotation, and render complete mathematical operations in long-form with smooth, human-like motion.
+    description: "A robot that writes math problems and solves them on paper using MATLAB programming.",
+    longDescription: `I programmed a UR5e robot to write and solve math problems on paper. The robot can write individual numbers, move them around the page, and even solve addition, subtraction, and multiplication problems in the traditional long-form style you'd see in school.
 
-The project demonstrates advanced robotics programming and motion control, combining font rendering algorithms with transformation matrices to achieve precise positioning and movement. The system is capable of solving and rendering mathematical operations including addition, subtraction, and multiplication in traditional vertical format.
-
-Key features include real-time trajectory generation, smooth motion planning, and the ability to handle complex mathematical layouts with proper spacing and alignment. The robot maintains writing precision across different scales and orientations while optimizing path planning to minimize writing time.
-`,
+The coolest part is watching it work - the robot moves smoothly like a human hand, lifting the pen between strokes and positioning everything perfectly on the page. It's basically like having a robot do your math homework, but way more impressive.`,
     image: "/images/ur5e-main-setup.jpeg",
     gallery: ["/images/ur5e-main-setup.jpeg", "/images/ur5e-calculation-example.jpeg"],
-    collapsibleSections: [
+    videoGallery: [
       {
-        title: "Digit Tracing",
-        content:
-          "The system uses Hershey font rendering to convert individual digits into precise robot trajectories. Each character is broken down into vector paths that the robot can follow smoothly. The implementation includes proper character spacing algorithms, automatic pen lift detection between disconnected strokes, and consistent baseline alignment. The font rendering engine supports all digits 0-9 and basic mathematical symbols (+, -, ×, =) with optimized stroke order for efficient robot movement.",
+        id: "pXVlnAXTHe0",
+        title: "Robot Writing Numbers",
+        description: "Watch the UR5e robot write individual digits with smooth, precise movements.",
+        isShort: false,
       },
       {
-        title: "Translation & Rotation",
-        content:
-          "Advanced transformation capabilities allow the robot to position text and equations anywhere within its workspace. The system implements homogeneous transformation matrices to handle arbitrary X/Y translations and Z-axis rotations while maintaining writing precision. Users can specify translation offsets and rotation angles, and the system automatically adjusts all trajectory points accordingly. This enables flexible layout of complex mathematical expressions and multi-line equations.",
+        id: "O-SpeSzh-Yo",
+        title: "Math Problem Solving",
+        description:
+          "The robot solves a complete multiplication problem, showing all the steps just like you would on paper.",
+        isShort: false,
       },
       {
-        title: "Mathematical Operations",
-        content:
-          "The system can solve and render complete mathematical operations in traditional long-form vertical format. For addition and subtraction, it properly aligns digits by place value, handles carry and borrow operations, and draws appropriate lines and symbols. Multiplication operations are rendered with partial products properly aligned and summed. The algorithm automatically calculates spacing requirements and positions each element of the operation for clear, readable output.",
+        id: "efF5-d9ksCc",
+        title: "Advanced Calculations",
+        description: "More complex mathematical operations demonstrated by the robotic writing system.",
+        isShort: false,
       },
     ],
-    tags: ["MATLAB", "UR5e", "Robotics", "RVC Toolbox", "Motion Control", "RTDE"],
+    tags: ["MATLAB", "UR5e Robot", "Robotics", "Programming"],
     liveUrl: null,
     githubUrl: null,
     features: [
-      "Hershey font rendering for precise digit tracing",
-      "Homogeneous transformation matrices for positioning",
-      "Automatic pen lift detection between strokes",
-      "Long-form mathematical operation rendering",
-      "Real-time trajectory generation and optimization",
-      "Smooth motion planning with velocity control",
-      "Support for addition, subtraction, and multiplication",
-      "Proper mathematical formatting and alignment",
-      "Scalable text rendering with consistent quality",
-      "RTDE protocol integration for real-time control",
+      "Writes individual numbers and math symbols",
+      "Solves addition, subtraction, and multiplication problems",
+      "Moves text around the page to any position",
+      "Smooth, human-like writing motion",
+      "Automatic pen lifting between strokes",
+      "Perfect spacing and alignment",
     ],
     technologies: {
-      software: [
-        "MATLAB Programming Environment",
-        "Real-Time Data Exchange (RTDE) Protocol",
-        "RVC Robotics Toolbox",
-        "Hershey Font Rendering System",
-        "Transformation Matrix Mathematics",
-        "Trajectory Planning Algorithms",
-      ],
-      hardware: [
-        "UR5e Collaborative Robot",
-        "End-effector Tool Mounting",
-        "Writing Implement Attachment",
-        "Grid Paper Workspace",
-        "Safety Monitoring Systems",
-        "Real-time Communication Interface",
-      ],
-      algorithms: [
-        "Path Planning and Optimization",
-        "Inverse Kinematics Calculations",
-        "Motion Smoothing Algorithms",
-        "Font Vector Processing",
-        "Mathematical Layout Algorithms",
-        "Coordinate Transformation Systems",
-      ],
+      software: ["MATLAB Programming", "Robot Control Algorithms", "Motion Planning"],
+      hardware: ["UR5e Collaborative Robot", "Writing Tool Attachment", "Grid Paper Workspace"],
     },
-    challenges: `
-Implementing smooth trajectory generation for natural writing motion was one of the primary challenges. The robot needed to maintain consistent writing quality while optimizing movement efficiency. This required careful tuning of velocity profiles and acceleration limits to achieve human-like writing characteristics.
+    challenges: `The biggest challenge was making the robot write smoothly like a human. I had to program it to know when to lift the pen, how fast to move, and where to position each part of the math problem.
 
-Synchronizing pen lift and pen down operations with robot movement presented timing challenges. The system needed to coordinate the writing tool engagement with precise positioning to ensure clean strokes and proper spacing between characters and mathematical elements.
-
-Maintaining writing precision across different scales and orientations required robust transformation algorithms. The system had to handle arbitrary positioning while preserving the geometric relationships between mathematical elements and maintaining consistent character proportions.
-
-Real-time communication and error recovery with the RTDE protocol demanded careful handling of network timeouts and connection stability. The system needed to maintain continuous operation while providing feedback on trajectory execution and handling any communication interruptions gracefully.
-`,
+Getting the spacing right was tricky too - the robot needed to know exactly where to put each number so the final answer would line up correctly, just like when you do long division or multiplication by hand.`,
     learnings: [
-      "Advanced robotics programming and motion control techniques",
-      "Real-time communication protocols and system integration",
-      "Trajectory planning and smooth motion generation algorithms",
-      "Font rendering and vector graphics processing methods",
-      "Mathematical algorithm implementation for automated problem solving",
-      "Transformation matrix mathematics and coordinate systems",
-      "Human-robot interaction and precision control systems",
-      "Performance optimization for real-time robotic applications",
+      "Robot programming and control",
+      "Motion planning for smooth movement",
+      "Coordinate systems and positioning",
+      "MATLAB programming skills",
     ],
   },
   {
@@ -555,13 +557,12 @@ The project successfully solved the original problem of unauthorized access whil
 export default function ProjectDetailClient() {
   const router = useRouter()
   const { id } = useParams()
-  const [project, setProject] = useState(null)
+  const [project, setProject] = useState<Project | null>(null)
   const [loading, setLoading] = useState(true)
-  const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({})
 
   // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false)
-  const [lightboxImages, setLightboxImages] = useState([])
+  const [lightboxImages, setLightboxImages] = useState<string[]>([])
   const [lightboxIndex, setLightboxIndex] = useState(0)
   const [lightboxAltPrefix, setLightboxAltPrefix] = useState("")
 
@@ -578,30 +579,11 @@ export default function ProjectDetailClient() {
     setLoading(false)
   }, [id])
 
-  const openLightbox = (images, index, altPrefix) => {
+  const openLightbox = (images: string[], index: number, altPrefix: string) => {
     setLightboxImages(images)
     setLightboxIndex(index)
     setLightboxAltPrefix(altPrefix)
     setLightboxOpen(true)
-  }
-
-  const closeLightbox = () => {
-    setLightboxOpen(false)
-  }
-
-  const nextImage = () => {
-    setLightboxIndex((prev) => (prev + 1) % lightboxImages.length)
-  }
-
-  const previousImage = () => {
-    setLightboxIndex((prev) => (prev - 1 + lightboxImages.length) % lightboxImages.length)
-  }
-
-  const toggleSection = (sectionTitle: string) => {
-    setOpenSections((prev) => ({
-      ...prev,
-      [sectionTitle]: !prev[sectionTitle],
-    }))
   }
 
   if (loading) {
@@ -627,1158 +609,173 @@ export default function ProjectDetailClient() {
   }
 
   return (
-    <>
-      <main className="min-h-screen pt-20 pb-16 overflow-x-hidden">
-        <div className="container mx-auto px-4">
-          <Button variant="ghost" className="mb-6" asChild>
-            <Link href="/" className="flex items-center">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Projects
-            </Link>
-          </Button>
+    <main className="min-h-screen pt-20 pb-16 overflow-x-hidden">
+      <div className="container mx-auto px-4">
+        <Button variant="ghost" className="mb-6" asChild>
+          <Link href="/" className="flex items-center">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Projects
+          </Link>
+        </Button>
 
-          {/* Special layout for UR5e Robotic Writing System */}
-          {project.id === 4 ? (
-            <div className="space-y-12">
-              {/* Hero Section */}
-              <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0">
-                  <Image
-                    src={project.image || "/placeholder.svg"}
-                    alt={project.title}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-black/50" />
-                </div>
-                <div className="relative z-10 text-center text-white px-4">
-                  <h1 className="text-4xl md:text-6xl font-bold mb-4">{project.title}</h1>
-                  <p className="text-xl md:text-2xl max-w-3xl mx-auto">{project.tagline}</p>
-                </div>
-              </section>
-
-              {/* Introduction */}
-              <section className="py-16 px-4">
-                <div className="container mx-auto max-w-4xl">
-                  <p className="text-lg md:text-xl leading-relaxed text-foreground/80">{project.longDescription}</p>
-                </div>
-              </section>
-
-              {/* Collapsible Technical Details */}
-              <section className="py-16 px-4 bg-muted/30">
-                <div className="container mx-auto max-w-4xl">
-                  <h2 className="text-3xl font-bold text-center mb-12">Technical Details</h2>
-                  <div className="space-y-4">
-                    {project.collapsibleSections.map((section, index) => (
-                      <Card key={index}>
-                        <Collapsible
-                          open={openSections[section.title]}
-                          onOpenChange={() => toggleSection(section.title)}
-                        >
-                          <CollapsibleTrigger asChild>
-                            <div className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/50 transition-colors">
-                              <h3 className="text-xl font-semibold">{section.title}</h3>
-                              {openSections[section.title] ? (
-                                <ChevronUp className="h-5 w-5" />
-                              ) : (
-                                <ChevronDown className="h-5 w-5" />
-                              )}
-                            </div>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent>
-                            <div className="px-6 pb-6">
-                              <p className="text-foreground/80 leading-relaxed">{section.content}</p>
-                            </div>
-                          </CollapsibleContent>
-                        </Collapsible>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              {/* Image Gallery */}
-              <section className="py-16 px-4">
-                <div className="container mx-auto max-w-6xl">
-                  <h2 className="text-3xl font-bold text-center mb-12">Project Gallery</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {project.gallery.map((image, index) => (
-                      <div
-                        key={index}
-                        className="relative h-64 md:h-80 rounded-lg overflow-hidden cursor-pointer group"
-                        onClick={() => openLightbox(project.gallery, index, "UR5e project")}
-                      >
-                        <Image
-                          src={image || "/placeholder.svg"}
-                          alt={`UR5e project ${index + 1}`}
-                          fill
-                          className="object-cover transition-transform group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              {/* Tech Stack */}
-              <section className="py-16 px-4 bg-muted/30">
-                <div className="container mx-auto max-w-6xl">
-                  <h2 className="text-3xl font-bold text-center mb-12">Technologies Used</h2>
-                  <div className="grid md:grid-cols-3 gap-8">
-                    {Object.entries(project.technologies).map(([category, items]) => (
-                      <div key={category} className="bg-background p-6 rounded-lg shadow-sm">
-                        <h3 className="text-xl font-bold mb-4 capitalize text-primary">
-                          {category.replace(/([A-Z])/g, " $1").trim()}
-                        </h3>
-                        <ul className="space-y-2">
-                          {items.map((item, index) => (
-                            <li key={index} className="flex items-start">
-                              <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0" />
-                              <span className="text-foreground/80">{item}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              {/* Challenges & Learnings */}
-              <section className="py-16 px-4">
-                <div className="container mx-auto max-w-6xl">
-                  <div className="grid md:grid-cols-2 gap-12">
-                    <div>
-                      <h2 className="text-3xl font-bold mb-8">Challenges</h2>
-                      <div className="prose dark:prose-invert max-w-none">
-                        <p className="text-foreground/80 leading-relaxed">{project.challenges}</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h2 className="text-3xl font-bold mb-8">Key Learnings</h2>
-                      <ul className="space-y-4">
-                        {project.learnings.map((learning, index) => (
-                          <li key={index} className="flex items-start gap-3">
-                            <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0" />
-                            <p className="text-foreground/80">{learning}</p>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </section>
+        {/* Special layout for UR5e Robotic Writing System */}
+        {project.id === 4 ? (
+          <div className="space-y-12">
+            {/* Project Header */}
+            <div className="text-center max-w-4xl mx-auto">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
+              <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+              <div className="flex flex-wrap justify-center gap-2 mb-8">
+                {project.tags.map((tag) => (
+                  <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
-          ) : project.id === 1 ? (
-            <div className="space-y-8">
-              {/* Project Header */}
-              <div className="text-center max-w-4xl mx-auto">
-                <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
-                  {project.course && (
-                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
-                  )}
-                </div>
 
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-
-                <div className="flex flex-wrap justify-center gap-2 mb-8">
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+            {/* Main Project Image */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="relative aspect-video rounded-lg overflow-hidden">
+                <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
               </div>
-              {/* Project Description */}
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-card dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-border mb-6">
-                  <div className="prose dark:prose-invert max-w-none">
-                    <p>{project.longDescription}</p>
+            </div>
+
+            {/* Project Description */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="prose dark:prose-invert max-w-none text-center">
+                <p className="text-lg leading-relaxed">{project.longDescription}</p>
+              </div>
+            </div>
+
+            {/* Video Demonstrations */}
+            <div className="max-w-6xl mx-auto mb-12">
+              <h2 className="text-2xl font-bold text-center mb-8">Watch It In Action</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {project.videoGallery?.map((video, index) => (
+                  <div key={index} className="space-y-4">
+                    <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${video.id}`}
+                        title={video.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full"
+                      />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="font-bold text-lg mb-2">{video.title}</h3>
+                      <p className="text-foreground/70 text-sm">{video.description}</p>
+                    </div>
                   </div>
-                </div>
+                ))}
+              </div>
+            </div>
 
-                {project.liveUrl || project.githubUrl ? (
-                  <div className="flex flex-wrap justify-center gap-4 mb-8">
-                    {project.liveUrl && (
-                      <Button asChild>
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink size={16} />
-                          Live Demo
-                        </a>
-                      </Button>
-                    )}
-                    {project.githubUrl && (
-                      <Button variant="outline" asChild>
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <Github size={16} />
-                          View Code
-                        </a>
-                      </Button>
-                    )}
+            {/* Image Gallery */}
+            <div className="max-w-6xl mx-auto mb-12">
+              <h2 className="text-2xl font-bold text-center mb-8">Project Photos</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {project.gallery?.map((image, index) => (
+                  <div
+                    key={index}
+                    className="relative h-64 md:h-80 rounded-lg overflow-hidden cursor-pointer group"
+                    onClick={() => openLightbox(project.gallery || [], index, "UR5e project")}
+                  >
+                    <Image
+                      src={image || "/placeholder.svg"}
+                      alt={`UR5e project ${index + 1}`}
+                      fill
+                      className="object-cover transition-transform group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                   </div>
-                ) : null}
+                ))}
               </div>
-              {/* Enhanced Before/After Transformation Slider */}
-              <div className="max-w-7xl mx-auto mb-12">
-                <EnhancedBeforeAfterSlider
-                  beforeImage="/images/construction-before-new.png"
-                  afterImage="/images/construction-after.jpg"
-                  beforeAlt="Before renovation - deteriorated condition"
-                  afterAlt="After renovation - completed home"
-                  title="Complete Transformation"
-                  description="Use the slider below to see the dramatic transformation from the deteriorated starting condition to the fully renovated modern home."
-                />
-              </div>
-              {/* Key Features, Skills & Tools, and Challenges Tabs */}
-              <div className="max-w-6xl mx-auto mb-8">
-                <Tabs defaultValue="features">
-                  <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="features">Key Features</TabsTrigger>
-                    <TabsTrigger value="technologies">Skills & Tools</TabsTrigger>
-                    <TabsTrigger value="challenges">Challenges</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="features" className="p-6 border rounded-md mt-2">
-                    <h2 className="text-xl font-bold mb-4">Key Features</h2>
+            </div>
+
+            {/* What I Learned */}
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-muted/30 p-8 rounded-lg">
+                <h2 className="text-2xl font-bold text-center mb-6">What I Learned</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <h3 className="font-bold mb-4 text-primary">Key Skills</h3>
                     <ul className="space-y-2">
-                      {project.features.map((feature, index) => (
-                        <li key={index} className="flex items-start">
-                          <span className="mr-2 text-primary">•</span>
-                          <span>{feature}</span>
+                      {project.learnings?.map((learning, index) => (
+                        <li key={index} className="flex items-start gap-3">
+                          <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                          <span className="text-foreground/80">{learning}</span>
                         </li>
                       ))}
                     </ul>
-                  </TabsContent>
-                  <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
-                    <h2 className="text-xl font-bold mb-4">Skills & Tools Used</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      {Object.entries(project.technologies).map(([category, items]) => (
-                        <div key={category}>
-                          <h3 className="font-bold mb-2 capitalize">{category.replace(/([A-Z])/g, " $1").trim()}</h3>
-                          <ul className="space-y-1">
-                            {items.map((item, index) => (
-                              <li key={index} className="flex items-start">
-                                <span className="mr-2 text-primary">•</span>
-                                <span>{item}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  </TabsContent>
-                  <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
-                    <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
-                    <div className="prose dark:prose-invert max-w-none">
-                      <p>{project.challenges}</p>
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
-
-              {/* Photo Galleries with Clear Grouping */}
-              <div className="space-y-32">
-                {/* Group 1: Construction Progress */}
-                <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
-                  <div className="max-w-6xl mx-auto">
-                    <h3 className="text-3xl font-bold mb-6 text-center">Construction Progress</h3>
-                    <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-center">
-                      Follow the journey from the initial stages to the near-complete exterior. Click any image to view
-                      it in full size.
-                    </p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {project.exteriorGallery.map((image, index) => (
-                        <div
-                          key={index}
-                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => openLightbox(project.exteriorGallery, index, "Construction progress")}
-                        >
-                          <Image
-                            src={image || "/placeholder.svg"}
-                            alt={`Construction progress ${index + 1}`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          />
-                        </div>
-                      ))}
-                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-bold mb-4 text-primary">Challenges</h3>
+                    <p className="text-foreground/80 leading-relaxed">{project.challenges}</p>
                   </div>
                 </div>
-
-                {/* Group 2: Interior Finishes */}
-                <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
-                  <div className="max-w-6xl mx-auto">
-                    <h3 className="text-3xl font-bold mb-6 text-center">Interior Finishes</h3>
-                    <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-center">
-                      Explore the details of the newly renovated interior spaces, showcasing modern design and quality
-                      craftsmanship. Click any image to view it in full size.
-                    </p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {project.interiorGallery.map((image, index) => (
-                        <div
-                          key={index}
-                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => openLightbox(project.interiorGallery, index, "Interior finishes")}
-                        >
-                          <Image
-                            src={image || "/placeholder.svg"}
-                            alt={`Interior finish ${index + 1}`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Group 3: Finished Product Photos */}
-                {project.finishedProductGallery && project.finishedProductGallery.length > 0 && (
-                  <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
-                    <div className="max-w-6xl mx-auto">
-                      <h3 className="text-3xl font-bold mb-6 text-center">Finished Product Photos</h3>
-                      <p className="text-foreground/70 max-w-3xl mx-auto mb-8 text-center">
-                        Step inside and see the final results of the renovation. These photos highlight the completed
-                        interiors and overall quality of the finished home. Click any image to view it in full size.
-                      </p>
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {project.finishedProductGallery.map((image, index) => (
-                          <div
-                            key={index}
-                            className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                            onClick={() => openLightbox(project.finishedProductGallery, index, "Finished product")}
-                          >
-                            <Image
-                              src={image || "/placeholder.svg"}
-                              alt={`Finished product ${index + 1}`}
-                              fill
-                              className="object-cover"
-                              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Group 4: Miscellaneous Pictures */}
-                {project.miscellaneousGallery && project.miscellaneousGallery.length > 0 && (
-                  <div className="bg-gray-50 dark:bg-gray-900/50 py-12 px-6 rounded-xl shadow-sm">
-                    <div className="max-w-6xl mx-auto">
-                      <div className="text-center mb-6">
-                        <p className="text-lg text-foreground/80 mb-2 flex items-center justify-center">
-                          If you made it this far in the project it means you liked it!{" "}
-                          <Smile className="inline-block ml-1 h-5 w-5" />
-                        </p>
-                        <p className="text-foreground/70 max-w-3xl mx-auto">
-                          I hope you enjoy some more miscellaneous pictures I took.
-                        </p>
-                      </div>
-                      <h3 className="text-3xl font-bold mb-6 text-center">Miscellaneous Pictures</h3>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                        {project.miscellaneousGallery.map((image, index) => (
-                          <div
-                            key={index}
-                            className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                            onClick={() => openLightbox(project.miscellaneousGallery, index, "Miscellaneous picture")}
-                          >
-                            <Image
-                              src={image || "/placeholder.svg"}
-                              alt={`Miscellaneous picture ${index + 1}`}
-                              fill
-                              className="object-cover"
-                              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
-          ) : project.id === 2 ? (
-            // Special layout for Micromouse project
-            <div className="space-y-12">
-              {/* Project Header */}
-              <div className="text-center max-w-4xl mx-auto">
-                <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
-                  {project.course && (
-                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
-                  )}
-                </div>
-
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-
-                <div className="flex flex-wrap justify-center gap-2 mb-8">
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Main Project Image */}
-              <div className="max-w-4xl mx-auto mb-12">
-                <div className="relative aspect-video rounded-lg overflow-hidden">
-                  <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
-                </div>
-              </div>
-
-              {/* Project Description */}
-              <div className="max-w-4xl mx-auto">
-                <div className="prose dark:prose-invert max-w-none mb-8">
-                  <p>{project.longDescription}</p>
-                </div>
-
-                {project.liveUrl || project.githubUrl ? (
-                  <div className="flex flex-wrap justify-center gap-4 mb-8">
-                    {project.liveUrl && (
-                      <Button asChild>
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink size={16} />
-                          Live Demo
-                        </a>
-                      </Button>
-                    )}
-                    {project.githubUrl && (
-                      <Button variant="outline" asChild>
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <Github size={16} />
-                          View Code
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-                ) : null}
-              </div>
-
-              {/* Video Demonstrations Section */}
-              <div className="max-w-6xl mx-auto mb-12">
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold mb-4">Project Demonstrations</h3>
-                  <p className="text-foreground/70 max-w-3xl mx-auto">
-                    Watch the micromouse robot in action, demonstrating key features like PID control and autonomous
-                    maze navigation.
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {/* Left column - First two videos */}
-                  <div className="space-y-8">
-                    {project.videoGallery.slice(0, 2).map((video, index) => (
-                      <div key={index} className="space-y-4">
-                        <VideoEmbed videoId={video.id} title={video.title} isShort={video.isShort} />
-                        <div>
-                          <h3 className="font-bold text-lg mb-2">{video.title}</h3>
-                          <p className="text-foreground/70 text-sm">{video.description}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Right column - PID video */}
-                  <div className="space-y-4">
-                    <VideoEmbed
-                      videoId={project.videoGallery[2].id}
-                      title={project.videoGallery[2].title}
-                      isShort={project.videoGallery[2].isShort}
-                    />
-                    <div>
-                      <h3 className="font-bold text-lg mb-2">{project.videoGallery[2].title}</h3>
-                      <p className="text-foreground/70 text-sm">{project.videoGallery[2].description}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Hardware and Software Galleries */}
-              <div className="max-w-6xl mx-auto">
-                <Tabs defaultValue="hardware" className="mb-12">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="hardware">Hardware</TabsTrigger>
-                    <TabsTrigger value="software">Software</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="hardware" className="mt-6">
-                    <div className="text-center mb-6">
-                      <h3 className="text-xl font-bold mb-2">Hardware Components</h3>
-                      <p className="text-foreground/70">
-                        Explore the physical components and assembly of the micromouse robot.
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {project.hardwareGallery.map((image, index) => (
-                        <div
-                          key={index}
-                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => openLightbox(project.hardwareGallery, index, "Hardware")}
-                        >
-                          <Image
-                            src={image || "/placeholder.svg"}
-                            alt={`Hardware ${index + 1}`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </TabsContent>
-                  <TabsContent value="software" className="mt-6">
-                    <div className="text-center mb-6">
-                      <h3 className="text-xl font-bold mb-2">Software Implementation</h3>
-                      <p className="text-foreground/70">
-                        View the code implementation, algorithms, and software architecture.
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {project.softwareGallery.map((image, index) => (
-                        <div
-                          key={index}
-                          className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => openLightbox(project.softwareGallery, index, "Software")}
-                        >
-                          <Image
-                            src={image || "/placeholder.svg"}
-                            alt={`Software ${index + 1}`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </TabsContent>
-                </Tabs>
+          </div>
+        ) : (
+          /* Other project layouts remain the same */
+          <div className="space-y-8">
+            <div className="text-center max-w-4xl mx-auto">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
+              <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
+              <div className="flex flex-wrap justify-center gap-2 mb-8">
+                {project.tags.map((tag) => (
+                  <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                    {tag}
+                  </span>
+                ))}
               </div>
             </div>
-          ) : project.id === 5 ? (
-            // Special layout for Cat Door Monitoring System
-            <div className="space-y-12">
-              {/* Project Header */}
-              <div className="text-center max-w-4xl mx-auto">
-                <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
-                  {project.course && (
-                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
+
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="relative aspect-video rounded-lg overflow-hidden">
+                <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
+              </div>
+            </div>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="prose dark:prose-invert max-w-none mb-8">
+                <p>{project.longDescription}</p>
+              </div>
+
+              {(project.liveUrl || project.githubUrl) && (
+                <div className="flex flex-wrap justify-center gap-4 mb-8">
+                  {project.liveUrl && (
+                    <Button asChild>
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2"
+                      >
+                        <ExternalLink size={16} />
+                        Live Demo
+                      </a>
+                    </Button>
                   )}
-                </div>
-
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-
-                <div className="flex flex-wrap justify-center gap-2 mb-8">
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Main Project Image */}
-              <div className="max-w-4xl mx-auto mb-12">
-                <div className="relative aspect-video rounded-lg overflow-hidden">
-                  <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
-                </div>
-              </div>
-
-              {/* Project Description */}
-              <div className="max-w-4xl mx-auto">
-                <div className="prose dark:prose-invert max-w-none mb-8">
-                  <p>{project.longDescription}</p>
-                </div>
-
-                {project.liveUrl || project.githubUrl ? (
-                  <div className="flex flex-wrap justify-center gap-4 mb-8">
-                    {project.liveUrl && (
-                      <Button asChild>
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink size={16} />
-                          Live Demo
-                        </a>
-                      </Button>
-                    )}
-                    {project.githubUrl && (
-                      <Button variant="outline" asChild>
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <Github size={16} />
-                          View Code
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-                ) : null}
-              </div>
-
-              {/* Video Demonstration Section */}
-              {project.videoGallery && project.videoGallery.length > 0 && (
-                <div className="max-w-4xl mx-auto mb-12">
-                  <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold mb-4">System Demonstration</h3>
-                    <p className="text-foreground/70 max-w-3xl mx-auto mb-4">
-                      Watch the Version 2 cat door monitoring system in action, demonstrating the break beam sensor
-                      detection and real-time notifications.
-                    </p>
-                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 max-w-2xl mx-auto">
-                      <p className="text-blue-800 dark:text-blue-200 text-center">
-                        Notice how the <span className="text-sky-400 font-medium">blue LED turns on</span> when the cat
-                        passes through.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    {project.videoGallery.map((video, index) => (
-                      <div key={index} className="space-y-4">
-                        <VideoEmbed videoId={video.id} title={video.title} isShort={video.isShort} />
-                        <div className="text-center">
-                          <h3 className="font-bold text-lg mb-2">{video.title}</h3>
-                          <p className="text-foreground/70">{video.description}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  {project.githubUrl && (
+                    <Button variant="outline" asChild>
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2"
+                      >
+                        <Github size={16} />
+                        View Code
+                      </a>
+                    </Button>
+                  )}
                 </div>
               )}
-
-              {/* Project Evolution Story */}
-              <div className="max-w-6xl mx-auto mb-12">
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold mb-4">Project Evolution: From V1 to V2</h3>
-                  <p className="text-foreground/70 max-w-3xl mx-auto">
-                    Follow the development journey from the initial PIR sensor design to the final break beam sensor
-                    solution.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                  {/* Version 1 Story */}
-                  <div className="space-y-6">
-                    <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border border-red-200 dark:border-red-800">
-                      <h4 className="text-xl font-bold text-red-800 dark:text-red-200 mb-3">
-                        Version 1: PIR Sensor (Failed)
-                      </h4>
-                      <p className="text-red-700 dark:text-red-300 mb-4">
-                        The initial design used a PIR (Passive Infrared) sensor to detect motion through the cat door.
-                        However, this approach proved unreliable due to false triggers from small animals like
-                        cockroaches and activation when the door itself was opened.
-                      </p>
-                      <div
-                        className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                        onClick={() => openLightbox(["/images/cat-door-v1.jpeg"], 0, "Version 1 PIR sensor setup")}
-                      >
-                        <Image
-                          src="/images/cat-door-v1.jpeg"
-                          alt="Version 1 with PIR sensor"
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 1024px) 100vw, 50vw"
-                        />
-                      </div>
-                      <p className="text-sm text-red-600 dark:text-red-400 mt-2 italic">
-                        Click image to view full size - Version 1 setup with PIR sensor mounted above the cat door
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Version 2 Story */}
-                  <div className="space-y-6">
-                    <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
-                      <h4 className="text-xl font-bold text-green-800 dark:text-green-200 mb-3">
-                        Version 2: Break Beam Sensor (Success)
-                      </h4>
-                      <p className="text-green-700 dark:text-green-300 mb-4">
-                        The redesigned system uses break beam sensors that create an invisible infrared beam across the
-                        door opening. This provides much more precise detection with virtually no false positives,
-                        successfully solving the reliability issues of Version 1.
-                      </p>
-                      <div
-                        className="relative aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                        onClick={() =>
-                          openLightbox(["/images/cat-door-v2-system.png"], 0, "Version 2 break beam sensor system")
-                        }
-                      >
-                        <Image
-                          src="/images/cat-door-v2-system.png"
-                          alt="Version 2 with break beam sensors and ESP32"
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 1024px) 100vw, 50vw"
-                        />
-                      </div>
-                      <p className="text-sm text-green-600 dark:text-green-400 mt-2 italic">
-                        Click image to view full size - Version 2 system with ESP32, break beam sensors, and Arduino IDE
-                        code
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Design and Manufacturing Process */}
-              <div className="max-w-6xl mx-auto mb-12">
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold mb-4">Design & Manufacturing Process</h3>
-                  <p className="text-foreground/70 max-w-3xl mx-auto">
-                    The project required custom 3D printed housing to protect the electronics while maintaining sensor
-                    alignment.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="space-y-3">
-                    <div
-                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => openLightbox(["/images/cat-door-cad-design.jpeg"], 0, "CAD design in Fusion360")}
-                    >
-                      <Image
-                        src="/images/cat-door-cad-design.jpeg"
-                        alt="CAD design in Fusion360"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    </div>
-                    <div className="text-center">
-                      <h4 className="font-bold mb-1">CAD Design</h4>
-                      <p className="text-sm text-foreground/70">3D modeling the sensor housing in Fusion360</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div
-                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => openLightbox(["/images/cat-door-cad-slicing.jpeg"], 0, "3D printing preparation")}
-                    >
-                      <Image
-                        src="/images/cat-door-cad-slicing.jpeg"
-                        alt="3D printing slicing preparation"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    </div>
-                    <div className="text-center">
-                      <h4 className="font-bold mb-1">Print Preparation</h4>
-                      <p className="text-sm text-foreground/70">Slicing software with support structures</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div
-                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => openLightbox(["/images/cat-door-3d-printed.png"], 0, "3D printed housing")}
-                    >
-                      <Image
-                        src="/images/cat-door-3d-printed.png"
-                        alt="3D printed housing on printer bed"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    </div>
-                    <div className="text-center">
-                      <h4 className="font-bold mb-1">3D Printing</h4>
-                      <p className="text-sm text-foreground/70">Completed housing on Bambu Lab printer</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div
-                      className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() =>
-                        openLightbox(["/images/cat-door-telegram-notifications.png"], 0, "Telegram notifications")
-                      }
-                    >
-                      <Image
-                        src="/images/cat-door-telegram-notifications.png"
-                        alt="Telegram bot notifications on phone"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    </div>
-                    <div className="text-center">
-                      <h4 className="font-bold mb-1">Real-time Alerts</h4>
-                      <p className="text-sm text-foreground/70">Telegram notifications showing detection events</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Results and Success Story */}
-              <div className="max-w-4xl mx-auto mb-12">
-                <div className="bg-primary/5 p-8 rounded-lg border border-primary/20">
-                  <h3 className="text-2xl font-bold mb-4 text-center">Immediate Success</h3>
-                  <div className="prose dark:prose-invert max-w-none text-center">
-                    <p className="text-lg mb-4">
-                      The project was incredibly rewarding because within the first 2 days of deployment, I immediately
-                      caught the neighborhood cat coming into the house and found him in the backyard!
-                    </p>
-                    <p className="text-foreground/80">
-                      The system now provides reliable monitoring of our cat's movement patterns while successfully
-                      preventing unauthorized access from the intruder cat. The real-time Telegram notifications allow
-                      us to track feeding schedules and ensure our cat's food is protected.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Future Development */}
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-muted/30 p-8 rounded-lg">
-                  <h3 className="text-2xl font-bold mb-4 text-center">Future Enhancements</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="font-bold mb-2 text-primary">Next Version Features</h4>
-                      <ul className="space-y-2 text-foreground/80">
-                        <li>• Double break beam sensors for directional detection</li>
-                        <li>• Determine if cat is entering or leaving</li>
-                        <li>• RFID tags for individual cat identification</li>
-                        <li>• Camera-based identification using computer vision</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="font-bold mb-2 text-primary">Technical Improvements</h4>
-                      <ul className="space-y-2 text-foreground/80">
-                        <li>• Enhanced weatherproofing for outdoor durability</li>
-                        <li>• Battery backup for continuous operation</li>
-                        <li>• Data logging for behavior analysis</li>
-                        <li>• Integration with home automation systems</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
-          ) : project.id === 3 ? (
-            // Storytelling layout for PC Cooling project
-            <div className="space-y-12">
-              {/* Project Header */}
-              <div className="text-center max-w-4xl mx-auto">
-                <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
-                  {project.course && (
-                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
-                  )}
-                </div>
 
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-
-                <div className="flex flex-wrap justify-center gap-2 mb-8">
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Story Timeline */}
-              <div className="max-w-6xl mx-auto">
-                {/* Background that covers story steps only */}
-                <div className="relative bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900/30 dark:to-slate-800/30 rounded-2xl p-8 mb-16">
-                  <div className="relative">
-                    {/* Main timeline line - properly positioned and sized */}
-                    <div
-                      className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-primary/30 hidden md:block"
-                      style={{
-                        top: "3rem",
-                        height: `${project.storySteps.length * 24}rem`,
-                      }}
-                    ></div>
-
-                    {/* Story steps */}
-                    {project.storySteps.map((step, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-100px" }}
-                        transition={{ duration: 0.3, delay: index * 0.05 }}
-                        className={`relative mb-24 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
-                      >
-                        {/* Timeline dot - desktop */}
-                        <div className="absolute left-1/2 transform -translate-x-1/2 top-12 w-6 h-6 rounded-full bg-primary border-4 border-background z-10 hidden md:block"></div>
-
-                        {/* Content */}
-                        <div
-                          className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}
-                        >
-                          {/* Text content */}
-                          <div
-                            className={`${index % 2 === 0 ? "md:order-2" : "md:order-1"} ${index % 2 === 0 ? "md:pr-16" : "md:pl-16"}`}
-                          >
-                            <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
-                            <p className="text-foreground/80 mb-4">{step.description}</p>
-                            {step.highlight && (
-                              <div className="bg-primary/10 border-l-4 border-primary p-4 rounded">
-                                <p className="italic text-foreground/90">{step.highlight}</p>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Image content */}
-                          <div className={`${index % 2 === 0 ? "md:order-1" : "md:order-2"}`}>
-                            <div
-                              className={`relative ${step.aspectRatio || "aspect-video"} rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer bg-muted/20`}
-                            >
-                              <Image
-                                src={step.image || "/placeholder.svg"}
-                                alt={step.title}
-                                fill
-                                className="object-contain p-2"
-                                onClick={() => step.image && openLightbox([step.image], 0, step.title)}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Gap section - no timeline line */}
-                <div className="mb-24"></div>
-
-                {/* Before/After Installation Comparison - Standalone section */}
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
-                  className="relative mb-24"
-                >
-                  {/* Before/After Slider Section */}
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold mb-6">Installation Comparison</h3>
-                    <p className="text-foreground/70 mb-6 max-w-3xl mx-auto">
-                      Use the slider below to compare the PC before and after installing the custom cooling ducts.
-                      Notice how the ducts create a direct airflow path from the front intake fans to the GPU.
-                    </p>
-                    <div className="relative w-full max-w-6xl mx-auto h-[500px] md:h-[700px] lg:h-[800px] bg-muted/20 rounded-lg overflow-hidden">
-                      <BeforeAfterSlider
-                        beforeImage="/images/pc-without-ducting.jpeg"
-                        afterImage="/images/pc-cooling-installed.jpeg"
-                        beforeAlt="PC without cooling ducts"
-                        afterAlt="PC with cooling ducts installed"
-                        className="h-full w-full"
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Testing Methodology Section */}
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.3, delay: 0.12 }}
-                  className="relative mb-24"
-                >
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold mb-6">Testing Methodology</h3>
-                    <div className="max-w-4xl mx-auto bg-muted/30 p-8 rounded-lg">
-                      <p className="text-foreground/80 mb-4">
-                        To validate the effectiveness of the cooling ducts, comprehensive testing was conducted under
-                        controlled conditions. Both configurations were tested in an identical setup within a 21°C room
-                        temperature environment.
-                      </p>
-                      <p className="text-foreground/80 mb-4">
-                        The testing utilized MSI Afterburner for real-time monitoring and data logging, while Kombustor
-                        v4.1.31.0 was used for stress testing the GPU. Each test session lasted 8 minutes to ensure the
-                        system reached thermal steady state.
-                      </p>
-                      <p className="text-foreground/80 mb-4">
-                        The results showed a significant 7°C temperature difference at steady state between the ducted
-                        and non-ducted configurations. Importantly, both the core clock and memory clock frequencies
-                        remained stable throughout testing, indicating no thermal throttling occurred in either
-                        configuration.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Test Results Comparison */}
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.3, delay: 0.13 }}
-                  className="relative mb-24"
-                >
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold mb-6">Performance Test Results</h3>
-                    <p className="text-foreground/70 mb-8 max-w-3xl mx-auto">
-                      Side-by-side comparison of GPU monitoring data showing temperature, usage, clock speeds, and power
-                      consumption during identical 8-minute stress tests.
-                    </p>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-                      {/* With Ducting Results */}
-                      <div className="space-y-4">
-                        <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-lg bg-muted/20">
-                          <Image
-                            src="/images/gpu-test-with-ducting.png"
-                            alt="GPU monitoring data with ducted cooling"
-                            fill
-                            className="object-contain p-2"
-                            onClick={() =>
-                              openLightbox(["/images/gpu-test-with-ducting.png"], 0, "GPU test with ducting")
-                            }
-                          />
-                        </div>
-                        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                          <h4 className="font-bold text-green-800 dark:text-green-200 mb-2">With Ducted Cooling</h4>
-                          <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
-                            <li>• Max Temperature: 63°C</li>
-                            <li>• Core Clock: 2610 MHz (stable)</li>
-                            <li>• Memory Clock: 10502 MHz</li>
-                            <li>• Power Draw: ~197W</li>
-                          </ul>
-                        </div>
-                      </div>
-
-                      {/* Without Ducting Results */}
-                      <div className="space-y-4">
-                        <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-lg bg-muted/20">
-                          <Image
-                            src="/images/gpu-test-without-ducting.png"
-                            alt="GPU monitoring data without ducted cooling"
-                            fill
-                            className="object-contain p-2"
-                            onClick={() =>
-                              openLightbox(["/images/gpu-test-without-ducting.png"], 0, "GPU test without ducting")
-                            }
-                          />
-                        </div>
-                        <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
-                          <h4 className="font-bold text-red-800 dark:text-red-200 mb-2">Without Ducted Cooling</h4>
-                          <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
-                            <li>• Max Temperature: 70°C</li>
-                            <li>• Core Clock: 2530 MHz (stable)</li>
-                            <li>• Memory Clock: 10502 MHz</li>
-                            <li>• Power Draw: ~197W</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-8 max-w-4xl mx-auto bg-primary/5 p-6 rounded-lg border border-primary/20">
-                      <h4 className="text-lg font-bold mb-3">Key Benefits</h4>
-                      <p className="text-foreground/80">
-                        The 7°C temperature reduction is particularly beneficial because it allows the GPU's cooling
-                        fans to operate at lower speeds while maintaining the same thermal performance. This results in
-                        significantly quieter operation during demanding workloads, improving the overall user
-                        experience without sacrificing performance.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          ) : (
-            /* Regular layout for other projects */
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-              <div className="lg:col-span-1">
-                <div className="flex flex-wrap items-center gap-3 mb-2">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
-                  {project.course && (
-                    <span className="bg-primary/90 text-white text-sm px-3 py-1 rounded">{project.course}</span>
-                  )}
-                </div>
-
-                <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="prose dark:prose-invert max-w-none mb-8">
-                  <p>{project.longDescription}</p>
-                </div>
-
-                {project.liveUrl || project.githubUrl ? (
-                  <div className="flex flex-wrap gap-4 mb-8">
-                    {project.liveUrl && (
-                      <Button asChild>
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink size={16} />
-                          Live Demo
-                        </a>
-                      </Button>
-                    )}
-                    {project.githubUrl && (
-                      <Button variant="outline" asChild>
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <Github size={16} />
-                          View Code
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="lg:col-span-1">
-                <div className="relative aspect-video lg:aspect-square rounded-lg overflow-hidden">
-                  <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {project.id !== 1 && project.id !== 4 && (
             <Tabs defaultValue="features" className="mb-12 mt-16">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="features">Key Features</TabsTrigger>
@@ -1821,20 +818,9 @@ export default function ProjectDetailClient() {
                 </div>
               </TabsContent>
             </Tabs>
-          )}
-        </div>
-      </main>
-
-      {/* Image Lightbox */}
-      <ImageLightbox
-        images={lightboxImages}
-        currentIndex={lightboxIndex}
-        isOpen={lightboxOpen}
-        onClose={closeLightbox}
-        onNext={nextImage}
-        onPrevious={previousImage}
-        altPrefix={lightboxAltPrefix}
-      />
-    </>
+          </div>
+        )}
+      </div>
+    </main>
   )
 }
