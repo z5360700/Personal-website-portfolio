@@ -285,6 +285,19 @@ The solution involved precise 3D modeling of the PC case components, designing c
     ],
     printingGallery: ["/images/bambu-studio-slicing.png", "/images/printed-cooling-parts.jpeg"],
     installationGallery: ["/images/pc-without-ducting.jpeg", "/images/pc-cooling-installed.jpeg"],
+    gallery: [
+      "/images/pc-airflow-problem.jpeg",
+      "/images/pc-case-model.png",
+      "/images/pc-case-with-gpu.png",
+      "/images/cooling-duct-design.png",
+      "/images/cooling-duct-component.png",
+      "/images/bambu-studio-slicing.png",
+      "/images/printed-cooling-parts.jpeg",
+      "/images/pc-without-ducting.jpeg",
+      "/images/pc-cooling-installed.jpeg",
+      "/images/gpu-test-without-ducting.png",
+      "/images/gpu-test-with-ducting.png",
+    ],
     storySteps: [
       {
         title: "The Problem",
@@ -556,18 +569,6 @@ The project successfully solved the original problem of unauthorized access whil
   },
 ]
 
-const closeLightbox = () => {
-  setLightboxOpen(false)
-}
-
-const nextImage = () => {
-  setLightboxIndex((prev) => (prev + 1) % lightboxImages.length)
-}
-
-const previousImage = () => {
-  setLightboxIndex((prev) => (prev - 1 + lightboxImages.length) % lightboxImages.length)
-}
-
 function ProjectDetailClient() {
   const router = useRouter()
   const { id } = useParams()
@@ -600,6 +601,18 @@ function ProjectDetailClient() {
     setLightboxOpen(true)
   }
 
+  const closeLightbox = () => {
+    setLightboxOpen(false)
+  }
+
+  const nextImage = () => {
+    setLightboxIndex((prev) => (prev + 1) % lightboxImages.length)
+  }
+
+  const previousImage = () => {
+    setLightboxIndex((prev) => (prev - 1 + lightboxImages.length) % lightboxImages.length)
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -623,9 +636,9 @@ function ProjectDetailClient() {
   }
 
   return (
-    <main className="min-h-screen pt-20 pb-16 overflow-x-hidden">
-      <div className="container mx-auto px-4">
-        <Button variant="ghost" className="mb-6" asChild>
+    <main className="min-h-screen pt-16 pb-8 overflow-x-hidden bg-background">
+      <div className="container mx-auto px-3 max-w-7xl">
+        <Button variant="ghost" className="mb-4" asChild>
           <Link href="/" className="flex items-center">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Projects
@@ -634,14 +647,14 @@ function ProjectDetailClient() {
 
         {/* Special layout for Construction project */}
         {project.id === 1 ? (
-          <div className="space-y-12">
+          <div className="space-y-8">
             {/* Project Header */}
-            <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
-              <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-              <div className="flex flex-wrap justify-center gap-2 mb-8">
+            <div className="text-center bg-muted/20 rounded-lg p-6 border">
+              <h1 className="text-2xl md:text-3xl font-bold mb-3">{project.title}</h1>
+              <p className="text-base text-foreground/80 mb-4 max-w-4xl mx-auto">{project.description}</p>
+              <div className="flex flex-wrap justify-center gap-2">
                 {project.tags.map((tag) => (
-                  <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                  <span key={tag} className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs">
                     {tag}
                   </span>
                 ))}
@@ -649,33 +662,35 @@ function ProjectDetailClient() {
             </div>
 
             {/* Before/After Slider */}
-            <div className="max-w-6xl mx-auto mb-12">
-              <h2 className="text-2xl font-bold text-center mb-8">Transformation</h2>
-              <EnhancedBeforeAfterSlider
-                beforeImage={project.beforeImage || "/placeholder.svg"}
-                afterImage={project.image}
-                beforeAlt="Before renovation"
-                afterAlt="After renovation"
-              />
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <h2 className="text-xl font-bold text-center mb-6">Transformation</h2>
+              <div className="max-w-5xl mx-auto">
+                <EnhancedBeforeAfterSlider
+                  beforeImage={project.beforeImage || "/placeholder.svg"}
+                  afterImage={project.image}
+                  beforeAlt="Before renovation"
+                  afterAlt="After renovation"
+                />
+              </div>
             </div>
 
             {/* Project Description */}
-            <div className="max-w-4xl mx-auto mb-12">
+            <div className="bg-muted/10 rounded-lg p-6 border">
               <div className="prose dark:prose-invert max-w-none">
-                <p className="text-lg leading-relaxed">{project.longDescription}</p>
+                <p className="text-base leading-relaxed">{project.longDescription}</p>
               </div>
             </div>
 
             {/* Photo Galleries */}
-            <div className="max-w-6xl mx-auto space-y-12">
+            <div className="space-y-8">
               {/* Exterior Gallery */}
-              <div>
-                <h2 className="text-2xl font-bold text-center mb-8">Exterior Construction</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-muted/10 rounded-lg p-6 border">
+                <h2 className="text-xl font-bold text-center mb-6">Exterior Construction</h2>
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   {project.exteriorGallery?.map((image, index) => (
                     <div
                       key={index}
-                      className="relative h-48 rounded-lg overflow-hidden cursor-pointer group"
+                      className="relative h-32 rounded-lg overflow-hidden cursor-pointer group"
                       onClick={() => openLightbox(project.exteriorGallery || [], index, "Exterior construction")}
                     >
                       <Image
@@ -691,13 +706,13 @@ function ProjectDetailClient() {
               </div>
 
               {/* Interior Gallery */}
-              <div>
-                <h2 className="text-2xl font-bold text-center mb-8">Interior Work</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-muted/10 rounded-lg p-6 border">
+                <h2 className="text-xl font-bold text-center mb-6">Interior Work</h2>
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   {project.interiorGallery?.map((image, index) => (
                     <div
                       key={index}
-                      className="relative h-48 rounded-lg overflow-hidden cursor-pointer group"
+                      className="relative h-32 rounded-lg overflow-hidden cursor-pointer group"
                       onClick={() => openLightbox(project.interiorGallery || [], index, "Interior work")}
                     >
                       <Image
@@ -713,13 +728,13 @@ function ProjectDetailClient() {
               </div>
 
               {/* Finished Product Gallery */}
-              <div>
-                <h2 className="text-2xl font-bold text-center mb-8">Finished Product</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="bg-muted/10 rounded-lg p-6 border">
+                <h2 className="text-xl font-bold text-center mb-6">Finished Product</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {project.finishedProductGallery?.map((image, index) => (
                     <div
                       key={index}
-                      className="relative h-64 rounded-lg overflow-hidden cursor-pointer group"
+                      className="relative h-40 rounded-lg overflow-hidden cursor-pointer group"
                       onClick={() => openLightbox(project.finishedProductGallery || [], index, "Finished product")}
                     >
                       <Image
@@ -735,13 +750,13 @@ function ProjectDetailClient() {
               </div>
 
               {/* Miscellaneous Gallery */}
-              <div>
-                <h2 className="text-2xl font-bold text-center mb-8">Additional Photos</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {project.miscellaneousGallery?.slice(0, 12).map((image, index) => (
+              <div className="bg-muted/10 rounded-lg p-6 border">
+                <h2 className="text-xl font-bold text-center mb-6">Additional Photos</h2>
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                  {project.miscellaneousGallery?.slice(0, 18).map((image, index) => (
                     <div
                       key={index}
-                      className="relative h-48 rounded-lg overflow-hidden cursor-pointer group"
+                      className="relative h-32 rounded-lg overflow-hidden cursor-pointer group"
                       onClick={() => openLightbox(project.miscellaneousGallery || [], index, "Additional photos")}
                     >
                       <Image
@@ -754,7 +769,7 @@ function ProjectDetailClient() {
                     </div>
                   ))}
                 </div>
-                {project.miscellaneousGallery && project.miscellaneousGallery.length > 12 && (
+                {project.miscellaneousGallery && project.miscellaneousGallery.length > 18 && (
                   <div className="text-center mt-4">
                     <Button
                       variant="outline"
@@ -768,37 +783,37 @@ function ProjectDetailClient() {
             </div>
 
             {/* Project Details Tabs */}
-            <div className="max-w-6xl mx-auto">
-              <Tabs defaultValue="features" className="mb-12">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <Tabs defaultValue="features" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="features">Key Features</TabsTrigger>
                   <TabsTrigger value="technologies">Technologies</TabsTrigger>
                   <TabsTrigger value="challenges">Challenges</TabsTrigger>
                 </TabsList>
-                <TabsContent value="features" className="p-6 border rounded-md mt-2">
-                  <h2 className="text-xl font-bold mb-4">Key Features</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <TabsContent value="features" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Key Features</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {project.features.map((feature, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                        <span className="text-foreground/80">{feature}</span>
+                      <div key={index} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
+                        <span className="text-foreground/80 text-sm">{feature}</span>
                       </div>
                     ))}
                   </div>
                 </TabsContent>
-                <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
-                  <h2 className="text-xl font-bold mb-4">Technologies Used</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <TabsContent value="technologies" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Technologies Used</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {Object.entries(project.technologies).map(([category, items]) => (
                       <div key={category}>
-                        <h3 className="font-bold mb-3 text-primary capitalize">
+                        <h3 className="font-bold mb-2 text-primary capitalize text-sm">
                           {category.replace(/([A-Z])/g, " $1").trim()}
                         </h3>
-                        <ul className="space-y-2">
+                        <ul className="space-y-1">
                           {items.map((item, index) => (
-                            <li key={index} className="flex items-start gap-3">
-                              <div className="w-1.5 h-1.5 bg-foreground/60 rounded-full mt-2 flex-shrink-0" />
-                              <span className="text-foreground/80 text-sm">{item}</span>
+                            <li key={index} className="flex items-start gap-2">
+                              <div className="w-1 h-1 bg-foreground/60 rounded-full mt-2 flex-shrink-0" />
+                              <span className="text-foreground/80 text-xs">{item}</span>
                             </li>
                           ))}
                         </ul>
@@ -806,10 +821,12 @@ function ProjectDetailClient() {
                     ))}
                   </div>
                 </TabsContent>
-                <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
-                  <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
+                <TabsContent value="challenges" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Challenges & Solutions</h2>
                   <div className="prose dark:prose-invert max-w-none">
-                    <p className="text-foreground/80 leading-relaxed whitespace-pre-line">{project.challenges}</p>
+                    <p className="text-foreground/80 leading-relaxed whitespace-pre-line text-sm">
+                      {project.challenges}
+                    </p>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -817,19 +834,19 @@ function ProjectDetailClient() {
           </div>
         ) : project.id === 2 ? (
           /* Micromouse project layout */
-          <div className="space-y-12">
+          <div className="space-y-8">
             {/* Project Header */}
-            <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
+            <div className="text-center bg-muted/20 rounded-lg p-6 border">
+              <h1 className="text-2xl md:text-3xl font-bold mb-3">{project.title}</h1>
               {project.course && (
-                <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4">
+                <div className="inline-block bg-primary/10 text-primary px-2 py-1 rounded-full text-xs font-medium mb-3">
                   Course: {project.course}
                 </div>
               )}
-              <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-              <div className="flex flex-wrap justify-center gap-2 mb-8">
+              <p className="text-base text-foreground/80 mb-4 max-w-4xl mx-auto">{project.description}</p>
+              <div className="flex flex-wrap justify-center gap-2">
                 {project.tags.map((tag) => (
-                  <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                  <span key={tag} className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs">
                     {tag}
                   </span>
                 ))}
@@ -837,22 +854,22 @@ function ProjectDetailClient() {
             </div>
 
             {/* Main Project Image */}
-            <div className="max-w-4xl mx-auto mb-12">
-              <div className="relative aspect-video rounded-lg overflow-hidden">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <div className="relative aspect-video rounded-lg overflow-hidden max-w-4xl mx-auto">
                 <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
               </div>
             </div>
 
             {/* Project Description */}
-            <div className="max-w-4xl mx-auto mb-12">
+            <div className="bg-muted/10 rounded-lg p-6 border">
               <div className="prose dark:prose-invert max-w-none">
-                <p className="text-lg leading-relaxed whitespace-pre-line">{project.longDescription}</p>
+                <p className="text-base leading-relaxed whitespace-pre-line">{project.longDescription}</p>
               </div>
             </div>
 
             {/* GitHub Link */}
             {project.githubUrl && (
-              <div className="text-center mb-12">
+              <div className="text-center bg-muted/10 rounded-lg p-4 border">
                 <Button asChild>
                   <a
                     href={project.githubUrl}
@@ -868,11 +885,11 @@ function ProjectDetailClient() {
             )}
 
             {/* Video Demonstrations */}
-            <div className="max-w-6xl mx-auto mb-12">
-              <h2 className="text-2xl font-bold text-center mb-8">Video Demonstrations</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <h2 className="text-xl font-bold text-center mb-6">Video Demonstrations</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {project.videoGallery?.map((video, index) => (
-                  <div key={index} className="space-y-4">
+                  <div key={index} className="space-y-3">
                     <div className="relative w-full aspect-video rounded-lg overflow-hidden">
                       <iframe
                         src={`https://www.youtube.com/embed/${video.id}`}
@@ -883,8 +900,8 @@ function ProjectDetailClient() {
                       />
                     </div>
                     <div className="text-center">
-                      <h3 className="font-bold text-lg mb-2">{video.title}</h3>
-                      <p className="text-foreground/70 text-sm">{video.description}</p>
+                      <h3 className="font-bold text-sm mb-1">{video.title}</h3>
+                      <p className="text-foreground/70 text-xs">{video.description}</p>
                     </div>
                   </div>
                 ))}
@@ -892,15 +909,15 @@ function ProjectDetailClient() {
             </div>
 
             {/* Hardware and Software Galleries */}
-            <div className="max-w-6xl mx-auto space-y-12">
+            <div className="space-y-8">
               {/* Hardware Gallery */}
-              <div>
-                <h2 className="text-2xl font-bold text-center mb-8">Hardware Development</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="bg-muted/10 rounded-lg p-6 border">
+                <h2 className="text-xl font-bold text-center mb-6">Hardware Development</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {project.hardwareGallery?.map((image, index) => (
                     <div
                       key={index}
-                      className="relative h-64 rounded-lg overflow-hidden cursor-pointer group"
+                      className="relative h-40 rounded-lg overflow-hidden cursor-pointer group"
                       onClick={() => openLightbox(project.hardwareGallery || [], index, "Hardware development")}
                     >
                       <Image
@@ -916,13 +933,13 @@ function ProjectDetailClient() {
               </div>
 
               {/* Software Gallery */}
-              <div>
-                <h2 className="text-2xl font-bold text-center mb-8">Software Development</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-muted/10 rounded-lg p-6 border">
+                <h2 className="text-xl font-bold text-center mb-6">Software Development</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {project.softwareGallery?.map((image, index) => (
                     <div
                       key={index}
-                      className="relative h-64 rounded-lg overflow-hidden cursor-pointer group"
+                      className="relative h-48 rounded-lg overflow-hidden cursor-pointer group"
                       onClick={() => openLightbox(project.softwareGallery || [], index, "Software development")}
                     >
                       <Image
@@ -939,37 +956,37 @@ function ProjectDetailClient() {
             </div>
 
             {/* Project Details Tabs */}
-            <div className="max-w-6xl mx-auto">
-              <Tabs defaultValue="features" className="mb-12">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <Tabs defaultValue="features" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="features">Key Features</TabsTrigger>
                   <TabsTrigger value="technologies">Technologies</TabsTrigger>
                   <TabsTrigger value="challenges">Challenges</TabsTrigger>
                 </TabsList>
-                <TabsContent value="features" className="p-6 border rounded-md mt-2">
-                  <h2 className="text-xl font-bold mb-4">Key Features</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <TabsContent value="features" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Key Features</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {project.features.map((feature, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                        <span className="text-foreground/80">{feature}</span>
+                      <div key={index} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
+                        <span className="text-foreground/80 text-sm">{feature}</span>
                       </div>
                     ))}
                   </div>
                 </TabsContent>
-                <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
-                  <h2 className="text-xl font-bold mb-4">Technologies Used</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <TabsContent value="technologies" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Technologies Used</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {Object.entries(project.technologies).map(([category, items]) => (
                       <div key={category}>
-                        <h3 className="font-bold mb-3 text-primary capitalize">
+                        <h3 className="font-bold mb-2 text-primary capitalize text-sm">
                           {category.replace(/([A-Z])/g, " $1").trim()}
                         </h3>
-                        <ul className="space-y-2">
+                        <ul className="space-y-1">
                           {items.map((item, index) => (
-                            <li key={index} className="flex items-start gap-3">
-                              <div className="w-1.5 h-1.5 bg-foreground/60 rounded-full mt-2 flex-shrink-0" />
-                              <span className="text-foreground/80 text-sm">{item}</span>
+                            <li key={index} className="flex items-start gap-2">
+                              <div className="w-1 h-1 bg-foreground/60 rounded-full mt-2 flex-shrink-0" />
+                              <span className="text-foreground/80 text-xs">{item}</span>
                             </li>
                           ))}
                         </ul>
@@ -977,10 +994,12 @@ function ProjectDetailClient() {
                     ))}
                   </div>
                 </TabsContent>
-                <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
-                  <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
+                <TabsContent value="challenges" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Challenges & Solutions</h2>
                   <div className="prose dark:prose-invert max-w-none">
-                    <p className="text-foreground/80 leading-relaxed whitespace-pre-line">{project.challenges}</p>
+                    <p className="text-foreground/80 leading-relaxed whitespace-pre-line text-sm">
+                      {project.challenges}
+                    </p>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -988,14 +1007,14 @@ function ProjectDetailClient() {
           </div>
         ) : project.id === 3 ? (
           /* PC Cooling project with story steps layout */
-          <div className="space-y-12">
+          <div className="space-y-8">
             {/* Project Header */}
-            <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
-              <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-              <div className="flex flex-wrap justify-center gap-2 mb-8">
+            <div className="text-center bg-muted/20 rounded-lg p-6 border">
+              <h1 className="text-2xl md:text-3xl font-bold mb-3">{project.title}</h1>
+              <p className="text-base text-foreground/80 mb-4 max-w-4xl mx-auto">{project.description}</p>
+              <div className="flex flex-wrap justify-center gap-2">
                 {project.tags.map((tag) => (
-                  <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                  <span key={tag} className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs">
                     {tag}
                   </span>
                 ))}
@@ -1003,36 +1022,36 @@ function ProjectDetailClient() {
             </div>
 
             {/* Main Project Image */}
-            <div className="max-w-4xl mx-auto mb-12">
-              <div className="relative aspect-video rounded-lg overflow-hidden">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <div className="relative aspect-video rounded-lg overflow-hidden max-w-4xl mx-auto">
                 <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
               </div>
             </div>
 
             {/* Project Description */}
-            <div className="max-w-4xl mx-auto mb-12">
+            <div className="bg-muted/10 rounded-lg p-6 border">
               <div className="prose dark:prose-invert max-w-none">
-                <p className="text-lg leading-relaxed whitespace-pre-line">{project.longDescription}</p>
+                <p className="text-base leading-relaxed whitespace-pre-line">{project.longDescription}</p>
               </div>
             </div>
 
             {/* Story Steps */}
-            <div className="max-w-6xl mx-auto mb-12">
-              <h2 className="text-2xl font-bold text-center mb-12">Project Development Story</h2>
-              <div className="space-y-16">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <h2 className="text-xl font-bold text-center mb-8">Project Development Story</h2>
+              <div className="space-y-8">
                 {project.storySteps?.map((step, index) => (
-                  <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                    <div className={`space-y-4 ${index % 2 === 1 ? "lg:order-2" : ""}`}>
-                      <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+                  <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                    <div className={`space-y-3 ${index % 2 === 1 ? "lg:order-2" : ""}`}>
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-sm">
                           {index + 1}
                         </div>
-                        <h3 className="text-xl font-bold">{step.title}</h3>
+                        <h3 className="text-lg font-bold">{step.title}</h3>
                       </div>
-                      <p className="text-foreground/80 leading-relaxed">{step.description}</p>
+                      <p className="text-foreground/80 leading-relaxed text-sm">{step.description}</p>
                       {step.highlight && (
-                        <div className="bg-primary/10 border-l-4 border-primary p-4 rounded-r-lg">
-                          <p className="text-sm text-primary font-medium">{step.highlight}</p>
+                        <div className="bg-primary/10 border-l-4 border-primary p-3 rounded-r-lg">
+                          <p className="text-xs text-primary font-medium">{step.highlight}</p>
                         </div>
                       )}
                     </div>
@@ -1055,52 +1074,128 @@ function ProjectDetailClient() {
               </div>
             </div>
 
+            {/* All Images Gallery */}
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <h2 className="text-xl font-bold text-center mb-6">All Project Images</h2>
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                {project.gallery?.map((image, index) => (
+                  <div
+                    key={index}
+                    className="relative h-32 rounded-lg overflow-hidden cursor-pointer group"
+                    onClick={() => openLightbox(project.gallery || [], index, "Project images")}
+                  >
+                    <Image
+                      src={image || "/placeholder.svg"}
+                      alt={`Project image ${index + 1}`}
+                      fill
+                      className="object-cover transition-transform group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Temperature Comparison Results */}
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <h2 className="text-xl font-bold text-center mb-6">Temperature Test Results</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-center">Without Ducting</h3>
+                  <div
+                    className="relative aspect-video rounded-lg overflow-hidden cursor-pointer group"
+                    onClick={() =>
+                      openLightbox(["/images/gpu-test-without-ducting.png"], 0, "GPU test without ducting")
+                    }
+                  >
+                    <Image
+                      src="/images/gpu-test-without-ducting.png"
+                      alt="GPU temperature test without ducting"
+                      fill
+                      className="object-cover transition-transform group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                  </div>
+                  <div className="text-center bg-red-50 dark:bg-red-900/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
+                    <p className="text-red-700 dark:text-red-300 font-semibold">Higher GPU temperatures</p>
+                    <p className="text-red-600 dark:text-red-400 text-sm">Less efficient cooling performance</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-center">With Ducting</h3>
+                  <div
+                    className="relative aspect-video rounded-lg overflow-hidden cursor-pointer group"
+                    onClick={() => openLightbox(["/images/gpu-test-with-ducting.png"], 0, "GPU test with ducting")}
+                  >
+                    <Image
+                      src="/images/gpu-test-with-ducting.png"
+                      alt="GPU temperature test with ducting"
+                      fill
+                      className="object-cover transition-transform group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                  </div>
+                  <div className="text-center bg-green-50 dark:bg-green-900/20 p-3 rounded-lg border border-green-200 dark:border-green-800">
+                    <p className="text-green-700 dark:text-green-300 font-semibold">8°C temperature reduction</p>
+                    <p className="text-green-600 dark:text-green-400 text-sm">Improved cooling efficiency</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 text-center bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h4 className="font-bold text-blue-800 dark:text-blue-200 mb-2">Key Improvement</h4>
+                <p className="text-blue-700 dark:text-blue-300 text-sm">
+                  The custom ducting system achieved an 8°C reduction in GPU temperatures under full load, allowing for
+                  better performance and reduced fan noise.
+                </p>
+              </div>
+            </div>
+
             {/* Results Section */}
             {project.results && (
-              <div className="max-w-4xl mx-auto mb-12">
-                <div className="bg-green-50 dark:bg-green-900/20 p-8 rounded-lg border border-green-200 dark:border-green-800">
-                  <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mb-4">Results & Impact</h2>
-                  <div className="prose dark:prose-invert max-w-none">
-                    <p className="text-green-700 dark:text-green-300 leading-relaxed whitespace-pre-line">
-                      {project.results}
-                    </p>
-                  </div>
+              <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
+                <h2 className="text-xl font-bold text-green-800 dark:text-green-200 mb-4">Results & Impact</h2>
+                <div className="prose dark:prose-invert max-w-none">
+                  <p className="text-green-700 dark:text-green-300 leading-relaxed whitespace-pre-line text-sm">
+                    {project.results}
+                  </p>
                 </div>
               </div>
             )}
 
             {/* Project Details Tabs */}
-            <div className="max-w-6xl mx-auto">
-              <Tabs defaultValue="features" className="mb-12">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <Tabs defaultValue="features" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="features">Key Features</TabsTrigger>
                   <TabsTrigger value="technologies">Technologies</TabsTrigger>
                   <TabsTrigger value="challenges">Challenges</TabsTrigger>
                 </TabsList>
-                <TabsContent value="features" className="p-6 border rounded-md mt-2">
-                  <h2 className="text-xl font-bold mb-4">Key Features</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <TabsContent value="features" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Key Features</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {project.features.map((feature, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                        <span className="text-foreground/80">{feature}</span>
+                      <div key={index} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
+                        <span className="text-foreground/80 text-sm">{feature}</span>
                       </div>
                     ))}
                   </div>
                 </TabsContent>
-                <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
-                  <h2 className="text-xl font-bold mb-4">Technologies Used</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <TabsContent value="technologies" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Technologies Used</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {Object.entries(project.technologies).map(([category, items]) => (
                       <div key={category}>
-                        <h3 className="font-bold mb-3 text-primary capitalize">
+                        <h3 className="font-bold mb-2 text-primary capitalize text-sm">
                           {category.replace(/([A-Z])/g, " $1").trim()}
                         </h3>
-                        <ul className="space-y-2">
+                        <ul className="space-y-1">
                           {items.map((item, index) => (
-                            <li key={index} className="flex items-start gap-3">
-                              <div className="w-1.5 h-1.5 bg-foreground/60 rounded-full mt-2 flex-shrink-0" />
-                              <span className="text-foreground/80 text-sm">{item}</span>
+                            <li key={index} className="flex items-start gap-2">
+                              <div className="w-1 h-1 bg-foreground/60 rounded-full mt-2 flex-shrink-0" />
+                              <span className="text-foreground/80 text-xs">{item}</span>
                             </li>
                           ))}
                         </ul>
@@ -1108,10 +1203,12 @@ function ProjectDetailClient() {
                     ))}
                   </div>
                 </TabsContent>
-                <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
-                  <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
+                <TabsContent value="challenges" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Challenges & Solutions</h2>
                   <div className="prose dark:prose-invert max-w-none">
-                    <p className="text-foreground/80 leading-relaxed whitespace-pre-line">{project.challenges}</p>
+                    <p className="text-foreground/80 leading-relaxed whitespace-pre-line text-sm">
+                      {project.challenges}
+                    </p>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -1119,14 +1216,14 @@ function ProjectDetailClient() {
           </div>
         ) : project.id === 4 ? (
           /* UR5e Robotic Writing System - Keep current simplified layout */
-          <div className="space-y-12">
+          <div className="space-y-8">
             {/* Project Header */}
-            <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
-              <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-              <div className="flex flex-wrap justify-center gap-2 mb-8">
+            <div className="text-center bg-muted/20 rounded-lg p-6 border">
+              <h1 className="text-2xl md:text-3xl font-bold mb-3">{project.title}</h1>
+              <p className="text-base text-foreground/80 mb-4 max-w-4xl mx-auto">{project.description}</p>
+              <div className="flex flex-wrap justify-center gap-2">
                 {project.tags.map((tag) => (
-                  <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                  <span key={tag} className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs">
                     {tag}
                   </span>
                 ))}
@@ -1134,25 +1231,25 @@ function ProjectDetailClient() {
             </div>
 
             {/* Main Project Image */}
-            <div className="max-w-4xl mx-auto mb-12">
-              <div className="relative aspect-video rounded-lg overflow-hidden">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <div className="relative aspect-video rounded-lg overflow-hidden max-w-4xl mx-auto">
                 <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
               </div>
             </div>
 
             {/* Project Description */}
-            <div className="max-w-4xl mx-auto mb-12">
-              <div className="prose dark:prose-invert max-w-none text-center">
-                <p className="text-lg leading-relaxed">{project.longDescription}</p>
+            <div className="bg-muted/10 rounded-lg p-6 border text-center">
+              <div className="prose dark:prose-invert max-w-none">
+                <p className="text-base leading-relaxed">{project.longDescription}</p>
               </div>
             </div>
 
             {/* Video Demonstrations */}
-            <div className="max-w-6xl mx-auto mb-12">
-              <h2 className="text-2xl font-bold text-center mb-8">Watch It In Action</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <h2 className="text-xl font-bold text-center mb-6">Watch It In Action</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {project.videoGallery?.map((video, index) => (
-                  <div key={index} className="space-y-4">
+                  <div key={index} className="space-y-3">
                     <div className="relative w-full aspect-video rounded-lg overflow-hidden">
                       <iframe
                         src={`https://www.youtube.com/embed/${video.id}`}
@@ -1163,8 +1260,8 @@ function ProjectDetailClient() {
                       />
                     </div>
                     <div className="text-center">
-                      <h3 className="font-bold text-lg mb-2">{video.title}</h3>
-                      <p className="text-foreground/70 text-sm">{video.description}</p>
+                      <h3 className="font-bold text-sm mb-1">{video.title}</h3>
+                      <p className="text-foreground/70 text-xs">{video.description}</p>
                     </div>
                   </div>
                 ))}
@@ -1172,13 +1269,13 @@ function ProjectDetailClient() {
             </div>
 
             {/* Image Gallery */}
-            <div className="max-w-6xl mx-auto mb-12">
-              <h2 className="text-2xl font-bold text-center mb-8">Project Photos</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <h2 className="text-xl font-bold text-center mb-6">Project Photos</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {project.gallery?.map((image, index) => (
                   <div
                     key={index}
-                    className="relative h-64 md:h-80 rounded-lg overflow-hidden cursor-pointer group"
+                    className="relative h-48 md:h-64 rounded-lg overflow-hidden cursor-pointer group"
                     onClick={() => openLightbox(project.gallery || [], index, "UR5e project")}
                   >
                     <Image
@@ -1194,39 +1291,37 @@ function ProjectDetailClient() {
             </div>
 
             {/* What I Learned */}
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-muted/30 p-8 rounded-lg">
-                <h2 className="text-2xl font-bold text-center mb-6">What I Learned</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div>
-                    <h3 className="font-bold mb-4 text-primary">Key Skills</h3>
-                    <ul className="space-y-2">
-                      {project.learnings?.map((learning, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                          <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                          <span className="text-foreground/80">{learning}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="font-bold mb-4 text-primary">Challenges</h3>
-                    <p className="text-foreground/80 leading-relaxed">{project.challenges}</p>
-                  </div>
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <h2 className="text-xl font-bold text-center mb-6">What I Learned</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="font-bold mb-3 text-primary">Key Skills</h3>
+                  <ul className="space-y-2">
+                    {project.learnings?.map((learning, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
+                        <span className="text-foreground/80 text-sm">{learning}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-bold mb-3 text-primary">Challenges</h3>
+                  <p className="text-foreground/80 leading-relaxed text-sm">{project.challenges}</p>
                 </div>
               </div>
             </div>
           </div>
         ) : project.id === 5 ? (
           /* Cat Door project layout */
-          <div className="space-y-12">
+          <div className="space-y-8">
             {/* Project Header */}
-            <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
-              <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-              <div className="flex flex-wrap justify-center gap-2 mb-8">
+            <div className="text-center bg-muted/20 rounded-lg p-6 border">
+              <h1 className="text-2xl md:text-3xl font-bold mb-3">{project.title}</h1>
+              <p className="text-base text-foreground/80 mb-4 max-w-4xl mx-auto">{project.description}</p>
+              <div className="flex flex-wrap justify-center gap-2">
                 {project.tags.map((tag) => (
-                  <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                  <span key={tag} className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs">
                     {tag}
                   </span>
                 ))}
@@ -1234,24 +1329,24 @@ function ProjectDetailClient() {
             </div>
 
             {/* Main Project Image */}
-            <div className="max-w-4xl mx-auto mb-12">
-              <div className="relative aspect-video rounded-lg overflow-hidden">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <div className="relative aspect-video rounded-lg overflow-hidden max-w-4xl mx-auto">
                 <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
               </div>
             </div>
 
             {/* Project Description */}
-            <div className="max-w-4xl mx-auto mb-12">
+            <div className="bg-muted/10 rounded-lg p-6 border">
               <div className="prose dark:prose-invert max-w-none">
-                <p className="text-lg leading-relaxed whitespace-pre-line">{project.longDescription}</p>
+                <p className="text-base leading-relaxed whitespace-pre-line">{project.longDescription}</p>
               </div>
             </div>
 
             {/* Video Demonstration */}
-            <div className="max-w-4xl mx-auto mb-12">
-              <h2 className="text-2xl font-bold text-center mb-8">System Demonstration</h2>
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <h2 className="text-xl font-bold text-center mb-6">System Demonstration</h2>
               {project.videoGallery?.map((video, index) => (
-                <div key={index} className="space-y-4">
+                <div key={index} className="space-y-3 max-w-4xl mx-auto">
                   <div className="relative w-full aspect-video rounded-lg overflow-hidden">
                     <iframe
                       src={`https://www.youtube.com/embed/${video.id}`}
@@ -1262,23 +1357,23 @@ function ProjectDetailClient() {
                     />
                   </div>
                   <div className="text-center">
-                    <h3 className="font-bold text-lg mb-2">{video.title}</h3>
-                    <p className="text-foreground/70">{video.description}</p>
+                    <h3 className="font-bold text-sm mb-1">{video.title}</h3>
+                    <p className="text-foreground/70 text-xs">{video.description}</p>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Design Evolution and Notifications */}
-            <div className="max-w-6xl mx-auto space-y-12">
+            <div className="space-y-8">
               {/* Design Gallery */}
-              <div>
-                <h2 className="text-2xl font-bold text-center mb-8">Design Evolution</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="bg-muted/10 rounded-lg p-6 border">
+                <h2 className="text-xl font-bold text-center mb-6">Design Evolution</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {project.designGallery?.map((image, index) => (
                     <div
                       key={index}
-                      className="relative h-64 rounded-lg overflow-hidden cursor-pointer group"
+                      className="relative h-40 rounded-lg overflow-hidden cursor-pointer group"
                       onClick={() => openLightbox(project.designGallery || [], index, "Design evolution")}
                     >
                       <Image
@@ -1294,13 +1389,13 @@ function ProjectDetailClient() {
               </div>
 
               {/* Notification Gallery */}
-              <div>
-                <h2 className="text-2xl font-bold text-center mb-8">Telegram Notifications</h2>
+              <div className="bg-muted/10 rounded-lg p-6 border">
+                <h2 className="text-xl font-bold text-center mb-6">Telegram Notifications</h2>
                 <div className="flex justify-center">
                   {project.notificationGallery?.map((image, index) => (
                     <div
                       key={index}
-                      className="relative w-full max-w-md h-96 rounded-lg overflow-hidden cursor-pointer group"
+                      className="relative w-full max-w-sm h-80 rounded-lg overflow-hidden cursor-pointer group"
                       onClick={() => openLightbox(project.notificationGallery || [], index, "Telegram notifications")}
                     >
                       <Image
@@ -1318,50 +1413,48 @@ function ProjectDetailClient() {
 
             {/* Results Section */}
             {project.results && (
-              <div className="max-w-4xl mx-auto mb-12">
-                <div className="bg-green-50 dark:bg-green-900/20 p-8 rounded-lg border border-green-200 dark:border-green-800">
-                  <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mb-4">Results & Impact</h2>
-                  <div className="prose dark:prose-invert max-w-none">
-                    <p className="text-green-700 dark:text-green-300 leading-relaxed whitespace-pre-line">
-                      {project.results}
-                    </p>
-                  </div>
+              <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
+                <h2 className="text-xl font-bold text-green-800 dark:text-green-200 mb-4">Results & Impact</h2>
+                <div className="prose dark:prose-invert max-w-none">
+                  <p className="text-green-700 dark:text-green-300 leading-relaxed whitespace-pre-line text-sm">
+                    {project.results}
+                  </p>
                 </div>
               </div>
             )}
 
             {/* Project Details Tabs */}
-            <div className="max-w-6xl mx-auto">
-              <Tabs defaultValue="features" className="mb-12">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <Tabs defaultValue="features" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="features">Key Features</TabsTrigger>
                   <TabsTrigger value="technologies">Technologies</TabsTrigger>
                   <TabsTrigger value="challenges">Challenges</TabsTrigger>
                 </TabsList>
-                <TabsContent value="features" className="p-6 border rounded-md mt-2">
-                  <h2 className="text-xl font-bold mb-4">Key Features</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <TabsContent value="features" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Key Features</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {project.features.map((feature, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                        <span className="text-foreground/80">{feature}</span>
+                      <div key={index} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
+                        <span className="text-foreground/80 text-sm">{feature}</span>
                       </div>
                     ))}
                   </div>
                 </TabsContent>
-                <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
-                  <h2 className="text-xl font-bold mb-4">Technologies Used</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <TabsContent value="technologies" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Technologies Used</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {Object.entries(project.technologies).map(([category, items]) => (
                       <div key={category}>
-                        <h3 className="font-bold mb-3 text-primary capitalize">
+                        <h3 className="font-bold mb-2 text-primary capitalize text-sm">
                           {category.replace(/([A-Z])/g, " $1").trim()}
                         </h3>
-                        <ul className="space-y-2">
+                        <ul className="space-y-1">
                           {items.map((item, index) => (
-                            <li key={index} className="flex items-start gap-3">
-                              <div className="w-1.5 h-1.5 bg-foreground/60 rounded-full mt-2 flex-shrink-0" />
-                              <span className="text-foreground/80 text-sm">{item}</span>
+                            <li key={index} className="flex items-start gap-2">
+                              <div className="w-1 h-1 bg-foreground/60 rounded-full mt-2 flex-shrink-0" />
+                              <span className="text-foreground/80 text-xs">{item}</span>
                             </li>
                           ))}
                         </ul>
@@ -1369,10 +1462,12 @@ function ProjectDetailClient() {
                     ))}
                   </div>
                 </TabsContent>
-                <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
-                  <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
+                <TabsContent value="challenges" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Challenges & Solutions</h2>
                   <div className="prose dark:prose-invert max-w-none">
-                    <p className="text-foreground/80 leading-relaxed whitespace-pre-line">{project.challenges}</p>
+                    <p className="text-foreground/80 leading-relaxed whitespace-pre-line text-sm">
+                      {project.challenges}
+                    </p>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -1381,31 +1476,31 @@ function ProjectDetailClient() {
         ) : (
           /* Default project layout for any other projects */
           <div className="space-y-8">
-            <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
-              <p className="text-lg text-foreground/80 mb-6">{project.description}</p>
-              <div className="flex flex-wrap justify-center gap-2 mb-8">
+            <div className="text-center bg-muted/20 rounded-lg p-6 border">
+              <h1 className="text-2xl md:text-3xl font-bold mb-3">{project.title}</h1>
+              <p className="text-base text-foreground/80 mb-4 max-w-4xl mx-auto">{project.description}</p>
+              <div className="flex flex-wrap justify-center gap-2">
                 {project.tags.map((tag) => (
-                  <span key={tag} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                  <span key={tag} className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs">
                     {tag}
                   </span>
                 ))}
               </div>
             </div>
 
-            <div className="max-w-4xl mx-auto mb-12">
-              <div className="relative aspect-video rounded-lg overflow-hidden">
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <div className="relative aspect-video rounded-lg overflow-hidden max-w-4xl mx-auto">
                 <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
               </div>
             </div>
 
-            <div className="max-w-4xl mx-auto">
-              <div className="prose dark:prose-invert max-w-none mb-8">
-                <p>{project.longDescription}</p>
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <div className="prose dark:prose-invert max-w-none">
+                <p className="text-base">{project.longDescription}</p>
               </div>
 
               {(project.liveUrl || project.githubUrl) && (
-                <div className="flex flex-wrap justify-center gap-4 mb-8">
+                <div className="flex flex-wrap justify-center gap-4 mt-6">
                   {project.liveUrl && (
                     <Button asChild>
                       <a
@@ -1436,48 +1531,52 @@ function ProjectDetailClient() {
               )}
             </div>
 
-            <Tabs defaultValue="features" className="mb-12 mt-16">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="features">Key Features</TabsTrigger>
-                <TabsTrigger value="technologies">Technologies</TabsTrigger>
-                <TabsTrigger value="challenges">Challenges</TabsTrigger>
-              </TabsList>
-              <TabsContent value="features" className="p-6 border rounded-md mt-2">
-                <h2 className="text-xl font-bold mb-4">Key Features</h2>
-                <ul className="space-y-2">
-                  {project.features.map((feature, index) => (
-                    <li key={index} className="flex items-start">
-                      <span className="mr-2 text-primary">•</span>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </TabsContent>
-              <TabsContent value="technologies" className="p-6 border rounded-md mt-2">
-                <h2 className="text-xl font-bold mb-4">Technologies Used</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {Object.entries(project.technologies).map(([category, items]) => (
-                    <div key={category}>
-                      <h3 className="font-bold mb-2 capitalize">{category.replace(/([A-Z])/g, " $1").trim()}</h3>
-                      <ul className="space-y-1">
-                        {items.map((item, index) => (
-                          <li key={index} className="flex items-start">
-                            <span className="mr-2 text-primary">•</span>
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </TabsContent>
-              <TabsContent value="challenges" className="p-6 border rounded-md mt-2">
-                <h2 className="text-xl font-bold mb-4">Challenges & Solutions</h2>
-                <div className="prose dark:prose-invert max-w-none">
-                  <p>{project.challenges}</p>
-                </div>
-              </TabsContent>
-            </Tabs>
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <Tabs defaultValue="features" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="features">Key Features</TabsTrigger>
+                  <TabsTrigger value="technologies">Technologies</TabsTrigger>
+                  <TabsTrigger value="challenges">Challenges</TabsTrigger>
+                </TabsList>
+                <TabsContent value="features" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Key Features</h2>
+                  <ul className="space-y-2">
+                    {project.features.map((feature, index) => (
+                      <li key={index} className="flex items-start">
+                        <span className="mr-2 text-primary">•</span>
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </TabsContent>
+                <TabsContent value="technologies" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Technologies Used</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {Object.entries(project.technologies).map(([category, items]) => (
+                      <div key={category}>
+                        <h3 className="font-bold mb-2 capitalize text-sm">
+                          {category.replace(/([A-Z])/g, " $1").trim()}
+                        </h3>
+                        <ul className="space-y-1">
+                          {items.map((item, index) => (
+                            <li key={index} className="flex items-start">
+                              <span className="mr-2 text-primary">•</span>
+                              <span className="text-xs">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="challenges" className="mt-4">
+                  <h2 className="text-lg font-bold mb-4">Challenges & Solutions</h2>
+                  <div className="prose dark:prose-invert max-w-none">
+                    <p className="text-sm">{project.challenges}</p>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
           </div>
         )}
 
