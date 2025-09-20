@@ -3,8 +3,6 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Suspense } from "react"
 import { NavigationHandler } from "@/components/navigation-handler"
 
@@ -46,8 +44,6 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <NavigationHandler />
             {children}
-            <Analytics />
-            <SpeedInsights />
           </ThemeProvider>
         </Suspense>
       </body>
