@@ -608,10 +608,12 @@ function ProjectDetailClient() {
   }, [id])
 
   useEffect(() => {
-    if (!project || project.id !== 1 || lightboxOpen) return
+    if (!project || lightboxOpen) return // Removed project.id !== 1 condition here to apply to all projects
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Navigation removed - only lightbox handles keyboard now
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault()
+      }
     }
 
     window.addEventListener("keydown", handleKeyDown)
