@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, ExternalLink, Github } from "lucide-react"
+import { ArrowLeft, ExternalLink, Github, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import EnhancedBeforeAfterSlider from "@/components/enhanced-before-after-slider"
@@ -71,8 +71,8 @@ From demolition to finishing touches, we handled everything - structural work, r
 
 The transformation showcases both my technical construction skills and project management abilities. Every step was completed with attention to building codes and quality standards.
 `,
-    image: "/images/construction-before-new.png",
-    beforeImage: "/images/construction-after.jpg",
+    image: "/images/construction-after.jpg",
+    beforeImage: "/images/construction-before-new.png",
     exteriorGallery: [
       "/images/construction-before.jpg",
       "/images/construction-2.jpg",
@@ -586,6 +586,11 @@ function ProjectDetailClient() {
   const additionalRef = useRef<HTMLDivElement>(null)
   const [currentSection, setCurrentSection] = useState(0)
 
+  const [exteriorIndex, setExteriorIndex] = useState(0)
+  const [interiorIndex, setInteriorIndex] = useState(0)
+  const [finishedIndex, setFinishedIndex] = useState(0)
+  const [additionalIndex, setAdditionalIndex] = useState(0)
+
   const [selectedGallery, setSelectedGallery] = useState<string | null>(null)
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number>(0)
 
@@ -603,84 +608,17 @@ function ProjectDetailClient() {
   }, [id])
 
   useEffect(() => {
-    if (!project || project.id !== 1) return
-
-    const sections = [exteriorRef, interiorRef, finishedRef, additionalRef]
+    if (!project || project.id !== 1 || lightboxOpen) return
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") {
-        e.preventDefault()
-        setCurrentSection((prev) => {
-          const newSection = Math.max(0, prev - 1)
-          sections[newSection]?.current?.scrollIntoView({ behavior: "smooth", block: "center" })
-          return newSection
-        })
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault()
-        setCurrentSection((prev) => {
-          const newSection = Math.min(sections.length - 1, prev + 1)
-          sections[newSection]?.current?.scrollIntoView({ behavior: "smooth", block: "center" })
-          return newSection
-        })
-      }
+      // Navigation removed - only lightbox handles keyboard now
     }
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [project])
+  }, [project, lightboxOpen])
 
-  useEffect(() => {
-    if (!project || project.id !== 1 || lightboxOpen) return
-
-    const handlePhotoNavigation = (e: KeyboardEvent) => {
-      // Only handle arrow keys for photo navigation
-      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return
-
-      // Determine which gallery is currently in view
-      const sections = [
-        { ref: exteriorRef, name: "exterior", images: project.exteriorGallery },
-        { ref: interiorRef, name: "interior", images: project.interiorGallery },
-        { ref: finishedRef, name: "finished", images: project.finishedProductGallery },
-        { ref: additionalRef, name: "additional", images: project.miscellaneousGallery },
-      ]
-
-      // Find the section that is most in view
-      let activeSection = sections[0]
-      let minDistance = Number.MAX_VALUE
-
-      sections.forEach((section) => {
-        if (section.ref.current) {
-          const rect = section.ref.current.getBoundingClientRect()
-          const distance = Math.abs(rect.top - window.innerHeight / 2)
-          if (distance < minDistance) {
-            minDistance = distance
-            activeSection = section
-          }
-        }
-      })
-
-      if (!activeSection.images || activeSection.images.length === 0) return
-
-      e.preventDefault()
-
-      // If no gallery is selected or different gallery, select first image
-      if (selectedGallery !== activeSection.name) {
-        setSelectedGallery(activeSection.name)
-        setSelectedPhotoIndex(0)
-        return
-      }
-
-      // Navigate through photos
-      if (e.key === "ArrowLeft") {
-        setSelectedPhotoIndex((prev) => (prev - 1 + activeSection.images!.length) % activeSection.images!.length)
-      } else if (e.key === "ArrowRight") {
-        setSelectedPhotoIndex((prev) => (prev + 1) % activeSection.images!.length)
-      }
-    }
-
-    window.addEventListener("keydown", handlePhotoNavigation)
-    return () => window.removeEventListener("keydown", handlePhotoNavigation)
-  }, [project, selectedGallery, selectedPhotoIndex, lightboxOpen])
+  // This navigation is now only available in the lightbox
 
   const openLightbox = (images: string[], index: number, altPrefix: string) => {
     setLightboxImages(images)
@@ -704,9 +642,34 @@ function ProjectDetailClient() {
     setLightboxIndex((prev) => (prev - 1 + lightboxImages.length) % lightboxImages.length)
   }
 
-  const isPhotoSelected = (galleryName: string, index: number) => {
-    return selectedGallery === galleryName && selectedPhotoIndex === index
+  const navigateExterior = (direction: "prev" | "next") => {
+    if (!project?.exteriorGallery) return
+    const length = project.exteriorGallery.length
+    setExteriorIndex((prev) => (direction === "next" ? (prev + 1) % length : (prev - 1 + length) % length))
   }
+
+  const navigateInterior = (direction: "prev" | "next") => {
+    if (!project?.interiorGallery) return
+    const length = project.interiorGallery.length
+    setInteriorIndex((prev) => (direction === "next" ? (prev + 1) % length : (prev - 1 + length) % length))
+  }
+
+  const navigateFinished = (direction: "prev" | "next") => {
+    if (!project?.finishedProductGallery) return
+    const length = project.finishedProductGallery.length
+    setFinishedIndex((prev) => (direction === "next" ? (prev + 1) % length : (prev - 1 + length) % length))
+  }
+
+  const navigateAdditional = (direction: "prev" | "next") => {
+    if (!project?.miscellaneousGallery) return
+    const length = project.miscellaneousGallery.length
+    setAdditionalIndex((prev) => (direction === "next" ? (prev + 1) % length : (prev - 1 + length) % length))
+  }
+
+  // Removed isPhotoSelected function as selection state is no longer applied to gallery items
+  // const isPhotoSelected = (galleryName: string, index: number) => {
+  //   return selectedGallery === galleryName && selectedPhotoIndex === index
+  // }
 
   if (loading) {
     return (
@@ -781,13 +744,21 @@ function ProjectDetailClient() {
             <div className="space-y-8">
               {/* Exterior Gallery */}
               <div ref={exteriorRef} className="bg-muted/10 rounded-lg p-6 border">
-                <h2 className="text-xl font-bold text-center mb-6">Exterior Construction</h2>
+                <div className="flex items-center justify-between mb-6">
+                  <Button variant="outline" size="icon" onClick={() => navigateExterior("prev")} className="h-10 w-10">
+                    <ChevronLeft className="h-5 w-5" />
+                  </Button>
+                  <h2 className="text-xl font-bold text-center">Exterior Construction</h2>
+                  <Button variant="outline" size="icon" onClick={() => navigateExterior("next")} className="h-10 w-10">
+                    <ChevronRight className="h-5 w-5" />
+                  </Button>
+                </div>
                 <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   {project.exteriorGallery?.map((image, index) => (
                     <div
                       key={index}
                       className={`relative h-32 rounded-lg overflow-hidden cursor-pointer group ${
-                        isPhotoSelected("exterior", index) ? "ring-4 ring-primary" : ""
+                        index === exteriorIndex ? "ring-4 ring-primary" : ""
                       }`}
                       onClick={() => openLightbox(project.exteriorGallery || [], index, "Exterior construction")}
                     >
@@ -798,9 +769,6 @@ function ProjectDetailClient() {
                         className="object-cover transition-transform group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                      {isPhotoSelected("exterior", index) && (
-                        <div className="absolute inset-0 bg-primary/20 border-2 border-primary" />
-                      )}
                     </div>
                   ))}
                 </div>
@@ -808,13 +776,21 @@ function ProjectDetailClient() {
 
               {/* Interior Gallery */}
               <div ref={interiorRef} className="bg-muted/10 rounded-lg p-6 border">
-                <h2 className="text-xl font-bold text-center mb-6">Interior Work</h2>
+                <div className="flex items-center justify-between mb-6">
+                  <Button variant="outline" size="icon" onClick={() => navigateInterior("prev")} className="h-10 w-10">
+                    <ChevronLeft className="h-5 w-5" />
+                  </Button>
+                  <h2 className="text-xl font-bold text-center">Interior Work</h2>
+                  <Button variant="outline" size="icon" onClick={() => navigateInterior("next")} className="h-10 w-10">
+                    <ChevronRight className="h-5 w-5" />
+                  </Button>
+                </div>
                 <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   {project.interiorGallery?.map((image, index) => (
                     <div
                       key={index}
                       className={`relative h-32 rounded-lg overflow-hidden cursor-pointer group ${
-                        isPhotoSelected("interior", index) ? "ring-4 ring-primary" : ""
+                        index === interiorIndex ? "ring-4 ring-primary" : ""
                       }`}
                       onClick={() => openLightbox(project.interiorGallery || [], index, "Interior work")}
                     >
@@ -825,9 +801,6 @@ function ProjectDetailClient() {
                         className="object-cover transition-transform group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                      {isPhotoSelected("interior", index) && (
-                        <div className="absolute inset-0 bg-primary/20 border-2 border-primary" />
-                      )}
                     </div>
                   ))}
                 </div>
@@ -835,13 +808,21 @@ function ProjectDetailClient() {
 
               {/* Finished Product Gallery */}
               <div ref={finishedRef} className="bg-muted/10 rounded-lg p-6 border">
-                <h2 className="text-xl font-bold text-center mb-6">Finished Product</h2>
+                <div className="flex items-center justify-between mb-6">
+                  <Button variant="outline" size="icon" onClick={() => navigateFinished("prev")} className="h-10 w-10">
+                    <ChevronLeft className="h-5 w-5" />
+                  </Button>
+                  <h2 className="text-xl font-bold text-center">Finished Product</h2>
+                  <Button variant="outline" size="icon" onClick={() => navigateFinished("next")} className="h-10 w-10">
+                    <ChevronRight className="h-5 w-5" />
+                  </Button>
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {project.finishedProductGallery?.map((image, index) => (
                     <div
                       key={index}
                       className={`relative h-40 rounded-lg overflow-hidden cursor-pointer group ${
-                        isPhotoSelected("finished", index) ? "ring-4 ring-primary" : ""
+                        index === finishedIndex ? "ring-4 ring-primary" : ""
                       }`}
                       onClick={() => openLightbox(project.finishedProductGallery || [], index, "Finished product")}
                     >
@@ -852,9 +833,6 @@ function ProjectDetailClient() {
                         className="object-cover transition-transform group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                      {isPhotoSelected("finished", index) && (
-                        <div className="absolute inset-0 bg-primary/20 border-2 border-primary" />
-                      )}
                     </div>
                   ))}
                 </div>
@@ -862,13 +840,31 @@ function ProjectDetailClient() {
 
               {/* Miscellaneous Gallery */}
               <div ref={additionalRef} className="bg-muted/10 rounded-lg p-6 border">
-                <h2 className="text-xl font-bold text-center mb-6">Additional Photos</h2>
+                <div className="flex items-center justify-between mb-6">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => navigateAdditional("prev")}
+                    className="h-10 w-10"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </Button>
+                  <h2 className="text-xl font-bold text-center">Additional Photos</h2>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => navigateAdditional("next")}
+                    className="h-10 w-10"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </Button>
+                </div>
                 <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   {project.miscellaneousGallery?.slice(0, 18).map((image, index) => (
                     <div
                       key={index}
                       className={`relative h-32 rounded-lg overflow-hidden cursor-pointer group ${
-                        isPhotoSelected("additional", index) ? "ring-4 ring-primary" : ""
+                        index === additionalIndex ? "ring-4 ring-primary" : ""
                       }`}
                       onClick={() => openLightbox(project.miscellaneousGallery || [], index, "Additional photos")}
                     >
@@ -879,9 +875,6 @@ function ProjectDetailClient() {
                         className="object-cover transition-transform group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                      {isPhotoSelected("additional", index) && (
-                        <div className="absolute inset-0 bg-primary/20 border-2 border-primary" />
-                      )}
                     </div>
                   ))}
                 </div>
@@ -895,13 +888,6 @@ function ProjectDetailClient() {
                     </Button>
                   </div>
                 )}
-              </div>
-              <div className="text-center bg-muted/20 rounded-lg p-3 border">
-                <p className="text-sm text-foreground/60">
-                  Use <kbd className="px-2 py-1 bg-muted rounded border text-xs">←</kbd> and{" "}
-                  <kbd className="px-2 py-1 bg-muted rounded border text-xs">→</kbd> arrow keys to navigate through
-                  photos in each gallery section
-                </p>
               </div>
             </div>
 

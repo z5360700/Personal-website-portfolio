@@ -125,10 +125,10 @@ export default function EnhancedBeforeAfterSlider({
 
       {/* Labels */}
       <div className="absolute top-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium pointer-events-none">
-        Before
+        After
       </div>
       <div className="absolute top-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium pointer-events-none">
-        After
+        Before
       </div>
     </div>
   )
