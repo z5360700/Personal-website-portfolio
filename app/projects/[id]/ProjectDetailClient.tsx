@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
@@ -156,11 +156,11 @@ The transformation showcases both my technical construction skills and project m
     },
     challenges: `
   One of the main challenges was working with the existing foundation while ensuring the new structure met current building standards. This required careful assessment of the existing structure and strategic reinforcement where necessary.
-  
+
   The interior renovation presented unique challenges with coordinating electrical, plumbing, and HVAC systems within the existing structure. Proper sequencing of trades was critical to ensure quality workmanship and avoid conflicts between different systems.
-  
+
   Weather conditions also posed challenges during the construction phase, requiring flexible scheduling and proper protection of materials and work areas. Coordinating multiple trades and ensuring quality workmanship while maintaining project timelines required strong organizational and communication skills.
-  
+
   Ensuring compliance with all building codes and regulations while maintaining cost-effectiveness was another key challenge that required thorough planning and attention to detail throughout the construction process.
 `,
   },
@@ -171,11 +171,11 @@ The transformation showcases both my technical construction skills and project m
       "Autonomous robot designed to navigate through complex mazes using LiDAR, IMU, and wheel encoders with path planning algorithms and computer vision.",
     longDescription: `
   The Micromouse Maze Navigation Robot was developed as part of the MTRN3100 course, focusing on autonomous robotics and navigation systems. This project involved designing and implementing a robot capable of navigating through unknown maze environments efficiently.
-  
+
   The robot utilizes multiple sensors including LiDAR for distance measurement, an Inertial Measurement Unit (IMU) for orientation tracking, and wheel encoders for precise movement control. These sensors work together to provide comprehensive environmental awareness and position tracking.
-  
+
   A key feature of this project was the implementation of computer vision techniques to generate occupancy maps of the maze in real-time. Using these maps, the robot applies Breadth-First Search (BFS) algorithms to determine optimal paths while avoiding obstacles.
-  
+
   The system also includes a manual override feature, allowing users to input directional commands (forward, left, right) for situations where direct control is preferred over autonomous navigation.
 `,
     image: "/images/micromouse-robot.jpeg",
@@ -255,11 +255,11 @@ The transformation showcases both my technical construction skills and project m
     },
     challenges: `
   One of the primary challenges was achieving accurate localization within the maze environment. Small errors in sensor readings or wheel slippage could compound over time, leading to significant position estimation errors. We addressed this by implementing sensor fusion techniques that combined data from multiple sources to improve accuracy.
-  
+
   Processing constraints were another significant challenge, as the Arduino Nano has limited computational resources. Optimizing the code for efficiency while maintaining real-time performance required careful algorithm selection and implementation.
-  
+
   The integration of computer vision for map generation presented challenges in terms of processing speed and accuracy. We had to balance the resolution of the occupancy map with the processing capabilities of our system to ensure real-time performance.
-  
+
   Tuning the PID controllers for consistent performance across different maze surfaces and conditions required extensive testing and parameter adjustment. We developed an adaptive control system that could adjust parameters based on detected surface conditions.
 `,
   },
@@ -402,18 +402,18 @@ The solution involved precise 3D modeling of the PC case components, designing c
     },
     challenges: `
   One of the primary challenges was accurately measuring and modeling the internal dimensions of the PC case while accounting for cable management and component clearances. The ducting needed to fit precisely without interfering with other components or restricting access for maintenance.
-  
+
   Designing for 3D printing presented constraints in terms of overhang angles, support material requirements, and print bed size limitations. The duct had to be split into multiple parts that could be printed separately and assembled, while maintaining structural integrity and airflow efficiency.
-  
+
   Material selection was important for this application. PLA was chosen for its ease of printing and good structural properties, making it ideal for prototyping and testing the ducting design.
-  
+
   Validating the effectiveness of the cooling solution required establishing baseline temperature measurements and conducting controlled testing under various load conditions. Ensuring that the ducting actually improved cooling performance rather than just redirecting airflow was essential to the project's success.
 `,
     results: `
   The custom cooling ducts proved highly effective, reducing GPU temperatures by 8°C under full load compared to the standard case configuration. This temperature reduction allowed the GPU to maintain higher boost clocks for longer periods, resulting in more consistent performance during demanding tasks like gaming and 3D rendering.
-  
+
   An unexpected benefit was the reduction in fan noise, as the GPU's cooling system didn't need to work as hard to maintain safe temperatures. The direct airflow path also reduced dust accumulation on the GPU, as air was now following a more controlled path through the case.
-  
+
   The project demonstrated how principles from automotive cooling systems could be successfully applied to PC hardware cooling, opening up possibilities for further optimization of other components like CPU coolers and memory modules.
 `,
   },
@@ -580,6 +580,15 @@ function ProjectDetailClient() {
   const [lightboxIndex, setLightboxIndex] = useState(0)
   const [lightboxAltPrefix, setLightboxAltPrefix] = useState("")
 
+  const exteriorRef = useRef<HTMLDivElement>(null)
+  const interiorRef = useRef<HTMLDivElement>(null)
+  const finishedRef = useRef<HTMLDivElement>(null)
+  const additionalRef = useRef<HTMLDivElement>(null)
+  const [currentSection, setCurrentSection] = useState(0)
+
+  const [selectedGallery, setSelectedGallery] = useState<string | null>(null)
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number>(0)
+
   useEffect(() => {
     // In a real app, you would fetch this data from an API
     const projectId = Array.isArray(id) ? Number.parseInt(id[0]) : Number.parseInt(id as string)
@@ -593,11 +602,94 @@ function ProjectDetailClient() {
     setLoading(false)
   }, [id])
 
+  useEffect(() => {
+    if (!project || project.id !== 1) return
+
+    const sections = [exteriorRef, interiorRef, finishedRef, additionalRef]
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault()
+        setCurrentSection((prev) => {
+          const newSection = Math.max(0, prev - 1)
+          sections[newSection]?.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+          return newSection
+        })
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault()
+        setCurrentSection((prev) => {
+          const newSection = Math.min(sections.length - 1, prev + 1)
+          sections[newSection]?.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+          return newSection
+        })
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [project])
+
+  useEffect(() => {
+    if (!project || project.id !== 1 || lightboxOpen) return
+
+    const handlePhotoNavigation = (e: KeyboardEvent) => {
+      // Only handle arrow keys for photo navigation
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return
+
+      // Determine which gallery is currently in view
+      const sections = [
+        { ref: exteriorRef, name: "exterior", images: project.exteriorGallery },
+        { ref: interiorRef, name: "interior", images: project.interiorGallery },
+        { ref: finishedRef, name: "finished", images: project.finishedProductGallery },
+        { ref: additionalRef, name: "additional", images: project.miscellaneousGallery },
+      ]
+
+      // Find the section that is most in view
+      let activeSection = sections[0]
+      let minDistance = Number.MAX_VALUE
+
+      sections.forEach((section) => {
+        if (section.ref.current) {
+          const rect = section.ref.current.getBoundingClientRect()
+          const distance = Math.abs(rect.top - window.innerHeight / 2)
+          if (distance < minDistance) {
+            minDistance = distance
+            activeSection = section
+          }
+        }
+      })
+
+      if (!activeSection.images || activeSection.images.length === 0) return
+
+      e.preventDefault()
+
+      // If no gallery is selected or different gallery, select first image
+      if (selectedGallery !== activeSection.name) {
+        setSelectedGallery(activeSection.name)
+        setSelectedPhotoIndex(0)
+        return
+      }
+
+      // Navigate through photos
+      if (e.key === "ArrowLeft") {
+        setSelectedPhotoIndex((prev) => (prev - 1 + activeSection.images!.length) % activeSection.images!.length)
+      } else if (e.key === "ArrowRight") {
+        setSelectedPhotoIndex((prev) => (prev + 1) % activeSection.images!.length)
+      }
+    }
+
+    window.addEventListener("keydown", handlePhotoNavigation)
+    return () => window.removeEventListener("keydown", handlePhotoNavigation)
+  }, [project, selectedGallery, selectedPhotoIndex, lightboxOpen])
+
   const openLightbox = (images: string[], index: number, altPrefix: string) => {
     setLightboxImages(images)
     setLightboxIndex(index)
     setLightboxAltPrefix(altPrefix)
     setLightboxOpen(true)
+    // Clear selected gallery when lightbox opens to avoid confusion
+    setSelectedGallery(null)
+    setSelectedPhotoIndex(0)
   }
 
   const closeLightbox = () => {
@@ -610,6 +702,10 @@ function ProjectDetailClient() {
 
   const previousImage = () => {
     setLightboxIndex((prev) => (prev - 1 + lightboxImages.length) % lightboxImages.length)
+  }
+
+  const isPhotoSelected = (galleryName: string, index: number) => {
+    return selectedGallery === galleryName && selectedPhotoIndex === index
   }
 
   if (loading) {
@@ -664,6 +760,7 @@ function ProjectDetailClient() {
             <div className="bg-muted/10 rounded-lg p-6 border">
               <h2 className="text-xl font-bold text-center mb-6">Transformation</h2>
               <div className="max-w-5xl mx-auto">
+                {/* Removed enableKeyboardNav prop */}
                 <EnhancedBeforeAfterSlider
                   beforeImage={project.beforeImage || "/placeholder.svg"}
                   afterImage={project.image}
@@ -683,13 +780,15 @@ function ProjectDetailClient() {
             {/* Photo Galleries */}
             <div className="space-y-8">
               {/* Exterior Gallery */}
-              <div className="bg-muted/10 rounded-lg p-6 border">
+              <div ref={exteriorRef} className="bg-muted/10 rounded-lg p-6 border">
                 <h2 className="text-xl font-bold text-center mb-6">Exterior Construction</h2>
                 <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   {project.exteriorGallery?.map((image, index) => (
                     <div
                       key={index}
-                      className="relative h-32 rounded-lg overflow-hidden cursor-pointer group"
+                      className={`relative h-32 rounded-lg overflow-hidden cursor-pointer group ${
+                        isPhotoSelected("exterior", index) ? "ring-4 ring-primary" : ""
+                      }`}
                       onClick={() => openLightbox(project.exteriorGallery || [], index, "Exterior construction")}
                     >
                       <Image
@@ -699,19 +798,24 @@ function ProjectDetailClient() {
                         className="object-cover transition-transform group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                      {isPhotoSelected("exterior", index) && (
+                        <div className="absolute inset-0 bg-primary/20 border-2 border-primary" />
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Interior Gallery */}
-              <div className="bg-muted/10 rounded-lg p-6 border">
+              <div ref={interiorRef} className="bg-muted/10 rounded-lg p-6 border">
                 <h2 className="text-xl font-bold text-center mb-6">Interior Work</h2>
                 <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   {project.interiorGallery?.map((image, index) => (
                     <div
                       key={index}
-                      className="relative h-32 rounded-lg overflow-hidden cursor-pointer group"
+                      className={`relative h-32 rounded-lg overflow-hidden cursor-pointer group ${
+                        isPhotoSelected("interior", index) ? "ring-4 ring-primary" : ""
+                      }`}
                       onClick={() => openLightbox(project.interiorGallery || [], index, "Interior work")}
                     >
                       <Image
@@ -721,19 +825,24 @@ function ProjectDetailClient() {
                         className="object-cover transition-transform group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                      {isPhotoSelected("interior", index) && (
+                        <div className="absolute inset-0 bg-primary/20 border-2 border-primary" />
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Finished Product Gallery */}
-              <div className="bg-muted/10 rounded-lg p-6 border">
+              <div ref={finishedRef} className="bg-muted/10 rounded-lg p-6 border">
                 <h2 className="text-xl font-bold text-center mb-6">Finished Product</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {project.finishedProductGallery?.map((image, index) => (
                     <div
                       key={index}
-                      className="relative h-40 rounded-lg overflow-hidden cursor-pointer group"
+                      className={`relative h-40 rounded-lg overflow-hidden cursor-pointer group ${
+                        isPhotoSelected("finished", index) ? "ring-4 ring-primary" : ""
+                      }`}
                       onClick={() => openLightbox(project.finishedProductGallery || [], index, "Finished product")}
                     >
                       <Image
@@ -743,19 +852,24 @@ function ProjectDetailClient() {
                         className="object-cover transition-transform group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                      {isPhotoSelected("finished", index) && (
+                        <div className="absolute inset-0 bg-primary/20 border-2 border-primary" />
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Miscellaneous Gallery */}
-              <div className="bg-muted/10 rounded-lg p-6 border">
+              <div ref={additionalRef} className="bg-muted/10 rounded-lg p-6 border">
                 <h2 className="text-xl font-bold text-center mb-6">Additional Photos</h2>
                 <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   {project.miscellaneousGallery?.slice(0, 18).map((image, index) => (
                     <div
                       key={index}
-                      className="relative h-32 rounded-lg overflow-hidden cursor-pointer group"
+                      className={`relative h-32 rounded-lg overflow-hidden cursor-pointer group ${
+                        isPhotoSelected("additional", index) ? "ring-4 ring-primary" : ""
+                      }`}
                       onClick={() => openLightbox(project.miscellaneousGallery || [], index, "Additional photos")}
                     >
                       <Image
@@ -765,6 +879,9 @@ function ProjectDetailClient() {
                         className="object-cover transition-transform group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                      {isPhotoSelected("additional", index) && (
+                        <div className="absolute inset-0 bg-primary/20 border-2 border-primary" />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -778,6 +895,13 @@ function ProjectDetailClient() {
                     </Button>
                   </div>
                 )}
+              </div>
+              <div className="text-center bg-muted/20 rounded-lg p-3 border">
+                <p className="text-sm text-foreground/60">
+                  Use <kbd className="px-2 py-1 bg-muted rounded border text-xs">←</kbd> and{" "}
+                  <kbd className="px-2 py-1 bg-muted rounded border text-xs">→</kbd> arrow keys to navigate through
+                  photos in each gallery section
+                </p>
               </div>
             </div>
 
@@ -1237,9 +1361,9 @@ function ProjectDetailClient() {
             </div>
 
             {/* Project Description */}
-            <div className="bg-muted/10 rounded-lg p-6 border text-center">
+            <div className="bg-muted/10 rounded-lg p-6 border">
               <div className="prose dark:prose-invert max-w-none">
-                <p className="text-base leading-relaxed">{project.longDescription}</p>
+                <p className="text-base">{project.longDescription}</p>
               </div>
 
               {(project.liveUrl || project.githubUrl) && (
