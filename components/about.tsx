@@ -171,7 +171,7 @@ export default function About() {
 
             {/* Mobile navigation dots */}
             <div className="flex justify-center gap-2 mt-8 md:hidden">
-              {images.map((image, index) => (
+              {images.map((image) => (
                 <button
                   key={image}
                   onClick={() => handleImageChange(image)}
@@ -198,10 +198,14 @@ export default function About() {
               which instilled in me discipline, teamwork, and resilience.
             </p>
             <p className="text-foreground/80 leading-relaxed">
-              {"I’m currently working at Samsung, and I’m grateful for the chance to keep improving my communication and presentation skills. The confidence I gained from building that house pushes me every day to dive into new technical challenges, and the experience at Samsung reinforces my ability to explain ideas clearly and work effectively in a team.\n"}
+              {
+                "I’m currently working at Samsung, and I’m grateful for the chance to keep improving my communication and presentation skills. The confidence I gained from building that house pushes me every day to dive into new technical challenges, and the experience at Samsung reinforces my ability to explain ideas clearly and work effectively in a team.\n"
+              }
             </p>
             <p className="text-foreground/80 leading-relaxed">
-              {"In my free time I like to go to the gym, run, and play video games. My next big goal is to step into an engineering role where I can collaborate with others, keep learning, and build solutions that genuinely help people. I can't wait to see where this journey takes me and to keep on growing.\n"}
+              {
+                "In my free time I like to go to the gym, run, and play video games. My next big goal is to step into an engineering role where I can collaborate with others, keep learning, and build solutions that genuinely help people. I can't wait to see where this journey takes me and to keep on growing.\n"
+              }
             </p>
 
             <div className="flex flex-wrap gap-4 pt-4">

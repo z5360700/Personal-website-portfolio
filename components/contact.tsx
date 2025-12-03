@@ -218,7 +218,9 @@ export default function Contact() {
                       )}
                       {submitStatus === "error" && (
                         <div className="text-red-600 text-center p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                          ❌ Sorry, there was an error sending your message. Please try again or email me directly.
+                          {errorMessage
+                            ? `Error: ${errorMessage}. Please try again or email me directly.`
+                            : "Sorry, there was an error sending your message. Please try again or email me directly."}
                         </div>
                       )}
                     </form>

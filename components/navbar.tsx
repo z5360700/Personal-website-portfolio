@@ -9,13 +9,11 @@ import { Moon, Sun, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useTheme } from "next-themes"
-import { usePathname } from "next/navigation"
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { resolvedTheme, setTheme } = useTheme()
-  const pathname = usePathname()
   const router = useRouter()
 
   useEffect(() => {
@@ -58,7 +56,7 @@ export default function Navbar() {
           href="/"
           className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent hover:scale-105 transition-transform"
         >
-          LO RUSSO 
+          LO RUSSO
         </Link>
 
         {/* Desktop Navigation */}
