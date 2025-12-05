@@ -42,7 +42,7 @@ export default function Navbar() {
     { name: "Contact", id: "contact" },
   ]
 
-  const resumeUrl = "/LoRusso_CV_12_2025.pdf"
+  const resumeUrl = "/LoRusso_CV_12_2025a.pdf"
 
   return (
     <header
@@ -87,7 +87,7 @@ export default function Navbar() {
               className="rounded-full bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
               asChild
             >
-              <a href={resumeUrl} download="LoRusso_CV_12_2025.pdf">
+              <a href={resumeUrl} download="LoRusso_CV_12_2025a.pdf">
                 Resume
               </a>
             </Button>
@@ -142,7 +142,7 @@ export default function Navbar() {
             style={{ transitionDelay: "200ms" }}
             asChild
           >
-            <a href={resumeUrl} download="LoRusso_CV_12_2025.pdf">
+            <a href={resumeUrl} download="LoRusso_CV_12_2025a.pdf">
               Resume
             </a>
           </Button>

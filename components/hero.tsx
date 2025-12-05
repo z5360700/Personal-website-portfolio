@@ -16,7 +16,7 @@ export default function Hero() {
 
   if (!mounted) return null
 
-  const resumeUrl = "/LoRusso_CV_12_2025.pdf"
+  const resumeUrl = "/LoRusso_CV_12_2025a.pdf"
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative pt-16 overflow-hidden">
@@ -95,7 +95,7 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 1.2 }}
             >
               <Button size="lg" className="px-8 py-6 text-lg font-medium" asChild>
-                <a href={resumeUrl} download="LoRusso_CV_12_2025.pdf" className="flex items-center gap-2">
+                <a href={resumeUrl} download="LoRusso_CV_12_2025a.pdf" className="flex items-center gap-2">
                   <Download className="w-5 h-5" />
                   Download Resume
                 </a>
