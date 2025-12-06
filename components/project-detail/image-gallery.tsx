@@ -2,7 +2,6 @@
 
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
 
 interface ImageGalleryProps {
   title: string
@@ -36,20 +35,9 @@ export function ImageGallery({
   return (
     <div className="bg-muted/10 rounded-lg p-6 border">
       <div className="flex items-center justify-between mb-6">
-        {showNavigation && onNavigate ? (
-          <>
-            <Button variant="outline" size="icon" onClick={() => onNavigate("prev")} className="h-10 w-10">
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-            <h2 className="text-xl font-bold text-center">{title}</h2>
-            <Button variant="outline" size="icon" onClick={() => onNavigate("next")} className="h-10 w-10">
-              <ChevronRight className="h-5 w-5" />
-            </Button>
-          </>
-        ) : (
-          <h2 className="text-xl font-bold text-center w-full">{title}</h2>
-        )}
+        <h2 className="text-xl font-bold text-center w-full">{title}</h2>
       </div>
+      {/* </CHANGE> */}
       <div className={`grid ${columns} gap-3`}>
         {displayImages.map((image, index) => (
           <div

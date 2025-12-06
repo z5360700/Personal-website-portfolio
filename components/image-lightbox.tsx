@@ -3,6 +3,7 @@ import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useEffect } from "react"
 
 interface ImageLightboxProps {
   images: string[]
@@ -23,6 +24,26 @@ export default function ImageLightbox({
   onPrevious,
   altPrefix = "Image",
 }: ImageLightboxProps) {
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        onPrevious()
+      } else if (e.key === "ArrowRight") {
+        onNext()
+      } else if (e.key === "Escape") {
+        onClose()
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [isOpen, onNext, onPrevious, onClose])
+
   return (
     <AnimatePresence>
       {isOpen && (
