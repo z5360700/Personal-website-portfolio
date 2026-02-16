@@ -546,4 +546,62 @@ Future versions will include double break beam sensors to determine direction of
   The Telegram notification system provides instant alerts with timestamps, enabling quick response to any cat door activity and building a log of movement patterns for behavior analysis.
 `,
   },
+  {
+    id: 6,
+    title: "Custom Watch Build",
+    description:
+      "A hands-on horological project involving the meticulous assembly and customization of a mechanical watch, demanding precision, patience, and careful planning at every stage.",
+    longDescription: `This project involved the complete assembly and customization of a mechanical watch from individual components. Working at such a small scale requires an extraordinary level of precision and patience - a single misaligned component or speck of dust can compromise the entire movement.
+
+Every stage of the build demanded careful planning, from sourcing compatible parts to mapping out the assembly sequence. The tolerances involved in watchmaking are measured in fractions of a millimeter, making this one of the most detail-oriented projects I have undertaken.
+
+The skills developed through this project - meticulous attention to detail, methodical problem-solving, patience under precision constraints, and the ability to plan complex multi-step processes - translate directly to engineering disciplines. Whether it is designing PCB layouts, assembling delicate robotic components, or planning construction sequences, the discipline of working with tiny, unforgiving mechanical systems builds a mindset that elevates the quality of all technical work.`,
+    image: "/images/WatchCoverImage.png",
+    videoGallery: [
+      {
+        id: "nR-1D8_llwg",
+        title: "Custom Watch Build Process",
+        description:
+          "A detailed look at the custom watch build process, showcasing the precision and patience required at every step of assembly.",
+        isShort: false,
+      },
+    ],
+    tags: ["Horology", "Precision Assembly", "Mechanical Engineering", "Detail-Oriented"],
+    liveUrl: null,
+    githubUrl: null,
+    features: [
+      "Complete mechanical watch assembly from individual components",
+      "Precision alignment of movement parts within sub-millimeter tolerances",
+      "Careful component sourcing and compatibility verification",
+      "Methodical assembly sequence planning",
+      "Quality inspection at each stage of the build",
+      "Dust-free working environment management",
+    ],
+    technologies: {
+      skills: [
+        "Precision Hand Assembly",
+        "Mechanical Troubleshooting",
+        "Patience & Attention to Detail",
+        "Careful Planning & Sequencing",
+        "Fine Motor Control",
+        "Quality Assurance",
+      ],
+      tools: [
+        "Watchmaking Screwdrivers",
+        "Tweezers & Handling Tools",
+        "Magnification Loupes",
+        "Dust Blower & Cleaning Supplies",
+        "Case Press & Crystal Tools",
+        "Movement Holder",
+      ],
+    },
+    challenges: `The greatest challenge was maintaining the level of concentration and steadiness required throughout the build. A single slip of the tweezers or a moment of impatience could damage a component that took weeks to source.
+
+Sourcing compatible parts from different suppliers required extensive research and verification, as even minor dimensional differences between components could prevent proper assembly or affect the movement's accuracy.
+
+Achieving the correct torque on tiny screws without stripping them, aligning the dial and hands perfectly, and ensuring the movement ran within acceptable accuracy tolerances all demanded a methodical, patient approach that left no room for shortcuts.`,
+    results: `The completed watch runs within acceptable daily accuracy tolerances, demonstrating that the assembly was performed correctly and all components interact as intended.
+
+Beyond the physical result, this project reinforced the engineering mindset that precision and patience are not optional extras but fundamental requirements for quality work. The discipline developed here has directly improved my approach to every other technical project, from soldering electronics to writing clean code.`,
+  },
 ]
