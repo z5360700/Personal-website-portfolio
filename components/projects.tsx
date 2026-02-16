@@ -61,9 +61,9 @@ const projects = [
     id: 6,
     title: "Custom Watch Build",
     description:
-      "A hands-on horological project involving meticulous assembly and customization of a mechanical watch, demanding precision, patience, and careful planning.",
+      "Sourced individual components and assembled a complete mechanical watch by hand around a Seiko NH35 movement, requiring precision, patience, and careful planning.",
     image: "/images/WatchCoverImage.png",
-    tags: ["Horology", "Precision Assembly", "Mechanical Engineering", "Detail-Oriented"],
+    tags: ["Horology", "NH35 Movement", "Precision Assembly", "Component Sourcing"],
     githubUrl: "#",
   },
 ]

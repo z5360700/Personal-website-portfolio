@@ -550,12 +550,14 @@ Future versions will include double break beam sensors to determine direction of
     id: 6,
     title: "Custom Watch Build",
     description:
-      "A hands-on horological project involving the meticulous assembly and customization of a mechanical watch, demanding precision, patience, and careful planning at every stage.",
-    longDescription: `This project involved the complete assembly and customization of a mechanical watch from individual components. Working at such a small scale requires an extraordinary level of precision and patience - a single misaligned component or speck of dust can compromise the entire movement.
+      "A hands-on project involving sourcing individual watch components and assembling a complete mechanical watch by hand, built around a Seiko NH35 movement.",
+    longDescription: `This project involved sourcing individual watch components - case, dial, hands, crystal, crown, movement, and bracelet - from various suppliers and assembling them into a complete, functioning mechanical watch by hand. The build was centred around a Seiko NH35 automatic movement, a widely respected workhorse calibre known for its reliability.
 
-Every stage of the build demanded careful planning, from sourcing compatible parts to mapping out the assembly sequence. The tolerances involved in watchmaking are measured in fractions of a millimeter, making this one of the most detail-oriented projects I have undertaken.
+The challenge was not in manufacturing the parts, but in the assembly itself. Fitting a movement into a case, aligning the dial perfectly, pressing on hands without damaging them or the dial, seating the crystal, and ensuring everything was dust-free and properly sealed required a level of patience and precision that is difficult to appreciate until you are working at that scale. One speck of dust trapped under the crystal or a hand slightly misaligned is immediately visible and means disassembling and starting again.
 
-The skills developed through this project - meticulous attention to detail, methodical problem-solving, patience under precision constraints, and the ability to plan complex multi-step processes - translate directly to engineering disciplines. Whether it is designing PCB layouts, assembling delicate robotic components, or planning construction sequences, the discipline of working with tiny, unforgiving mechanical systems builds a mindset that elevates the quality of all technical work.`,
+Sourcing compatible parts was its own challenge - not all cases, dials, and hands are interchangeable even when marketed for the same movement. Verifying dimensions, stem lengths, and fitment before committing to an assembly sequence required careful research and planning.
+
+The skills reinforced through this project - patience, attention to detail, methodical planning, and the discipline to do things right rather than fast - are the same skills that underpin every other project in this portfolio, from soldering electronics to planning construction work.`,
     image: "/images/WatchCoverImage.png",
     videoGallery: [
       {
@@ -570,38 +572,38 @@ The skills developed through this project - meticulous attention to detail, meth
     liveUrl: null,
     githubUrl: null,
     features: [
-      "Complete mechanical watch assembly from individual components",
-      "Precision alignment of movement parts within sub-millimeter tolerances",
-      "Careful component sourcing and compatibility verification",
-      "Methodical assembly sequence planning",
-      "Quality inspection at each stage of the build",
-      "Dust-free working environment management",
+      "Full watch assembly from individually sourced components",
+      "Built around a Seiko NH35 automatic movement",
+      "Hand pressing of dial, hands, crystal, and case back",
+      "Component compatibility research and verification across suppliers",
+      "Dust-free assembly environment and clean handling practices",
+      "Final accuracy testing and quality checks",
     ],
     technologies: {
       skills: [
         "Precision Hand Assembly",
-        "Mechanical Troubleshooting",
-        "Patience & Attention to Detail",
+        "Component Sourcing & Compatibility Research",
+        "Patience & Persistence",
         "Careful Planning & Sequencing",
         "Fine Motor Control",
-        "Quality Assurance",
+        "Attention to Detail",
       ],
       tools: [
         "Watchmaking Screwdrivers",
-        "Tweezers & Handling Tools",
+        "Tweezers & Hand-Setting Tools",
         "Magnification Loupes",
-        "Dust Blower & Cleaning Supplies",
-        "Case Press & Crystal Tools",
-        "Movement Holder",
+        "Dust Blower & Rodico Cleaning Putty",
+        "Crystal & Case Back Press",
+        "Movement Holder & Cushion",
       ],
     },
-    challenges: `The greatest challenge was maintaining the level of concentration and steadiness required throughout the build. A single slip of the tweezers or a moment of impatience could damage a component that took weeks to source.
+    challenges: `The biggest challenge was the patience required. Working with components this small, a moment of rushing or frustration can mean a scratched dial, a bent hand, or dust trapped under the crystal - all of which mean taking everything apart and starting over.
 
-Sourcing compatible parts from different suppliers required extensive research and verification, as even minor dimensional differences between components could prevent proper assembly or affect the movement's accuracy.
+Sourcing compatible parts was also tricky. Not all cases, dials, and hands marketed for the NH35 are actually compatible. Stem lengths, dial feet positions, chapter ring fitment, and hand hole sizes all had to be verified before committing to an assembly order.
 
-Achieving the correct torque on tiny screws without stripping them, aligning the dial and hands perfectly, and ensuring the movement ran within acceptable accuracy tolerances all demanded a methodical, patient approach that left no room for shortcuts.`,
-    results: `The completed watch runs within acceptable daily accuracy tolerances, demonstrating that the assembly was performed correctly and all components interact as intended.
+Pressing on the hands was the most nerve-wracking step. Too much force damages the dial or the hand itself. Too little and the hand slips. Getting the hour, minute, and second hands seated correctly without any of them fouling against each other required a steady hand and a lot of concentration.`,
+    results: `The finished watch runs reliably on the wrist with accuracy within the NH35 specification, and all components fit together cleanly with no dust, misalignment, or mechanical issues.
 
-Beyond the physical result, this project reinforced the engineering mindset that precision and patience are not optional extras but fundamental requirements for quality work. The discipline developed here has directly improved my approach to every other technical project, from soldering electronics to writing clean code.`,
+More importantly, this project reinforced the value of patience and careful planning - the same mindset that drives quality in every other project on this portfolio. Rushing never pays off when the tolerances are this tight, and that lesson applies equally to soldering, 3D printing, coding, and construction.`,
   },
 ]
