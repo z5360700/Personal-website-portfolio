@@ -546,4 +546,64 @@ Future versions will include double break beam sensors to determine direction of
   The Telegram notification system provides instant alerts with timestamps, enabling quick response to any cat door activity and building a log of movement patterns for behavior analysis.
 `,
   },
+  {
+    id: 6,
+    title: "Custom Watch Build",
+    description:
+      "A hands-on project involving sourcing individual watch components and assembling a complete mechanical watch by hand, built around a Seiko NH35 movement.",
+    longDescription: `This project involved sourcing individual watch components - case, dial, hands, crystal, crown, movement, and bracelet - from various suppliers and assembling them into a complete, functioning mechanical watch by hand. The build was centred around a Seiko NH35 automatic movement, a widely respected workhorse calibre known for its reliability.
+
+The challenge was not in manufacturing the parts, but in the assembly itself. Fitting a movement into a case, aligning the dial perfectly, pressing on hands without damaging them or the dial, seating the crystal, and ensuring everything was dust-free and properly sealed required a level of patience and precision that is difficult to appreciate until you are working at that scale. One speck of dust trapped under the crystal or a hand slightly misaligned is immediately visible and means disassembling and starting again.
+
+Sourcing compatible parts was its own challenge - not all cases, dials, and hands are interchangeable even when marketed for the same movement. Verifying dimensions, stem lengths, and fitment before committing to an assembly sequence required careful research and planning.
+
+The skills reinforced through this project - patience, attention to detail, methodical planning, and the discipline to do things right rather than fast - are the same skills that underpin every other project in this portfolio, from soldering electronics to planning construction work.`,
+    image: "/images/WatchCoverImage.png",
+    videoGallery: [
+      {
+        id: "nR-1D8_llwg",
+        title: "Custom Watch Build Process",
+        description:
+          "A detailed look at the custom watch build process, showcasing the precision and patience required at every step of assembly.",
+        isShort: false,
+      },
+    ],
+    tags: ["Horology", "Precision Assembly", "Mechanical Engineering", "Detail-Oriented"],
+    liveUrl: null,
+    githubUrl: null,
+    features: [
+      "Full watch assembly from individually sourced components",
+      "Built around a Seiko NH35 automatic movement",
+      "Hand pressing of dial, hands, crystal, and case back",
+      "Component compatibility research and verification across suppliers",
+      "Dust-free assembly environment and clean handling practices",
+      "Final accuracy testing and quality checks",
+    ],
+    technologies: {
+      skills: [
+        "Precision Hand Assembly",
+        "Component Sourcing & Compatibility Research",
+        "Patience & Persistence",
+        "Careful Planning & Sequencing",
+        "Fine Motor Control",
+        "Attention to Detail",
+      ],
+      tools: [
+        "Watchmaking Screwdrivers",
+        "Tweezers & Hand-Setting Tools",
+        "Magnification Loupes",
+        "Dust Blower & Rodico Cleaning Putty",
+        "Crystal & Case Back Press",
+        "Movement Holder & Cushion",
+      ],
+    },
+    challenges: `The biggest challenge was the patience required. Working with components this small, a moment of rushing or frustration can mean a scratched dial, a bent hand, or dust trapped under the crystal - all of which mean taking everything apart and starting over.
+
+Sourcing compatible parts was also tricky. Not all cases, dials, and hands marketed for the NH35 are actually compatible. Stem lengths, dial feet positions, chapter ring fitment, and hand hole sizes all had to be verified before committing to an assembly order.
+
+Pressing on the hands was the most nerve-wracking step. Too much force damages the dial or the hand itself. Too little and the hand slips. Getting the hour, minute, and second hands seated correctly without any of them fouling against each other required a steady hand and a lot of concentration.`,
+    results: `The finished watch runs reliably on the wrist with accuracy within the NH35 specification, and all components fit together cleanly with no dust, misalignment, or mechanical issues.
+
+More importantly, this project reinforced the value of patience and careful planning - the same mindset that drives quality in every other project on this portfolio. Rushing never pays off when the tolerances are this tight, and that lesson applies equally to soldering, 3D printing, coding, and construction.`,
+  },
 ]

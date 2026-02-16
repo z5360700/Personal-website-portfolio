@@ -589,6 +589,78 @@ function ProjectDetailClient() {
 
             <ProjectTabs project={project} />
           </div>
+        ) : project.id === 6 ? (
+          /* Custom Watch Build layout */
+          <div className="space-y-8">
+            <ProjectHeader project={project} />
+
+            {/* Main Project Image */}
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <div className="relative aspect-video rounded-lg overflow-hidden max-w-4xl mx-auto">
+                <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
+              </div>
+            </div>
+
+            {/* Project Description */}
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <div className="prose dark:prose-invert max-w-none">
+                <p className="text-base leading-relaxed whitespace-pre-line">{project.longDescription}</p>
+              </div>
+            </div>
+
+            {/* Video */}
+            {project.videoGallery && (
+              <div className="bg-muted/10 rounded-lg p-6 border">
+                <h2 className="text-xl font-bold text-center mb-6">Watch the Build</h2>
+                {project.videoGallery.map((video, index) => (
+                  <div key={index} className="space-y-3 max-w-4xl mx-auto">
+                    <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${video.id}`}
+                        title={video.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full"
+                      />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="font-bold text-sm mb-1">{video.title}</h3>
+                      <p className="text-foreground/70 text-xs">{video.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* How This Connects to Engineering */}
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <h2 className="text-xl font-bold text-center mb-6">Skills That Transfer</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <h3 className="font-bold text-primary text-sm">Precision & Detail</h3>
+                  <p className="text-foreground/80 text-sm leading-relaxed">
+                    Working with sub-millimeter tolerances in watchmaking builds the same discipline needed for PCB soldering, CAD modeling, and robotic calibration.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-bold text-primary text-sm">Patience & Methodology</h3>
+                  <p className="text-foreground/80 text-sm leading-relaxed">
+                    Each step must be completed correctly before moving on. This mirrors the careful sequencing required in construction, 3D printing, and embedded systems development.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-bold text-primary text-sm">Planning & Problem-Solving</h3>
+                  <p className="text-foreground/80 text-sm leading-relaxed">
+                    Sourcing compatible parts, mapping assembly order, and troubleshooting issues are directly applicable to every engineering project on this portfolio.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {project.results && <ResultsSection results={project.results} />}
+
+            <ProjectTabs project={project} />
+          </div>
         ) : (
           /* Default project layout for any other projects */
           <div className="space-y-8">

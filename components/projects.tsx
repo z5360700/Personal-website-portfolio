@@ -57,6 +57,15 @@ const projects = [
     tags: ["ESP32", "IoT", "Arduino", "3D Printing", "Telegram Bot", "Break Beam Sensors"],
     githubUrl: "#",
   },
+  {
+    id: 6,
+    title: "Custom Watch Build",
+    description:
+      "Sourced individual components and assembled a complete mechanical watch by hand around a Seiko NH35 movement, requiring precision, patience, and careful planning.",
+    image: "/images/WatchCoverImage.png",
+    tags: ["Horology", "NH35 Movement", "Precision Assembly", "Component Sourcing"],
+    githubUrl: "#",
+  },
 ]
 
 export default function Projects() {
@@ -125,7 +134,7 @@ export default function Projects() {
                   </div>
 
                   <div className="flex flex-wrap gap-2 mt-auto">
-                    {project.id === 1 || project.id === 3 || project.id === 4 ? (
+                    {project.id === 1 || project.id === 3 || project.id === 4 || project.id === 6 ? (
                       // For construction, PC cooling, and UR5e projects, don't show GitHub button
                       <div className="ml-auto bg-slate-700 text-white px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors duration-300 flex items-center gap-1 font-medium text-sm">
                         View Details
