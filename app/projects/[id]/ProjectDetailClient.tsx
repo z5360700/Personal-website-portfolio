@@ -597,7 +597,7 @@ function ProjectDetailClient() {
             {/* Main Project Image */}
             <div className="bg-muted/10 rounded-lg p-6 border">
               <div className="relative aspect-video rounded-lg overflow-hidden max-w-4xl mx-auto">
-                <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
+                <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover object-[center_30%]" />
               </div>
             </div>
 
