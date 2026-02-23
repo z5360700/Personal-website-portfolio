@@ -42,6 +42,8 @@ export default function Contact() {
     setErrorMessage("")
 
     try {
+      console.log("Attempting to send email with data:", formData)
+
       // EmailJS configuration
       const serviceId = "service_ses81fd"
       const templateId = "template_gqb6o4h"
@@ -55,7 +57,11 @@ export default function Contact() {
         reply_to: formData.email,
       }
 
+      console.log("Sending with params:", templateParams)
+
       const result = await emailjs.send(serviceId, templateId, templateParams)
+
+      console.log("EmailJS result:", result)
 
       if (result.status === 200) {
         setSubmitStatus("success")
