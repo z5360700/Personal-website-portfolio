@@ -204,7 +204,7 @@ export default function About() {
             </p>
             <p className="text-foreground/80 leading-relaxed">
               {
-                "In my free time I like to go to the gym, run, and play video games. My next big goal is to step into an engineering role where I can collaborate with others, keep learning, and build solutions that genuinely help people. I can't wait to see where this journey takes me and to keep on growing.\n"
+                "In my free time I like to go to the gym, run, and play video games. My next big goal is to step into an engineering role where I can collaborate with others, keep learning, and build solutions that genuinely help people. "
               }
             </p>
 

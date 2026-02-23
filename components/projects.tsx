@@ -122,17 +122,6 @@ export default function Projects() {
                   </h3>
                   <p className="text-foreground/70 mb-3 flex-grow text-sm line-clamp-3">{project.description}</p>
 
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {project.tags.slice(0, 3).map((tag) => (
-                      <span key={tag} className="bg-muted text-xs px-2 py-1 rounded-full">
-                        {tag}
-                      </span>
-                    ))}
-                    {project.tags.length > 3 && (
-                      <span className="bg-muted text-xs px-2 py-1 rounded-full">+{project.tags.length - 3}</span>
-                    )}
-                  </div>
-
                   <div className="flex flex-wrap gap-2 mt-auto">
                     {project.id === 1 || project.id === 3 || project.id === 4 || project.id === 6 ? (
                       // For construction, PC cooling, and UR5e projects, don't show GitHub button
