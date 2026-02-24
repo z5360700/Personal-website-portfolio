@@ -105,12 +105,12 @@ export default function Projects() {
                 className="overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
                 onClick={() => handleProjectClick(project.id)}
               >
-                <div className="relative h-64 w-full overflow-hidden">
+                <div className={`relative h-64 w-full overflow-hidden ${project.id === 6 ? "bg-muted/50" : ""}`}>
                   <Image
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}
                     fill
-                    className="object-cover object-[center_60%] transition-transform group-hover:scale-105 duration-300"
+                    className={`transition-transform group-hover:scale-105 duration-300 ${project.id === 6 ? "object-contain p-2" : "object-cover"}`}
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     quality={80}
                     loading={index < 3 ? "eager" : "lazy"}
