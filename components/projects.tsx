@@ -110,7 +110,7 @@ export default function Projects() {
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}
                     fill
-                    className="object-cover transition-transform group-hover:scale-105 duration-300"
+                    className="object-cover object-[center_60%] transition-transform group-hover:scale-105 duration-300"
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     quality={80}
                     loading={index < 3 ? "eager" : "lazy"}
