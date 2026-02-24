@@ -62,7 +62,7 @@ const projects = [
     title: "Custom Watch Build",
     description:
       "Sourced individual components and assembled a complete mechanical watch by hand around a Seiko NH35 movement, requiring precision, patience, and careful planning.",
-    image: "/images/watch-cover-v3.png",
+    image: "/images/watch-cover-v4.png",
     tags: ["Horology", "NH35 Movement", "Precision Assembly", "Component Sourcing"],
     githubUrl: "#",
   },
@@ -105,12 +105,12 @@ export default function Projects() {
                 className="overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
                 onClick={() => handleProjectClick(project.id)}
               >
-                <div className={`relative h-64 w-full overflow-hidden ${project.id === 6 ? "bg-muted/50" : ""}`}>
+                <div className="relative h-64 w-full overflow-hidden">
                   <Image
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}
                     fill
-                    className={`transition-transform group-hover:scale-105 duration-300 ${project.id === 6 ? "object-contain p-2" : "object-cover"}`}
+                    className="object-cover transition-transform group-hover:scale-105 duration-300"
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     quality={80}
                     loading={index < 3 ? "eager" : "lazy"}

@@ -558,7 +558,7 @@ The challenge was not in manufacturing the parts, but in the assembly itself. Fi
 Sourcing compatible parts was its own challenge - not all cases, dials, and hands are interchangeable even when marketed for the same movement. Verifying dimensions, stem lengths, and fitment before committing to an assembly sequence required careful research and planning.
 
 The skills reinforced through this project - patience, attention to detail, methodical planning, and the discipline to do things right rather than fast - are the same skills that underpin every other project in this portfolio, from soldering electronics to planning construction work.`,
-    image: "/images/watch-cover-v3.png",
+    image: "/images/watch-cover-v4.png",
     videoGallery: [
       {
         id: "nR-1D8_llwg",
