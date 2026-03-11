@@ -95,6 +95,8 @@ export default function About() {
                     priority
                     sizes="(max-width: 768px) 100vw, 50vw"
                     quality={85}
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAQMEAQUAAAAAAAAAAAAAAQIDBAAFESEGEhMxQWH/xAAVAQEBAAAAAAAAAAAAAAAAAAADBP/EABsRAAICAwEAAAAAAAAAAAAAAAECABEDBCEx/9oADAMBAAIRAxEAPwCvxvkN1gvPuy7hNkJWtO2lyFKA6daDR0dbwds0pSlB2MjEWJlRuZ/Z/9k="
                   />
                 </div>
               </motion.div>
@@ -130,6 +132,8 @@ export default function About() {
                     sizes="(max-width: 768px) 100vw, 50vw"
                     quality={85}
                     loading="lazy"
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAQMEAQUAAAAAAAAAAAAAAQIDBAAFESEGEhMxQWH/xAAVAQEBAAAAAAAAAAAAAAAAAAADBP/EABsRAAICAwEAAAAAAAAAAAAAAAECABEDBCEx/9oADAMBAAIRAxEAPwCvxvkN1gvPuy7hNkJWtO2lyFKA6daDR0dbwds0pSlB2MjEWJlRuZ/Z/9k="
                   />
                 </div>
               </motion.div>
@@ -158,6 +162,8 @@ export default function About() {
                     sizes="(max-width: 768px) 100vw, 50vw"
                     quality={85}
                     loading="lazy"
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAQMEAQUAAAAAAAAAAAAAAQIDBAAFESEGEhMxQWH/xAAVAQEBAAAAAAAAAAAAAAAAAAADBP/EABsRAAICAwEAAAAAAAAAAAAAAAECABEDBCEx/9oADAMBAAIRAxEAPwCvxvkN1gvPuy7hNkJWtO2lyFKA6daDR0dbwds0pSlB2MjEWJlRuZ/Z/9k="
                   />
                 </div>
               </motion.div>
@@ -210,24 +216,18 @@ export default function About() {
 
             <div className="flex flex-wrap gap-4 pt-4">
               {/* C++ Logo */}
-              <motion.div
-                whileHover={{ scale: 1.1, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="bg-background rounded-lg p-3 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              <div
+                className="bg-background rounded-lg p-3 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="C++"
               >
                 <svg viewBox="0 0 24 24" className="w-8 h-8" fill="#00599C">
                   <path d="M22.394 6c-.167-.29-.398-.543-.652-.69L12.926.22c-.509-.294-1.34-.294-1.848 0L2.26 5.31c-.508.293-.923 1.013-.923 1.6v10.18c0 .294.104.62.271.91.167.29.398.543.652.69l8.816 5.09c.508.293 1.34.293 1.848 0l8.816-5.09c.254-.147.485-.4.652-.69.167-.29.27-.616.27-.91V6.91c.003-.294-.1-.62-.268-.91zM12 19.109c-3.92 0-7.109-3.189-7.109-7.109S8.08 4.891 12 4.891a7.133 7.133 0 016.156 3.552l-3.076 1.781A3.567 3.567 0 0012 8.445c-1.96 0-3.554 1.595-3.554 3.555S10.04 15.555 12 15.555a3.57 3.57 0 003.08-1.778l3.077 1.8A7.135 7.135 0 0112 19.109zm7.109-6.714h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79v.79zm2.962 0h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79v.79z" />
                 </svg>
-              </motion.div>
+              </div>
 
               {/* MATLAB Logo */}
-              <motion.div
-                whileHover={{ scale: 1.1, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              <div
+                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="MATLAB"
               >
                 <Image
@@ -238,14 +238,11 @@ export default function About() {
                   className="object-contain"
                   loading="lazy"
                 />
-              </motion.div>
+              </div>
 
               {/* SolidWorks Logo */}
-              <motion.div
-                whileHover={{ scale: 1.1, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              <div
+                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="SolidWorks"
               >
                 <Image
@@ -256,14 +253,11 @@ export default function About() {
                   className="object-contain"
                   loading="lazy"
                 />
-              </motion.div>
+              </div>
 
               {/* Fusion 360 Logo */}
-              <motion.div
-                whileHover={{ scale: 1.1, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              <div
+                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="Fusion 360"
               >
                 <Image
@@ -274,14 +268,11 @@ export default function About() {
                   className="object-contain"
                   loading="lazy"
                 />
-              </motion.div>
+              </div>
 
               {/* Bambu Lab Logo */}
-              <motion.div
-                whileHover={{ scale: 1.1, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              <div
+                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="Bambu Lab"
               >
                 <Image
@@ -292,27 +283,21 @@ export default function About() {
                   className="object-contain"
                   loading="lazy"
                 />
-              </motion.div>
+              </div>
 
               {/* VS Code Logo */}
-              <motion.div
-                whileHover={{ scale: 1.1, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="bg-background rounded-lg p-3 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              <div
+                className="bg-background rounded-lg p-3 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="Visual Studio Code"
               >
                 <svg viewBox="0 0 24 24" className="w-8 h-8" fill="#007ACC">
                   <path d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z" />
                 </svg>
-              </motion.div>
+              </div>
 
               {/* Power Drill Icon */}
-              <motion.div
-                whileHover={{ scale: 1.1, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              <div
+                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="Power Tools"
               >
                 <Image
@@ -323,14 +308,11 @@ export default function About() {
                   className="object-contain text-border"
                   loading="lazy"
                 />
-              </motion.div>
+              </div>
 
               {/* Hammer Icon */}
-              <motion.div
-                whileHover={{ scale: 1.1, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              <div
+                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="Hand Tools"
               >
                 <Image
@@ -341,7 +323,7 @@ export default function About() {
                   className="object-contain"
                   loading="lazy"
                 />
-              </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>
