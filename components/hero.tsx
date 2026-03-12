@@ -80,9 +80,15 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 1.0 }}
             className="flex flex-col sm:flex-row gap-3"
           >
-            <p className="text-foreground/70 text-lg">
-              I’m an engineering student from Sydney, specialising in Mechatronics, currently in my final year at the University of New South Wales.
-            </p>
+            <Button size="lg" className="px-6 py-5 text-base font-medium" asChild>
+              <a href="#projects">View My Work</a>
+            </Button>
+            <Button size="lg" variant="outline" className="px-6 py-5 text-base font-medium" asChild>
+              <a href={resumeUrl} download="LoRusso_CV_12_2025a.pdf" className="flex items-center gap-2">
+                <Download className="w-4 h-4" />
+                Resume
+              </a>
+            </Button>
           </motion.div>
 
           <motion.div
