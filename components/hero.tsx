@@ -70,7 +70,7 @@ export default function Hero() {
             className="max-w-xl mb-6"
           >
             <p className="text-foreground/70 text-base md:text-lg leading-relaxed">
-              Mechatronics engineering student at UNSW, Sydney. Building things that move, think, and solve real problems.
+              Final year Mechatronics engineering student at UNSW, Sydney. Building things that move, think, and solve real problems.
             </p>
           </motion.div>
 
