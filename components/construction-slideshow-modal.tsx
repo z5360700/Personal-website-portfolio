@@ -29,7 +29,8 @@ export default function ConstructionSlideshowModal({
   }, [initialIndex, isOpen])
 
   const prevIndex = (currentIndex - 1 + images.length) % images.length
-  const hasPrev = images.length > 1
+  const nextIndex = (currentIndex + 1) % images.length
+  const hasSiblings = images.length > 1
 
   const goNext = () => setCurrentIndex((prev) => (prev + 1) % images.length)
   const goPrev = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
@@ -75,13 +76,12 @@ export default function ConstructionSlideshowModal({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Previous image — left side, dimmed */}
-            {hasPrev && (
-              <div className="hidden md:flex flex-col items-center justify-center w-64 flex-shrink-0 mr-6">
-                <p className="text-white/40 text-xs mb-2 uppercase tracking-widest">Previous</p>
-                <div
-                  className="relative w-64 h-48 rounded-lg overflow-hidden opacity-40 cursor-pointer hover:opacity-60 transition-opacity"
-                  onClick={goPrev}
-                >
+            {hasSiblings && (
+              <div
+                className="hidden md:flex items-center justify-center w-48 lg:w-64 flex-shrink-0 mr-4 lg:mr-6 cursor-pointer"
+                onClick={goPrev}
+              >
+                <div className="relative w-full h-40 lg:h-48 rounded-lg overflow-hidden opacity-40 hover:opacity-60 transition-opacity">
                   <Image
                     src={images[prevIndex] || "/placeholder.svg"}
                     alt={`${altPrefix} ${prevIndex + 1}`}
@@ -116,12 +116,27 @@ export default function ConstructionSlideshowModal({
               </motion.div>
             </AnimatePresence>
 
-            {/* Spacer to keep centre image balanced when prev panel shows */}
-            {hasPrev && <div className="hidden md:block w-64 flex-shrink-0 ml-6" />}
+            {/* Next image — right side, dimmed */}
+            {hasSiblings && (
+              <div
+                className="hidden md:flex items-center justify-center w-48 lg:w-64 flex-shrink-0 ml-4 lg:ml-6 cursor-pointer"
+                onClick={goNext}
+              >
+                <div className="relative w-full h-40 lg:h-48 rounded-lg overflow-hidden opacity-40 hover:opacity-60 transition-opacity">
+                  <Image
+                    src={images[nextIndex] || "/placeholder.svg"}
+                    alt={`${altPrefix} ${nextIndex + 1}`}
+                    fill
+                    className="object-cover"
+                    sizes="256px"
+                  />
+                </div>
+              </div>
+            )}
           </motion.div>
 
           {/* Left arrow */}
-          {hasPrev && (
+          {hasSiblings && (
             <Button
               variant="ghost"
               size="icon"
@@ -133,7 +148,7 @@ export default function ConstructionSlideshowModal({
           )}
 
           {/* Right arrow */}
-          {images.length > 1 && (
+          {hasSiblings && (
             <Button
               variant="ghost"
               size="icon"
