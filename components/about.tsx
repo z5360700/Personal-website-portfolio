@@ -200,17 +200,6 @@ export default function About() {
             <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
               Outside work, I hit the gym, run, and play video games. My goal is to step into an engineering role where I can collaborate, keep learning, and build solutions that genuinely help people.
             </p>
-            <p className="text-foreground/80 leading-relaxed">
-              {
-                "I’m currently working at Samsung, and I’m grateful for the chance to keep improving my communication and presentation skills. The confidence I gained from building that house pushes me every day to dive into new technical challenges, and the experience at Samsung reinforces my ability to explain ideas clearly and work effectively in a team.\n"
-              }
-            </p>
-            <p className="text-foreground/80 leading-relaxed">
-              {
-                "In my free time I like to go to the gym, run, and play video games. My next big goal is to step into an engineering role where I can collaborate with others, keep learning, and build solutions that genuinely help people. "
-              }
-            </p>
-
             <div className="flex flex-wrap gap-4 pt-4">
               {/* C++ Logo */}
               <div
@@ -296,36 +285,15 @@ export default function About() {
                 </svg>
               </div>
 
-              {/* Power Drill Icon */}
+              {/* Python Logo */}
               <div
-                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
-                title="Power Tools"
+                className="bg-background rounded-lg p-3 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
+                title="Python"
               >
-                <img
-                  src="/images/drill-logo.png"
-                  alt="Power Drill"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                  loading="lazy"
-                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
-                />
-              </div>
-
-              {/* Hammer Icon */}
-              <div
-                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
-                title="Hand Tools"
-              >
-                <img
-                  src="/images/hammer-logo.png"
-                  alt="Hammer"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                  loading="lazy"
-                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
-                />
+                <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none">
+                  <path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.887S0 5.789 0 11.969c0 6.18 3.403 5.963 3.403 5.963h2.031v-2.868s-.109-3.403 3.347-3.403h5.77s3.24.052 3.24-3.13V3.13S18.316 0 11.914 0zm-3.21 1.814a1.05 1.05 0 1 1 0 2.1 1.05 1.05 0 0 1 0-2.1z" fill="#3776AB"/>
+                  <path d="M12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.007-2.752h-5.814v-.826h8.134S24 18.211 24 12.031c0-6.18-3.403-5.963-3.403-5.963h-2.031v2.868s.109 3.403-3.347 3.403h-5.77s-3.24-.052-3.24 3.13v5.401S5.684 24 12.086 24zm3.21-1.814a1.05 1.05 0 1 1 0-2.1 1.05 1.05 0 0 1 0 2.1z" fill="#FFD43B"/>
+                </svg>
               </div>
             </div>
           </motion.div>
