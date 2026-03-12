@@ -90,7 +90,7 @@ export default function EnhancedBeforeAfterSlider({
     >
       {/* Before Image */}
       <div className="absolute inset-0">
-        <Image src={beforeImage || "/placeholder.svg"} alt={beforeAlt} fill className="object-cover" sizes="100vw" priority />
+        <Image src={beforeImage || "/placeholder.svg"} alt={beforeAlt} fill className="object-cover" sizes="100vw" priority loading="eager" />
       </div>
 
       {/* After Image - Fixed clip-path calculation */}
@@ -100,7 +100,7 @@ export default function EnhancedBeforeAfterSlider({
           clipPath: `inset(0 ${100 - sliderPosition}% 0 0)`,
         }}
       >
-        <Image src={afterImage || "/placeholder.svg"} alt={afterAlt} fill className="object-cover" sizes="100vw" />
+        <Image src={afterImage || "/placeholder.svg"} alt={afterAlt} fill className="object-cover" sizes="100vw" priority loading="eager" />
       </div>
 
       {/* Slider Line - Fixed transform to use calc with percentage */}
