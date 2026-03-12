@@ -50,13 +50,13 @@ export const projectsData: Project[] = [
     id: 1,
     title: "Residential Construction & Renovation",
     description:
-      "Complete residential building renovation from foundation to finish, including structural framing, roofing, plumbing, and electrical work.",
+      "Full residential build completed alongside engineering degree. Structural framing, roofing, plumbing, and electrical from foundation to finish. Managing real deadlines, tradespeople, and physical work while keeping up with coursework built resilience no classroom could.",
     longDescription: `
-This project involved completely renovating a deteriorated building into a modern home. Working with my father, I gained hands-on experience in all aspects of construction.
+Full residential build completed alongside engineering degree. Structural framing, roofing, plumbing, electrical from foundation to finish.
 
-From demolition to finishing touches, we handled everything - structural work, roofing, electrical, plumbing, and interior design. The project required careful planning and coordination of different trades.
+The project required managing real deadlines, coordinating tradespeople, and balancing physical work with coursework. This built a level of resilience no classroom could provide.
 
-The transformation showcases both my technical construction skills and project management abilities. Every step was completed with attention to building codes and quality standards.
+Every step was completed with attention to building codes and quality standards.
 `,
     image: "/images/construction-after.jpg",
     beforeImage: "/images/construction-before-new.png",
@@ -155,15 +155,13 @@ The transformation showcases both my technical construction skills and project m
     id: 2,
     title: "Micromouse Maze Navigation Robot",
     description:
-      "Autonomous robot designed to navigate through complex mazes using LiDAR, IMU, and wheel encoders with path planning algorithms and computer vision.",
+      "Autonomous maze-solving robot built from scratch. Integrated LiDAR, IMU, and wheel encoders with path planning algorithm for real-time decision making. Top-3 competition finish.",
     longDescription: `
-  The Micromouse Maze Navigation Robot was developed as part of the MTRN3100 course, focusing on autonomous robotics and navigation systems. This project involved designing and implementing a robot capable of navigating through unknown maze environments efficiently.
+Autonomous maze-solving robot built from scratch. Integrated LiDAR, IMU, and wheel encoders with path planning algorithm for real-time decision making.
 
-  The robot utilizes multiple sensors including LiDAR for distance measurement, an Inertial Measurement Unit (IMU) for orientation tracking, and wheel encoders for precise movement control. These sensors work together to provide comprehensive environmental awareness and position tracking.
+The robot achieved a top-3 competition finish by efficiently mapping the maze environment and planning optimal paths through it.
 
-  A key feature of this project was the implementation of computer vision techniques to generate occupancy maps of the maze in real-time. Using these maps, the robot applies Breadth-First Search (BFS) algorithms to determine optimal paths while avoiding obstacles.
-
-  The system also includes a manual override feature, allowing users to input directional commands (forward, left, right) for situations where direct control is preferred over autonomous navigation.
+Sensor fusion combined data from multiple sources to maintain accurate position estimates and make real-time navigation decisions.
 `,
     image: "/images/micromouse-robot.jpeg",
     course: "MTRN3100",
@@ -203,7 +201,7 @@ The transformation showcases both my technical construction skills and project m
         isShort: true,
       },
     ],
-    tags: ["C++", "Python", "Arduino", "Computer Vision", "Robotics", "OpenCV"],
+    tags: ["C/C++", "LiDAR", "IMU", "Path Planning", "Embedded Systems"],
     liveUrl: null,
     githubUrl: "https://github.com/z5360700/micromouse-from2024",
     features: [
@@ -254,12 +252,12 @@ The transformation showcases both my technical construction skills and project m
     id: 3,
     title: "Custom Cooling Funnels for PC Hardware",
     description:
-      "Designed and 3D-printed cooling funnels using PLA material to direct airflow for GPU components, inspired by automotive ducted cooling systems.",
-    longDescription: `This project was inspired by ducted cooling systems found in automotive applications, where air is directed precisely to components that need cooling. The idea emerged from observing that airflow transfer in PC cases isn't well optimized, with much of the intake air not reaching critical components like the GPU effectively.
+      "Designed and 3D-printed ducted airflow funnels for GPU cooling, inspired by automotive cooling systems. Achieved 7°C reduction in GPU temperatures under load.",
+    longDescription: `Designed and 3D-printed ducted airflow funnels for GPU cooling, inspired by automotive cooling systems. Achieved measurable 7°C reduction in GPU temperatures under load.
 
-The project began with identifying the airflow optimization problem in my PC case, where front intake fans weren't efficiently directing cool air to the graphics card. Taking inspiration from automotive ducted parts that channel air directly to specific engine components, I designed custom cooling funnels to create a direct airflow path from the front case fans to the GPU.
+The solution identified that airflow in PC cases isn't optimized - intake air disperses inside rather than reaching the GPU directly.
 
-The solution involved precise 3D modeling of the PC case components, designing custom ducting that would fit perfectly within the case constraints, and 3D printing the parts using PLA material for heat resistance and durability.
+Custom ducting directs cool air from front intake fans straight to the GPU, allowing it to maintain higher boost clocks for longer periods under demanding tasks.
 `,
     image: "/images/pc-cooling-installed.jpeg",
     designGallery: [
@@ -351,7 +349,7 @@ The solution involved precise 3D modeling of the PC case components, designing c
         aspectRatio: "aspect-video",
       },
     ],
-    tags: ["3D Printing", "Fusion360", "PLA Material", "Thermal Management", "CAD Design"],
+    tags: ["Fusion 360", "3D Printing", "PLA", "Thermal Engineering"],
     liveUrl: null,
     githubUrl: null,
     features: [
@@ -407,10 +405,12 @@ The solution involved precise 3D modeling of the PC case components, designing c
   {
     id: 4,
     title: "UR5e Robotic Writing System",
-    description: "A robot that writes math problems and solves them on paper using MATLAB programming.",
-    longDescription: `I programmed a UR5e robot to write and solve math problems on paper. The robot can write individual numbers, move them around the page, and even solve addition, subtraction, and multiplication problems in the traditional long-form style you'd see in school.
+    description: "MATLAB program using RTDE interface to command UR5e industrial robot arm to trace digits and execute mathematical operations. Implemented coordinate frame transformations with consistent positional accuracy.",
+    longDescription: `MATLAB program using RTDE interface to command UR5e industrial robot arm to trace digits and execute mathematical operations.
 
-The coolest part is watching it work - the robot moves smoothly like a human hand, lifting the pen between strokes and positioning everything perfectly on the page. It's basically like having a robot do your math homework, but way more impressive.`,
+The robot writes individual numbers, moves them around the page, and solves addition, subtraction, and multiplication problems in traditional long-form style.
+
+Implemented coordinate frame transformations and motion trajectories with consistent positional accuracy across repeated tasks. The robot moves smoothly like a human hand, lifting the pen between strokes and positioning everything perfectly on the page.`,
     image: "/images/ur5e-main-setup.jpeg",
     gallery: ["/images/ur5e-main-setup.jpeg", "/images/ur5e-calculation-example.jpeg"],
     videoGallery: [
@@ -434,7 +434,7 @@ The coolest part is watching it work - the robot moves smoothly like a human han
         isShort: false,
       },
     ],
-    tags: ["MATLAB", "UR5e Robot", "Robotics", "Programming"],
+    tags: ["MATLAB", "RTDE", "UR5e", "Robotics", "Coordinate Transforms"],
     liveUrl: null,
     githubUrl: null,
     features: [
@@ -463,15 +463,13 @@ Getting the spacing right was tricky too - the robot needed to know exactly wher
     id: 5,
     title: "Cat Door Monitoring System",
     description:
-      "IoT monitoring system using ESP32 and break beam sensors to track cat movement through a pet door, with real-time Telegram notifications to prevent unauthorized access.",
+      "IoT system built around ESP32 and break-beam sensors to detect and log cat movement through pet door. Sends real-time Telegram push notifications with complete end-to-end embedded + cloud pipeline.",
     longDescription: `
-This project was motivated by our family cat eating too much food and the discovery of another neighborhood cat sneaking into our house. The cat eats downstairs away from the kitchen, and we had caught the intruder cat inside the house around 3 times, prompting the need for a monitoring solution.
+IoT system built around ESP32 and break-beam sensors to detect and log cat movement. Sends real-time Telegram push notifications.
 
-The system evolved through two major versions. Version 1 used a PIR sensor but proved unreliable as it was triggered by cockroaches and would activate when opening the door. Version 2 implemented break beam sensors, which worked much more effectively and reliably.
+Initially used PIR sensors but they proved unreliable, triggering on insects and door opening. Version 2 switched to break beam sensors for accurate, reliable detection.
 
-The ESP32 connects via WiFi to send notifications through a Telegram bot, providing real-time alerts whenever the beam is broken. This project was particularly rewarding because within the first 2 days of deployment, I immediately caught the other cat coming into the house and found him in the backyard.
-
-Future versions will include double break beam sensors to determine direction of movement, and potentially RFID tags or camera-based identification using computer vision knowledge gained from the micromouse project.
+Within 2 days of deployment, the system detected the unauthorized intruder cat trying to enter, enabling immediate response. Future versions will include directional sensors and RFID identification.
 `,
     image: "/images/cat-door-v2-system.png",
     designGallery: [
@@ -491,7 +489,7 @@ Future versions will include double break beam sensors to determine direction of
         isShort: false,
       },
     ],
-    tags: ["ESP32", "IoT", "Arduino", "3D Printing", "Telegram Bot", "Break Beam Sensors"],
+    tags: ["ESP32", "IoT", "Embedded C", "Telegram API", "Sensors"],
     liveUrl: null,
     githubUrl: null,
     features: [
@@ -550,14 +548,12 @@ Future versions will include double break beam sensors to determine direction of
     id: 6,
     title: "Custom Watch Build",
     description:
-      "A hands-on project involving sourcing individual watch components and assembling a complete mechanical watch by hand, built around a Seiko NH35 movement.",
-    longDescription: `This project involved sourcing individual watch components - case, dial, hands, crystal, crown, movement, and bracelet - from various suppliers and assembling them into a complete, functioning mechanical watch by hand. The build was centred around a Seiko NH35 automatic movement, a widely respected workhorse calibre known for its reliability.
+      "Sourced and hand-assembled individual components around Seiko NH35 movement. Precision assembly requiring dust-free environment, component compatibility verification, and steady hands for hand-setting.",
+    longDescription: `Sourced individual watch components - case, dial, hands, crystal, crown, bracelet - and assembled them into a complete mechanical watch by hand, built around a Seiko NH35 movement.
 
-The challenge was not in manufacturing the parts, but in the assembly itself. Fitting a movement into a case, aligning the dial perfectly, pressing on hands without damaging them or the dial, seating the crystal, and ensuring everything was dust-free and properly sealed required a level of patience and precision that is difficult to appreciate until you are working at that scale. One speck of dust trapped under the crystal or a hand slightly misaligned is immediately visible and means disassembling and starting again.
+The challenge was not manufacturing, but precision assembly. Fitting a movement into a case, aligning the dial perfectly, pressing on hands without damaging them, seating the crystal, and keeping everything dust-free required patience and precision at a scale where any misalignment is immediately visible.
 
-Sourcing compatible parts was its own challenge - not all cases, dials, and hands are interchangeable even when marketed for the same movement. Verifying dimensions, stem lengths, and fitment before committing to an assembly sequence required careful research and planning.
-
-The skills reinforced through this project - patience, attention to detail, methodical planning, and the discipline to do things right rather than fast - are the same skills that underpin every other project in this portfolio, from soldering electronics to planning construction work.`,
+Sourcing compatible parts was its own challenge - not all cases and hands marketed for the NH35 are compatible. Verifying dimensions and fitment required careful research before committing to assembly.`,
     image: "/images/WatchCoverImage.png",
     videoGallery: [
       {
@@ -568,7 +564,7 @@ The skills reinforced through this project - patience, attention to detail, meth
         isShort: false,
       },
     ],
-    tags: ["Horology", "Precision Assembly", "Mechanical Engineering", "Detail-Oriented"],
+    tags: ["Horology", "Precision Assembly", "Mechanical Engineering", "Component Sourcing"],
     liveUrl: null,
     githubUrl: null,
     features: [

@@ -16,54 +16,54 @@ const projects = [
     id: 1,
     title: "Residential Construction & Renovation",
     description:
-      "Complete residential building renovation from foundation to finish, including structural framing, roofing, plumbing, and electrical work.",
+      "Full residential build completed alongside engineering degree. Structural framing, roofing, plumbing, and electrical from foundation to finish. Managing real deadlines, tradespeople, and physical work while keeping up with coursework built resilience no classroom could.",
     image: "/images/construction-after.jpg",
-    tags: ["Construction", "Renovation", "Project Management", "Building Codes"],
+    tags: ["Construction Management", "Structural", "Electrical", "Plumbing"],
     githubUrl: "#",
   },
   {
     id: 2,
     title: "Micromouse Maze Navigation Robot",
     description:
-      "Autonomous robot designed to navigate through complex mazes using LiDAR, IMU, and wheel encoders with path planning algorithms and computer vision.",
+      "Autonomous maze-solving robot built from scratch. Integrated LiDAR, IMU, and wheel encoders with path planning algorithm for real-time decision making. Top-3 competition finish.",
     image: "/images/micromouse-robot.jpeg",
-    tags: ["C++", "Python", "Arduino", "Computer Vision", "Robotics", "OpenCV"],
+    tags: ["C/C++", "LiDAR", "IMU", "Path Planning", "Embedded Systems"],
     githubUrl: "https://github.com/z5360700/micromouse-from2024",
   },
   {
     id: 3,
     title: "Custom Cooling Funnels for PC Hardware",
     description:
-      "Designed and 3D-printed cooling funnels using PLA material to direct airflow for GPU components, inspired by automotive ducted cooling systems.",
+      "Designed and 3D-printed ducted airflow funnels for GPU cooling, inspired by automotive cooling systems. Achieved 7°C reduction in GPU temperatures under load.",
     image: "/images/pc-cooling-installed.jpeg",
-    tags: ["3D Printing", "Fusion360", "PLA Material", "Thermal Management", "CAD Design"],
+    tags: ["Fusion 360", "3D Printing", "PLA", "Thermal Engineering"],
     githubUrl: "#",
   },
   {
     id: 4,
     title: "UR5e Robotic Writing System",
     description:
-      "MATLAB RTDE program controlling a UR5e robot to trace digits, apply transformations, and render mathematical operations with precise motion control.",
+      "MATLAB program using RTDE interface to command UR5e industrial robot arm to trace digits and execute mathematical operations. Implemented coordinate frame transformations with consistent positional accuracy.",
     image: "/images/ur5e-main-setup.jpeg",
-    tags: ["MATLAB", "UR5e", "Robotics", "RVC Toolbox", "Motion Control", "RTDE"],
+    tags: ["MATLAB", "RTDE", "UR5e", "Robotics", "Coordinate Transforms"],
     githubUrl: "#",
   },
   {
     id: 5,
     title: "Cat Door Monitoring System",
     description:
-      "IoT monitoring system using ESP32 and break beam sensors to track cat movement through a pet door, with real-time Telegram notifications to prevent unauthorized access.",
+      "IoT system built around ESP32 and break-beam sensors to detect and log cat movement through pet door. Sends real-time Telegram push notifications with complete end-to-end embedded + cloud pipeline.",
     image: "/images/cat-door-v2-system.png",
-    tags: ["ESP32", "IoT", "Arduino", "3D Printing", "Telegram Bot", "Break Beam Sensors"],
+    tags: ["ESP32", "IoT", "Embedded C", "Telegram API", "Sensors"],
     githubUrl: "#",
   },
   {
     id: 6,
     title: "Custom Watch Build",
     description:
-      "Sourced individual components and assembled a complete mechanical watch by hand around a Seiko NH35 movement, requiring precision, patience, and careful planning.",
+      "Sourced and hand-assembled individual components around Seiko NH35 movement. Precision assembly requiring dust-free environment, component compatibility verification, and steady hands for hand-setting.",
     image: "/images/WatchCoverImage.png",
-    tags: ["Horology", "NH35 Movement", "Precision Assembly", "Component Sourcing"],
+    tags: ["Horology", "Precision Assembly", "Mechanical Engineering", "Component Sourcing"],
     githubUrl: "#",
   },
 ]
