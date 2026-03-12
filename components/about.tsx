@@ -54,7 +54,7 @@ export default function About() {
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
             transition={{ duration: 0.8 }}
-            className="relative w-full max-w-lg mx-auto lg:mx-0 mt-8 mb-16 lg:mb-0"
+            className="relative w-full mx-auto lg:mx-0 mt-8 mb-16 lg:mb-0"
           >
             {/* Card deck container */}
             <motion.div
@@ -78,8 +78,8 @@ export default function About() {
                   zIndex: activeImage === "personal" ? 30 : activeImage === "samsung" ? 15 : 10,
                 }}
                 animate={{
-                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? -50 : -100,
-                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? -20 : -40,
+                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? -30 : -60,
+                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? -15 : -30,
                   rotate: activeImage === "personal" ? 0 : activeImage === "samsung" ? -4 : -8,
                   scale: activeImage === "personal" ? 1 : 0.95,
                 }}
@@ -112,8 +112,8 @@ export default function About() {
                           : 20,
                 }}
                 animate={{
-                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? 50 : -50,
-                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? 20 : -20,
+                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? 30 : -30,
+                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? 15 : -15,
                   rotate: activeImage === "samsung" ? 0 : activeImage === "personal" ? 4 : -4,
                   scale: activeImage === "samsung" ? 1 : 0.95,
                 }}
@@ -139,8 +139,8 @@ export default function About() {
                   zIndex: activeImage === "store" ? 30 : activeImage === "samsung" ? 25 : 10,
                 }}
                 animate={{
-                  x: activeImage === "store" ? 0 : activeImage === "samsung" ? 50 : 80,
-                  y: activeImage === "store" ? 0 : activeImage === "samsung" ? 20 : 35,
+                  x: activeImage === "store" ? 0 : activeImage === "samsung" ? 30 : 60,
+                  y: activeImage === "store" ? 0 : activeImage === "samsung" ? 15 : 30,
                   rotate: activeImage === "store" ? 0 : activeImage === "samsung" ? 4 : 6,
                   scale: activeImage === "store" ? 1 : 0.95,
                 }}
