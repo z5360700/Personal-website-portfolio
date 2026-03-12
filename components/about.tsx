@@ -237,6 +237,7 @@ export default function About() {
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -252,6 +253,7 @@ export default function About() {
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -267,6 +269,7 @@ export default function About() {
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -282,6 +285,7 @@ export default function About() {
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -307,6 +311,7 @@ export default function About() {
                   height={40}
                   className="object-contain text-border"
                   loading="lazy"
+                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -322,6 +327,7 @@ export default function About() {
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
             </div>
