@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, useCallback } from "react"
+import { useRef, useState, useCallback, useEffect } from "react"
 import Image from "next/image"
 import { useInView } from "framer-motion"
 import { motion } from "framer-motion"
@@ -10,9 +10,20 @@ export default function About() {
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [activeImage, setActiveImage] = useState<"personal" | "samsung" | "store">("personal")
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   const images = ["personal", "samsung", "store"] as const
   const currentIndex = images.indexOf(activeImage)
+
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   const handleImageChange = useCallback(
     (newImage: "personal" | "samsung" | "store") => {
@@ -42,19 +53,19 @@ export default function About() {
   )
 
   return (
-    <section id="about" className="pt-20 pb-36 bg-muted/30">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">About Me</h2>
-          <div className="w-20 h-1 bg-primary mx-auto"></div>
+    <section id="about" className="pt-16 pb-32 bg-muted/30">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3">About Me</h2>
+          <div className="w-16 h-1 bg-primary mx-auto"></div>
         </div>
 
-        <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-12 items-center">
+        <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
             transition={{ duration: 0.8 }}
-            className="relative w-full max-w-lg mx-auto lg:mx-0 mt-8 mb-16 lg:mb-0"
+            className="relative w-full lg:max-w-lg mx-auto lg:mx-0 mt-8 mb-16 lg:mb-0"
           >
             {/* Card deck container */}
             <motion.div
@@ -78,8 +89,8 @@ export default function About() {
                   zIndex: activeImage === "personal" ? 30 : activeImage === "samsung" ? 15 : 10,
                 }}
                 animate={{
-                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? -50 : -100,
-                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? -20 : -40,
+                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? (isMobile ? -6 : -30) : (isMobile ? -12 : -60),
+                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? (isMobile ? -4 : -15) : (isMobile ? -6 : -30),
                   rotate: activeImage === "personal" ? 0 : activeImage === "samsung" ? -4 : -8,
                   scale: activeImage === "personal" ? 1 : 0.95,
                 }}
@@ -112,8 +123,8 @@ export default function About() {
                           : 20,
                 }}
                 animate={{
-                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? 50 : -50,
-                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? 20 : -20,
+                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? (isMobile ? 6 : 30) : (isMobile ? -6 : -30),
+                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? (isMobile ? 4 : 15) : (isMobile ? -4 : -15),
                   rotate: activeImage === "samsung" ? 0 : activeImage === "personal" ? 4 : -4,
                   scale: activeImage === "samsung" ? 1 : 0.95,
                 }}
@@ -139,8 +150,8 @@ export default function About() {
                   zIndex: activeImage === "store" ? 30 : activeImage === "samsung" ? 25 : 10,
                 }}
                 animate={{
-                  x: activeImage === "store" ? 0 : activeImage === "samsung" ? 50 : 80,
-                  y: activeImage === "store" ? 0 : activeImage === "samsung" ? 20 : 35,
+                  x: activeImage === "store" ? 0 : activeImage === "samsung" ? (isMobile ? 6 : 30) : (isMobile ? 12 : 60),
+                  y: activeImage === "store" ? 0 : activeImage === "samsung" ? (isMobile ? 4 : 15) : (isMobile ? 6 : 30),
                   rotate: activeImage === "store" ? 0 : activeImage === "samsung" ? 4 : 6,
                   scale: activeImage === "store" ? 1 : 0.95,
                 }}
@@ -185,26 +196,21 @@ export default function About() {
             initial={{ opacity: 0, x: 50 }}
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
             transition={{ duration: 0.8 }}
-            className="space-y-6"
+            className="space-y-5"
           >
-            <h3 className="text-2xl font-bold mb-4">Who I Am</h3>
-            <p className="text-foreground/80 leading-relaxed">
-              I&apos;m a mechatronics engineering student who thrives on solving problems and watching my ideas come to
-              life. One of my proudest achievements was building a house with my family. It taught me that with the
-              right mindset, I can tackle any challenge. Before engineering, I also played semi-professional football,
-              which instilled in me discipline, teamwork, and resilience.
+            <h3 className="text-xl font-bold">Who I Am</h3>
+            <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
+              I'm a mechatronics engineering student who thrives on solving problems and watching ideas come to
+              life. One of my proudest achievements was building a house with my family — it taught me that with the
+              right mindset, I can tackle any challenge. Before engineering, I played semi-professional football,
+              which instilled discipline, teamwork, and resilience.
             </p>
-            <p className="text-foreground/80 leading-relaxed">
-              {
-                "I’m currently working at Samsung, and I’m grateful for the chance to keep improving my communication and presentation skills. The confidence I gained from building that house pushes me every day to dive into new technical challenges, and the experience at Samsung reinforces my ability to explain ideas clearly and work effectively in a team.\n"
-              }
+            <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
+              I'm currently working at Samsung, improving my communication and presentation skills daily. The confidence I gained from that house build pushes me to dive into new technical challenges, while my experience at Samsung reinforces my ability to explain ideas clearly and work effectively in a team.
             </p>
-            <p className="text-foreground/80 leading-relaxed">
-              {
-                "In my free time I like to go to the gym, run, and play video games. My next big goal is to step into an engineering role where I can collaborate with others, keep learning, and build solutions that genuinely help people. "
-              }
+            <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
+              Outside work, I hit the gym, run, and play video games. My goal is to step into an engineering role where I can collaborate, keep learning, and build solutions that genuinely help people.
             </p>
-
             <div className="flex flex-wrap gap-4 pt-4">
               {/* C++ Logo */}
               <div
@@ -290,36 +296,15 @@ export default function About() {
                 </svg>
               </div>
 
-              {/* Power Drill Icon */}
+              {/* Python Logo */}
               <div
-                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
-                title="Power Tools"
+                className="bg-background rounded-lg p-3 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
+                title="Python"
               >
-                <img
-                  src="/images/drill-logo.png"
-                  alt="Power Drill"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                  loading="lazy"
-                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
-                />
-              </div>
-
-              {/* Hammer Icon */}
-              <div
-                className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
-                title="Hand Tools"
-              >
-                <img
-                  src="/images/hammer-logo.png"
-                  alt="Hammer"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                  loading="lazy"
-                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
-                />
+                <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none">
+                  <path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.887S0 5.789 0 11.969c0 6.18 3.403 5.963 3.403 5.963h2.031v-2.868s-.109-3.403 3.347-3.403h5.77s3.24.052 3.24-3.13V3.13S18.316 0 11.914 0zm-3.21 1.814a1.05 1.05 0 1 1 0 2.1 1.05 1.05 0 0 1 0-2.1z" fill="#3776AB"/>
+                  <path d="M12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.007-2.752h-5.814v-.826h8.134S24 18.211 24 12.031c0-6.18-3.403-5.963-3.403-5.963h-2.031v2.868s.109 3.403-3.347 3.403h-5.77s-3.24-.052-3.24 3.13v5.401S5.684 24 12.086 24zm3.21-1.814a1.05 1.05 0 1 1 0-2.1 1.05 1.05 0 0 1 0 2.1z" fill="#FFD43B"/>
+                </svg>
               </div>
             </div>
           </motion.div>

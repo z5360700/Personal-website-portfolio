@@ -19,8 +19,8 @@ export default function Hero() {
   const resumeUrl = "/LoRusso_CV_12_2025a.pdf"
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative pt-16 overflow-hidden">
-      <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center gap-12 z-10">
+    <section id="home" className="min-h-screen flex items-center justify-center relative pt-20 pb-12 overflow-hidden">
+      <div className="container mx-auto px-6 flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-16 z-10">
         {/* Profile Image - Made smaller */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -49,16 +49,16 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-2"
+            className="mb-1"
           >
-            <span className="text-lg md:text-xl font-medium text-foreground/70">Hi! I&#39;m</span>
+            <span className="text-base md:text-lg font-medium text-foreground/60">Hi, I'm</span>
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 bg-clip-text text-transparent"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 bg-clip-text text-transparent"
           >
             Michael Lo Russo
           </motion.h1>
@@ -67,39 +67,29 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="max-w-2xl mb-8"
+            className="max-w-xl mb-6"
           >
-            <p className="text-foreground/70 text-lg">
-              I’m an engineering student from Sydney, specialising in Mechatronics, currently in my final year at the University of New South Wales.
+            <p className="text-foreground/70 text-base md:text-lg leading-relaxed">
+              Final year Mechatronics engineering student at UNSW, Sydney. Building things that move, think, and solve real problems.
             </p>
           </motion.div>
 
-          {/* Make both buttons the same style */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.0 }}
-            >
-              <Button size="lg" className="px-8 py-6 text-lg font-medium" asChild>
-                <a href="#projects">View My Work</a>
-              </Button>
-            </motion.div>
-
-            {/* Download Resume Button - Direct download of PDF file */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.2 }}
-            >
-              <Button size="lg" className="px-8 py-6 text-lg font-medium" asChild>
-                <a href={resumeUrl} download="LoRusso_CV_12_2025a.pdf" className="flex items-center gap-2">
-                  <Download className="w-5 h-5" />
-                  Download Resume
-                </a>
-              </Button>
-            </motion.div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.0 }}
+            className="flex flex-col sm:flex-row gap-3"
+          >
+            <Button size="lg" className="px-6 py-5 text-base font-medium" asChild>
+              <a href="#projects">View My Work</a>
+            </Button>
+            <Button size="lg" variant="outline" className="px-6 py-5 text-base font-medium" asChild>
+              <a href={resumeUrl} download="LoRusso_CV_12_2025a.pdf" className="flex items-center gap-2">
+                <Download className="w-4 h-4" />
+                Resume
+              </a>
+            </Button>
+          </motion.div>
         </div>
       </div>
 

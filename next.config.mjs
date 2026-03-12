@@ -8,6 +8,7 @@ const nextConfig = {
   // Image optimization - using unoptimized for simpler loading
   images: {
     unoptimized: true,
+    qualities: [75],
   },
   
   // Compression
