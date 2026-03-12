@@ -65,7 +65,7 @@ export default function About() {
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
             transition={{ duration: 0.8 }}
-            className="relative w-full mx-auto lg:mx-0 mt-8 mb-16 lg:mb-0"
+            className="relative w-full lg:max-w-lg mx-auto lg:mx-0 mt-8 mb-16 lg:mb-0"
           >
             {/* Card deck container */}
             <motion.div
