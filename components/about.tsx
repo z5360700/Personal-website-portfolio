@@ -235,9 +235,8 @@ export default function About() {
                   alt="MATLAB"
                   width={40}
                   height={40}
-                  className="object-contain"
+                  className="object-contain w-10 h-10"
                   loading="lazy"
-                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -251,9 +250,8 @@ export default function About() {
                   alt="SolidWorks"
                   width={40}
                   height={40}
-                  className="object-contain"
+                  className="object-contain w-10 h-10"
                   loading="lazy"
-                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -267,9 +265,8 @@ export default function About() {
                   alt="Fusion 360"
                   width={40}
                   height={40}
-                  className="object-contain"
+                  className="object-contain w-10 h-10"
                   loading="lazy"
-                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -283,9 +280,8 @@ export default function About() {
                   alt="Bambu Lab"
                   width={40}
                   height={40}
-                  className="object-contain"
+                  className="object-contain w-10 h-10"
                   loading="lazy"
-                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -309,9 +305,8 @@ export default function About() {
                   alt="Power Drill"
                   width={40}
                   height={40}
-                  className="object-contain text-border"
+                  className="object-contain text-border w-10 h-10"
                   loading="lazy"
-                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -325,9 +320,8 @@ export default function About() {
                   alt="Hammer"
                   width={40}
                   height={40}
-                  className="object-contain"
+                  className="object-contain w-10 h-10"
                   loading="lazy"
-                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
             </div>
