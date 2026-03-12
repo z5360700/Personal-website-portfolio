@@ -78,8 +78,8 @@ export default function About() {
                   zIndex: activeImage === "personal" ? 30 : activeImage === "samsung" ? 15 : 10,
                 }}
                 animate={{
-                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? -30 : -60,
-                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? -15 : -30,
+                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? -12 : -24,
+                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? -8 : -12,
                   rotate: activeImage === "personal" ? 0 : activeImage === "samsung" ? -4 : -8,
                   scale: activeImage === "personal" ? 1 : 0.95,
                 }}
@@ -112,8 +112,8 @@ export default function About() {
                           : 20,
                 }}
                 animate={{
-                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? 30 : -30,
-                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? 15 : -15,
+                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? 12 : -12,
+                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? 8 : -8,
                   rotate: activeImage === "samsung" ? 0 : activeImage === "personal" ? 4 : -4,
                   scale: activeImage === "samsung" ? 1 : 0.95,
                 }}
@@ -139,8 +139,8 @@ export default function About() {
                   zIndex: activeImage === "store" ? 30 : activeImage === "samsung" ? 25 : 10,
                 }}
                 animate={{
-                  x: activeImage === "store" ? 0 : activeImage === "samsung" ? 30 : 60,
-                  y: activeImage === "store" ? 0 : activeImage === "samsung" ? 15 : 30,
+                  x: activeImage === "store" ? 0 : activeImage === "samsung" ? 12 : 24,
+                  y: activeImage === "store" ? 0 : activeImage === "samsung" ? 8 : 12,
                   rotate: activeImage === "store" ? 0 : activeImage === "samsung" ? 4 : 6,
                   scale: activeImage === "store" ? 1 : 0.95,
                 }}
