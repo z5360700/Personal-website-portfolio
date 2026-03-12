@@ -90,23 +90,6 @@ export default function Hero() {
               </a>
             </Button>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.0 }}
-            className="flex flex-col sm:flex-row gap-3"
-          >
-            <Button size="lg" className="px-6 py-5 text-base font-medium" asChild>
-              <a href="#projects">View My Work</a>
-            </Button>
-            <Button size="lg" variant="outline" className="px-6 py-5 text-base font-medium" asChild>
-              <a href={resumeUrl} download="LoRusso_CV_12_2025a.pdf" className="flex items-center gap-2">
-                <Download className="w-4 h-4" />
-                Resume
-              </a>
-            </Button>
-          </motion.div>
         </div>
       </div>
 
