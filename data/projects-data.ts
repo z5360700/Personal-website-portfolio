@@ -105,7 +105,6 @@ Every step was completed with attention to building codes and quality standards.
       "/images/misc-construction-13.jpeg",
       "/images/misc-construction-14.jpeg",
       "/images/misc-construction-15.jpeg",
-      "/images/misc-construction-16.jpeg",
       "/images/misc-construction-17.jpeg",
       "/images/misc-construction-18.jpeg",
       "/images/misc-construction-19.jpeg",
