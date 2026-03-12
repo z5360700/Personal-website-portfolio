@@ -42,14 +42,14 @@ export default function About() {
   )
 
   return (
-    <section id="about" className="pt-20 pb-36 bg-muted/30">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">About Me</h2>
-          <div className="w-20 h-1 bg-primary mx-auto"></div>
+    <section id="about" className="pt-16 pb-32 bg-muted/30">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3">About Me</h2>
+          <div className="w-16 h-1 bg-primary mx-auto"></div>
         </div>
 
-        <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-12 items-center">
+        <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
@@ -185,14 +185,20 @@ export default function About() {
             initial={{ opacity: 0, x: 50 }}
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
             transition={{ duration: 0.8 }}
-            className="space-y-6"
+            className="space-y-5"
           >
-            <h3 className="text-2xl font-bold mb-4">Who I Am</h3>
-            <p className="text-foreground/80 leading-relaxed">
-              I&apos;m a mechatronics engineering student who thrives on solving problems and watching my ideas come to
-              life. One of my proudest achievements was building a house with my family. It taught me that with the
-              right mindset, I can tackle any challenge. Before engineering, I also played semi-professional football,
-              which instilled in me discipline, teamwork, and resilience.
+            <h3 className="text-xl font-bold">Who I Am</h3>
+            <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
+              I'm a mechatronics engineering student who thrives on solving problems and watching ideas come to
+              life. One of my proudest achievements was building a house with my family — it taught me that with the
+              right mindset, I can tackle any challenge. Before engineering, I played semi-professional football,
+              which instilled discipline, teamwork, and resilience.
+            </p>
+            <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
+              I'm currently working at Samsung, improving my communication and presentation skills daily. The confidence I gained from that house build pushes me to dive into new technical challenges, while my experience at Samsung reinforces my ability to explain ideas clearly and work effectively in a team.
+            </p>
+            <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
+              Outside work, I hit the gym, run, and play video games. My goal is to step into an engineering role where I can collaborate, keep learning, and build solutions that genuinely help people.
             </p>
             <p className="text-foreground/80 leading-relaxed">
               {

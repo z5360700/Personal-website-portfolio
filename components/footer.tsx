@@ -5,8 +5,8 @@ import { Github, Linkedin, Mail } from "lucide-react"
 
 export default function Footer() {
   return (
-    <footer className="bg-muted/50 py-12">
-      <div className="container mx-auto px-4">
+    <footer className="bg-muted/30 py-8">
+      <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -14,34 +14,34 @@ export default function Footer() {
           viewport={{ once: true }}
           className="text-center"
         >
-          <div className="flex justify-center space-x-6 mb-8">
+          <div className="flex justify-center space-x-5 mb-4">
             <a
               href="mailto:lorussom28@gmail.com"
-              className="text-foreground/60 hover:text-primary transition-colors"
+              className="text-foreground/50 hover:text-primary transition-colors"
               aria-label="Email"
             >
-              <Mail className="w-6 h-6" />
+              <Mail className="w-5 h-5" />
             </a>
             <a
               href="https://www.linkedin.com/in/michael-lo-russo/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-foreground/60 hover:text-primary transition-colors"
+              className="text-foreground/50 hover:text-primary transition-colors"
               aria-label="LinkedIn"
             >
-              <Linkedin className="w-6 h-6" />
+              <Linkedin className="w-5 h-5" />
             </a>
             <a
               href="https://github.com/z5360700"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-foreground/60 hover:text-primary transition-colors"
+              className="text-foreground/50 hover:text-primary transition-colors"
               aria-label="GitHub"
             >
-              <Github className="w-6 h-6" />
+              <Github className="w-5 h-5" />
             </a>
           </div>
-          <p className="text-foreground/60 text-sm">© 2026 Michael Lo Russo. Built with Next.js and Tailwind CSS.</p>
+          <p className="text-foreground/40 text-xs">© 2026 Michael Lo Russo</p>
         </motion.div>
       </div>
     </footer>

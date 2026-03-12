@@ -51,10 +51,10 @@ export default function Navbar() {
         scrolled ? "bg-background/80 backdrop-blur-lg shadow-lg border-b border-border/50" : "bg-transparent",
       )}
     >
-      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="container mx-auto px-6 py-3 flex items-center justify-between">
         <Link
           href="/"
-          className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent hover:scale-105 transition-transform"
+          className="text-xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent hover:scale-105 transition-transform"
         >
           LO RUSSO
         </Link>

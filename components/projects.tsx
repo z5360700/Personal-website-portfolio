@@ -84,16 +84,16 @@ export default function Projects() {
 
   return (
     <section id="projects" className="py-16">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">My Projects</h2>
-          <div className="w-20 h-1 bg-primary mx-auto mb-6"></div>
-          <p className="max-w-2xl mx-auto text-foreground/80">
-            Here are some of my recent projects I am proud about.
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3">Projects</h2>
+          <div className="w-16 h-1 bg-primary mx-auto mb-4"></div>
+          <p className="max-w-lg mx-auto text-foreground/70 text-sm md:text-base">
+            A selection of engineering and hands-on projects I've built.
           </p>
         </div>
 
-        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project, index) => (
             <motion.div
               key={project.id}
@@ -105,7 +105,7 @@ export default function Projects() {
                 className="overflow-hidden h-full flex flex-col hover-lift cursor-pointer group"
                 onClick={() => handleProjectClick(project.id)}
               >
-                <div className="relative h-64 w-full overflow-hidden bg-muted">
+                <div className="relative h-48 md:h-52 w-full overflow-hidden bg-muted">
                   <Image
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}
@@ -115,10 +115,10 @@ export default function Projects() {
                   />
                 </div>
                 <CardContent className="flex flex-col flex-grow p-4">
-                  <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors duration-300 line-clamp-2">
+                  <h3 className="text-base font-semibold mb-2 group-hover:text-primary transition-colors duration-300 line-clamp-2">
                     {project.title}
                   </h3>
-                  <p className="text-foreground/70 mb-3 flex-grow text-sm line-clamp-3">{project.description}</p>
+                  <p className="text-foreground/60 mb-3 flex-grow text-sm leading-relaxed line-clamp-3">{project.description}</p>
 
                   <div className="flex flex-wrap gap-2 mt-auto">
                     {project.id === 1 || project.id === 3 || project.id === 4 || project.id === 6 ? (
