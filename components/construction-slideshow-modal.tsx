@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, ChevronLeft, ChevronRight } from "lucide-react"
@@ -22,6 +23,12 @@ export default function ConstructionSlideshowModal({
   altPrefix = "Image",
 }: ConstructionSlideshowModalProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    return () => setMounted(false)
+  }, [])
 
   // Sync when opened to a new image
   useEffect(() => {
@@ -46,7 +53,9 @@ export default function ConstructionSlideshowModal({
     return () => window.removeEventListener("keydown", handleKey)
   }, [isOpen, onClose])
 
-  return (
+  if (!mounted) return null
+
+  const modal = (
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -162,4 +171,6 @@ export default function ConstructionSlideshowModal({
       )}
     </AnimatePresence>
   )
+
+  return createPortal(modal, document.body)
 }
