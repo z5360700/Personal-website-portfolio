@@ -105,17 +105,13 @@ export default function Projects() {
                 className="overflow-hidden h-full flex flex-col hover-lift cursor-pointer group"
                 onClick={() => handleProjectClick(project.id)}
               >
-                <div className="relative h-64 w-full overflow-hidden">
+                <div className="relative h-64 w-full overflow-hidden bg-muted">
                   <Image
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}
                     fill
-                    className="object-cover transition-transform group-hover:scale-105 duration-300 will-change-transform"
+                    className="object-cover transition-transform group-hover:scale-105 duration-300"
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    quality={80}
-                    loading={index < 3 ? "eager" : "lazy"}
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAQMEAQUAAAAAAAAAAAAAAQIDBAAFESEGEhMxQWH/xAAVAQEBAAAAAAAAAAAAAAAAAAADBP/EABsRAAICAwEAAAAAAAAAAAAAAAECABEDBCEx/9oADAMBAAIRAxEAPwCvxvkN1gvPuy7hNkJWtO2lyFKA6daDR0dbwds0pSlB2MjEWJlRuZ/Z/9k="
                   />
                 </div>
                 <CardContent className="flex flex-col flex-grow p-4">

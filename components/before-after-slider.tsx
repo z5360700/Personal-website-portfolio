@@ -30,12 +30,12 @@ export default function BeforeAfterSlider({
     <div className={`relative w-full h-[500px] md:h-[600px] lg:h-[700px] overflow-hidden rounded-lg ${className}`}>
       {/* Before Image */}
       <div className="absolute inset-0">
-        <Image src={beforeImage || "/placeholder.svg"} alt={beforeAlt} fill className="object-cover" />
+        <Image src={beforeImage || "/placeholder.svg"} alt={beforeAlt} fill className="object-cover" sizes="100vw" />
       </div>
 
       {/* After Image */}
       <div className="absolute inset-0 overflow-hidden" style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}>
-        <Image src={afterImage || "/placeholder.svg"} alt={afterAlt} fill className="object-cover" />
+        <Image src={afterImage || "/placeholder.svg"} alt={afterAlt} fill className="object-cover" sizes="100vw" />
       </div>
 
       {/* Slider Line */}

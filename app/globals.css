@@ -56,9 +56,6 @@
   body {
     @apply bg-background text-foreground;
   }
-  html {
-    @apply scroll-smooth;
-  }
 }
 
 @layer base {
@@ -67,6 +64,9 @@
     overflow-x: hidden;
     position: relative;
     width: 100%;
+    /* Reset scroll-behavior to avoid Next.js warning; smooth scrolling is
+       handled via data-scroll-behavior="smooth" on the <html> element */
+    scroll-behavior: auto !important;
   }
 }
 

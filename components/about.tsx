@@ -94,9 +94,6 @@ export default function About() {
                     className="object-cover"
                     priority
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    quality={85}
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAQMEAQUAAAAAAAAAAAAAAQIDBAAFESEGEhMxQWH/xAAVAQEBAAAAAAAAAAAAAAAAAAADBP/EABsRAAICAwEAAAAAAAAAAAAAAAECABEDBCEx/9oADAMBAAIRAxEAPwCvxvkN1gvPuy7hNkJWtO2lyFKA6daDR0dbwds0pSlB2MjEWJlRuZ/Z/9k="
                   />
                 </div>
               </motion.div>
@@ -130,10 +127,7 @@ export default function About() {
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    quality={85}
                     loading="lazy"
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAQMEAQUAAAAAAAAAAAAAAQIDBAAFESEGEhMxQWH/xAAVAQEBAAAAAAAAAAAAAAAAAAADBP/EABsRAAICAwEAAAAAAAAAAAAAAAECABEDBCEx/9oADAMBAAIRAxEAPwCvxvkN1gvPuy7hNkJWtO2lyFKA6daDR0dbwds0pSlB2MjEWJlRuZ/Z/9k="
                   />
                 </div>
               </motion.div>
@@ -160,10 +154,7 @@ export default function About() {
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    quality={85}
                     loading="lazy"
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAQMEAQUAAAAAAAAAAAAAAQIDBAAFESEGEhMxQWH/xAAVAQEBAAAAAAAAAAAAAAAAAAADBP/EABsRAAICAwEAAAAAAAAAAAAAAAECABEDBCEx/9oADAMBAAIRAxEAPwCvxvkN1gvPuy7hNkJWtO2lyFKA6daDR0dbwds0pSlB2MjEWJlRuZ/Z/9k="
                   />
                 </div>
               </motion.div>
@@ -230,13 +221,14 @@ export default function About() {
                 className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="MATLAB"
               >
-                <Image
+                <img
                   src="/images/matlab-logo.png"
                   alt="MATLAB"
                   width={40}
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -245,13 +237,14 @@ export default function About() {
                 className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="SolidWorks"
               >
-                <Image
+                <img
                   src="/images/solidworks-logo.png"
                   alt="SolidWorks"
                   width={40}
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -260,13 +253,14 @@ export default function About() {
                 className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="Fusion 360"
               >
-                <Image
+                <img
                   src="/images/fusion360-logo.png"
                   alt="Fusion 360"
                   width={40}
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -275,13 +269,14 @@ export default function About() {
                 className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="Bambu Lab"
               >
-                <Image
+                <img
                   src="/images/bambu-lab-logo.png"
                   alt="Bambu Lab"
                   width={40}
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -300,13 +295,14 @@ export default function About() {
                 className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="Power Tools"
               >
-                <Image
+                <img
                   src="/images/drill-logo.png"
                   alt="Power Drill"
                   width={40}
                   height={40}
-                  className="object-contain text-border"
+                  className="object-contain"
                   loading="lazy"
+                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -315,13 +311,14 @@ export default function About() {
                 className="bg-background rounded-lg p-2 shadow-sm flex items-center justify-center w-16 h-16 cursor-pointer hover-lift active:scale-95"
                 title="Hand Tools"
               >
-                <Image
+                <img
                   src="/images/hammer-logo.png"
                   alt="Hammer"
                   width={40}
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
                 />
               </div>
             </div>
