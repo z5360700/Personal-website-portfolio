@@ -52,6 +52,7 @@ export function ImageGallery({
               alt={`${altPrefix} ${index + 1}`}
               fill
               className="object-cover transition-transform group-hover:scale-105"
+              sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
           </div>
