@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, useCallback } from "react"
+import { useRef, useState, useCallback, useEffect } from "react"
 import Image from "next/image"
 import { useInView } from "framer-motion"
 import { motion } from "framer-motion"
@@ -10,9 +10,20 @@ export default function About() {
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [activeImage, setActiveImage] = useState<"personal" | "samsung" | "store">("personal")
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   const images = ["personal", "samsung", "store"] as const
   const currentIndex = images.indexOf(activeImage)
+
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   const handleImageChange = useCallback(
     (newImage: "personal" | "samsung" | "store") => {
@@ -78,8 +89,8 @@ export default function About() {
                   zIndex: activeImage === "personal" ? 30 : activeImage === "samsung" ? 15 : 10,
                 }}
                 animate={{
-                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? -12 : -24,
-                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? -8 : -12,
+                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? (isMobile ? -6 : -12) : (isMobile ? -12 : -24),
+                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? (isMobile ? -4 : -8) : (isMobile ? -6 : -12),
                   rotate: activeImage === "personal" ? 0 : activeImage === "samsung" ? -4 : -8,
                   scale: activeImage === "personal" ? 1 : 0.95,
                 }}
@@ -112,8 +123,8 @@ export default function About() {
                           : 20,
                 }}
                 animate={{
-                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? 12 : -12,
-                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? 8 : -8,
+                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? (isMobile ? 6 : 12) : (isMobile ? -6 : -12),
+                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? (isMobile ? 4 : 8) : (isMobile ? -4 : -8),
                   rotate: activeImage === "samsung" ? 0 : activeImage === "personal" ? 4 : -4,
                   scale: activeImage === "samsung" ? 1 : 0.95,
                 }}
@@ -139,8 +150,8 @@ export default function About() {
                   zIndex: activeImage === "store" ? 30 : activeImage === "samsung" ? 25 : 10,
                 }}
                 animate={{
-                  x: activeImage === "store" ? 0 : activeImage === "samsung" ? 12 : 24,
-                  y: activeImage === "store" ? 0 : activeImage === "samsung" ? 8 : 12,
+                  x: activeImage === "store" ? 0 : activeImage === "samsung" ? (isMobile ? 6 : 12) : (isMobile ? 12 : 24),
+                  y: activeImage === "store" ? 0 : activeImage === "samsung" ? (isMobile ? 4 : 8) : (isMobile ? 6 : 12),
                   rotate: activeImage === "store" ? 0 : activeImage === "samsung" ? 4 : 6,
                   scale: activeImage === "store" ? 1 : 0.95,
                 }}
