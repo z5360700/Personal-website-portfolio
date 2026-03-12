@@ -231,6 +231,7 @@ export default function About() {
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -246,6 +247,7 @@ export default function About() {
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -261,6 +263,7 @@ export default function About() {
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -276,6 +279,7 @@ export default function About() {
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -301,6 +305,7 @@ export default function About() {
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
                 />
               </div>
 
@@ -316,6 +321,7 @@ export default function About() {
                   height={40}
                   className="object-contain"
                   loading="lazy"
+                  style={{ maxWidth: '40px', maxHeight: '40px', width: 'auto', height: 'auto' }}
                 />
               </div>
             </div>

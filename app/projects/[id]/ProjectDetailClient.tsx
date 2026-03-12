@@ -339,6 +339,7 @@ function ProjectDetailClient() {
                           alt={step.title}
                           fill
                           className="object-cover transition-transform group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, 50vw"
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                       </div>
@@ -374,6 +375,7 @@ function ProjectDetailClient() {
                       alt="GPU temperature test without ducting"
                       fill
                       className="object-cover transition-transform group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                   </div>
@@ -394,6 +396,7 @@ function ProjectDetailClient() {
                       alt="GPU temperature test with ducting"
                       fill
                       className="object-cover transition-transform group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                   </div>
