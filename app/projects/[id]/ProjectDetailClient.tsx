@@ -16,6 +16,7 @@ import { ProjectTabs } from "@/components/project-detail/project-tabs"
 import { ImageGallery } from "@/components/project-detail/image-gallery"
 import { VideoGallery } from "@/components/project-detail/video-gallery"
 import { ResultsSection } from "@/components/project-detail/results-section"
+import ConstructionSlideshowModal from "@/components/construction-slideshow-modal"
 
 function ProjectDetailClient() {
   const router = useRouter()
@@ -28,6 +29,12 @@ function ProjectDetailClient() {
   const [lightboxImages, setLightboxImages] = useState<string[]>([])
   const [lightboxIndex, setLightboxIndex] = useState(0)
   const [lightboxAltPrefix, setLightboxAltPrefix] = useState("")
+
+  // Construction slideshow modal state (project 1 only)
+  const [slideshowOpen, setSlideshowOpen] = useState(false)
+  const [slideshowImages, setSlideshowImages] = useState<string[]>([])
+  const [slideshowIndex, setSlideshowIndex] = useState(0)
+  const [slideshowAltPrefix, setSlideshowAltPrefix] = useState("")
 
   const exteriorRef = useRef<HTMLDivElement>(null)
   const interiorRef = useRef<HTMLDivElement>(null)
@@ -74,6 +81,18 @@ function ProjectDetailClient() {
 
   const closeLightbox = () => {
     setLightboxOpen(false)
+  }
+
+  // Construction slideshow handlers
+  const openSlideshow = (images: string[], index: number, altPrefix: string) => {
+    setSlideshowImages(images)
+    setSlideshowIndex(index)
+    setSlideshowAltPrefix(altPrefix)
+    setSlideshowOpen(true)
+  }
+
+  const closeSlideshow = () => {
+    setSlideshowOpen(false)
   }
 
   const nextImage = () => {
@@ -172,7 +191,7 @@ function ProjectDetailClient() {
                   title="Exterior Construction"
                   images={project.exteriorGallery}
                   selectedIndex={exteriorIndex}
-                  onImageClick={openLightbox}
+                  onImageClick={openSlideshow}
                   onNavigate={navigateExterior}
                   altPrefix="Exterior construction"
                   showNavigation
@@ -184,7 +203,7 @@ function ProjectDetailClient() {
                   title="Interior Work"
                   images={project.interiorGallery}
                   selectedIndex={interiorIndex}
-                  onImageClick={openLightbox}
+                  onImageClick={openSlideshow}
                   onNavigate={navigateInterior}
                   altPrefix="Interior work"
                   columns="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
@@ -198,7 +217,7 @@ function ProjectDetailClient() {
                   title="Finished Product"
                   images={project.finishedProductGallery}
                   selectedIndex={finishedIndex}
-                  onImageClick={openLightbox}
+                  onImageClick={openSlideshow}
                   onNavigate={navigateFinished}
                   altPrefix="Finished product"
                   columns="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
@@ -212,7 +231,7 @@ function ProjectDetailClient() {
                   title="Additional Photos"
                   images={project.miscellaneousGallery}
                   selectedIndex={additionalIndex}
-                  onImageClick={openLightbox}
+                  onImageClick={openSlideshow}
                   onNavigate={navigateAdditional}
                   altPrefix="Additional photos"
                   showNavigation
@@ -221,6 +240,15 @@ function ProjectDetailClient() {
                 />
               )}
             </div>
+
+            {/* Construction Slideshow Modal */}
+            <ConstructionSlideshowModal
+              images={slideshowImages}
+              initialIndex={slideshowIndex}
+              isOpen={slideshowOpen}
+              onClose={closeSlideshow}
+              altPrefix={slideshowAltPrefix}
+            />
 
             <ProjectTabs project={project} />
           </div>
