@@ -77,8 +77,8 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="max-w-2xl mb-8"
+            transition={{ duration: 0.8, delay: 1.0 }}
+            className="flex flex-col sm:flex-row gap-3"
           >
             <p className="text-foreground/70 text-lg">
               I’m an engineering student from Sydney, specialising in Mechatronics, currently in my final year at the University of New South Wales.
