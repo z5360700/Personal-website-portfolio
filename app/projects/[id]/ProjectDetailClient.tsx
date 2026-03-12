@@ -16,7 +16,6 @@ import { ProjectTabs } from "@/components/project-detail/project-tabs"
 import { ImageGallery } from "@/components/project-detail/image-gallery"
 import { VideoGallery } from "@/components/project-detail/video-gallery"
 import { ResultsSection } from "@/components/project-detail/results-section"
-import { ConstructionSlideshow } from "@/components/construction-slideshow"
 
 function ProjectDetailClient() {
   const router = useRouter()
@@ -167,7 +166,61 @@ function ProjectDetailClient() {
             </div>
 
             {/* Photo Galleries */}
-            <ConstructionSlideshow project={project} />
+            <div className="space-y-8">
+              {project.exteriorGallery && (
+                <ImageGallery
+                  title="Exterior Construction"
+                  images={project.exteriorGallery}
+                  selectedIndex={exteriorIndex}
+                  onImageClick={openLightbox}
+                  onNavigate={navigateExterior}
+                  altPrefix="Exterior construction"
+                  showNavigation
+                />
+              )}
+
+              {project.interiorGallery && (
+                <ImageGallery
+                  title="Interior Work"
+                  images={project.interiorGallery}
+                  selectedIndex={interiorIndex}
+                  onImageClick={openLightbox}
+                  onNavigate={navigateInterior}
+                  altPrefix="Interior work"
+                  columns="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                  imageHeight="h-40"
+                  showNavigation
+                />
+              )}
+
+              {project.finishedProductGallery && (
+                <ImageGallery
+                  title="Finished Product"
+                  images={project.finishedProductGallery}
+                  selectedIndex={finishedIndex}
+                  onImageClick={openLightbox}
+                  onNavigate={navigateFinished}
+                  altPrefix="Finished product"
+                  columns="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                  imageHeight="h-40"
+                  showNavigation
+                />
+              )}
+
+              {project.miscellaneousGallery && (
+                <ImageGallery
+                  title="Additional Photos"
+                  images={project.miscellaneousGallery}
+                  selectedIndex={additionalIndex}
+                  onImageClick={openLightbox}
+                  onNavigate={navigateAdditional}
+                  altPrefix="Additional photos"
+                  showNavigation
+                  maxImages={18}
+                  showViewAll
+                />
+              )}
+            </div>
 
             <ProjectTabs project={project} />
           </div>
