@@ -51,8 +51,9 @@ export function ImageGallery({
               src={image || "/placeholder.svg"}
               alt={`${altPrefix} ${index + 1}`}
               fill
+              loading="lazy"
               className="object-cover transition-transform group-hover:scale-105"
-              sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw"
+              sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
           </div>

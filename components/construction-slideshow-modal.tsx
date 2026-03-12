@@ -80,6 +80,14 @@ export default function ConstructionSlideshowModal({
             {currentIndex + 1} / {images.length}
           </div>
 
+          {/* Preload prev and next images so navigation feels instant */}
+          {hasSiblings && (
+            <>
+              <link rel="preload" as="image" href={images[prevIndex]} />
+              <link rel="preload" as="image" href={images[nextIndex]} />
+            </>
+          )}
+
           <motion.div
             className="flex items-center justify-center w-full h-full px-16"
             onClick={(e) => e.stopPropagation()}
@@ -95,8 +103,9 @@ export default function ConstructionSlideshowModal({
                     src={images[prevIndex] || "/placeholder.svg"}
                     alt={`${altPrefix} ${prevIndex + 1}`}
                     fill
+                    loading="lazy"
                     className="object-cover"
-                    sizes="256px"
+                    sizes="(max-width: 1024px) 192px, 256px"
                   />
                 </div>
               </div>
@@ -136,8 +145,9 @@ export default function ConstructionSlideshowModal({
                     src={images[nextIndex] || "/placeholder.svg"}
                     alt={`${altPrefix} ${nextIndex + 1}`}
                     fill
+                    loading="lazy"
                     className="object-cover"
-                    sizes="256px"
+                    sizes="(max-width: 1024px) 192px, 256px"
                   />
                 </div>
               </div>
