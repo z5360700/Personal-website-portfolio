@@ -112,8 +112,6 @@ export default function Projects() {
                     fill
                     className="object-cover transition-transform group-hover:scale-105 duration-300"
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    onError={(e) => console.log("[v0] Image failed to load:", project.image)}
-                    onLoad={() => console.log("[v0] Image loaded:", project.image)}
                   />
                 </div>
                 <CardContent className="flex flex-col flex-grow p-4">

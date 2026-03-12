@@ -94,7 +94,6 @@ export default function About() {
                     className="object-cover"
                     priority
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    quality={85}
                   />
                 </div>
               </motion.div>
@@ -128,7 +127,6 @@ export default function About() {
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    quality={85}
                     loading="lazy"
                   />
                 </div>
@@ -156,7 +154,6 @@ export default function About() {
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    quality={85}
                     loading="lazy"
                   />
                 </div>
