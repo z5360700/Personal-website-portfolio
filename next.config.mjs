@@ -24,30 +24,6 @@ const nextConfig = {
   // Optimize CSS
   optimizeFonts: true,
   
-  // Headers for caching
-  async headers() {
-    return [
-      {
-        source: '/images/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/:path*.{js,css,woff,woff2,eot,ttf,otf}',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-    ]
-  },
-  
   // ESLint configuration
   eslint: {
     ignoreDuringBuilds: true,
