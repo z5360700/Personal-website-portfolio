@@ -89,8 +89,8 @@ export default function About() {
                   zIndex: activeImage === "personal" ? 30 : activeImage === "samsung" ? 15 : 10,
                 }}
                 animate={{
-                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? (isMobile ? -6 : -12) : (isMobile ? -12 : -24),
-                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? (isMobile ? -4 : -8) : (isMobile ? -6 : -12),
+                  x: activeImage === "personal" ? 0 : activeImage === "samsung" ? (isMobile ? -6 : -30) : (isMobile ? -12 : -60),
+                  y: activeImage === "personal" ? 0 : activeImage === "samsung" ? (isMobile ? -4 : -15) : (isMobile ? -6 : -30),
                   rotate: activeImage === "personal" ? 0 : activeImage === "samsung" ? -4 : -8,
                   scale: activeImage === "personal" ? 1 : 0.95,
                 }}
@@ -123,8 +123,8 @@ export default function About() {
                           : 20,
                 }}
                 animate={{
-                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? (isMobile ? 6 : 12) : (isMobile ? -6 : -12),
-                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? (isMobile ? 4 : 8) : (isMobile ? -4 : -8),
+                  x: activeImage === "samsung" ? 0 : activeImage === "personal" ? (isMobile ? 6 : 30) : (isMobile ? -6 : -30),
+                  y: activeImage === "samsung" ? 0 : activeImage === "personal" ? (isMobile ? 4 : 15) : (isMobile ? -4 : -15),
                   rotate: activeImage === "samsung" ? 0 : activeImage === "personal" ? 4 : -4,
                   scale: activeImage === "samsung" ? 1 : 0.95,
                 }}
@@ -150,8 +150,8 @@ export default function About() {
                   zIndex: activeImage === "store" ? 30 : activeImage === "samsung" ? 25 : 10,
                 }}
                 animate={{
-                  x: activeImage === "store" ? 0 : activeImage === "samsung" ? (isMobile ? 6 : 12) : (isMobile ? 12 : 24),
-                  y: activeImage === "store" ? 0 : activeImage === "samsung" ? (isMobile ? 4 : 8) : (isMobile ? 6 : 12),
+                  x: activeImage === "store" ? 0 : activeImage === "samsung" ? (isMobile ? 6 : 30) : (isMobile ? 12 : 60),
+                  y: activeImage === "store" ? 0 : activeImage === "samsung" ? (isMobile ? 4 : 15) : (isMobile ? 6 : 30),
                   rotate: activeImage === "store" ? 0 : activeImage === "samsung" ? 4 : 6,
                   scale: activeImage === "store" ? 1 : 0.95,
                 }}
