@@ -26,7 +26,7 @@ const technicalProjects = [
     title: "Rubik's Cube Solving Robot",
     description:
       "5-axis robotic manipulator that physically solves a scrambled Rubik's Cube. Details coming soon.",
-    image: "/placeholder.svg",
+    image: "/images/RubikCubeFrontImage.png",
     tags: ["Robotics", "Manipulation", "Automation"],
     githubUrl: "#",
     comingSoon: true,
