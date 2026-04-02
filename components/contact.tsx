@@ -19,10 +19,6 @@ export default function Contact() {
             transition={{ duration: 0.6 }}
             className="border rounded-xl p-8 bg-muted/20"
           >
-            <p className="text-xs text-foreground/40 mb-5 italic">
-              This website took way too long to make.
-            </p>
-
             <h2 className="text-xl font-bold mb-6">{"Let's connect"}</h2>
 
             <div className="space-y-4">

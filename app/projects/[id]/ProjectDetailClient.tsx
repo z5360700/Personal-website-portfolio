@@ -323,10 +323,16 @@ function ProjectDetailClient() {
           <div className="space-y-8">
             <ProjectHeader project={project} />
 
-            {/* Main Project Image */}
+            {/* Before/After Slider */}
             <div className="bg-muted/10 rounded-lg p-6 border">
-              <div className="relative aspect-video rounded-lg overflow-hidden max-w-4xl mx-auto">
-                <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
+              <h2 className="text-xl font-bold text-center mb-6">Before &amp; After</h2>
+              <div className="max-w-5xl mx-auto">
+                <EnhancedBeforeAfterSlider
+                  beforeImage="/images/pc-without-ducting.jpeg"
+                  afterImage="/images/pc-cooling-installed.jpeg"
+                  beforeAlt="PC without cooling ducting"
+                  afterAlt="PC with custom cooling ducting installed"
+                />
               </div>
             </div>
 
