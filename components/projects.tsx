@@ -11,30 +11,31 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 
-const projects = [
-  {
-    id: 1,
-    title: "Residential Construction & Renovation",
-    description:
-      "Full residential build completed alongside engineering degree. Structural framing, roofing, plumbing, and electrical from foundation to finish. Managing real deadlines, tradespeople, and physical work while keeping up with coursework built resilience no classroom could.",
-    image: "/images/construction-after.jpg",
-    tags: ["Construction Management", "Structural", "Electrical", "Plumbing"],
-    githubUrl: "#",
-  },
+const technicalProjects = [
   {
     id: 2,
     title: "Micromouse Maze Navigation Robot",
     description:
-      "Autonomous maze-solving robot built from scratch. Integrated LiDAR, IMU, and wheel encoders with path planning algorithm for real-time decision making. Top-3 competition finish.",
+      "Autonomous maze-solving robot navigating a 3.6 × 2.4 m arena in under 90 seconds. Integrated LiDAR, IMU, and wheel encoders with BFS path planning and PID control. Top-3 competition finish.",
     image: "/images/micromouse-robot.jpeg",
     tags: ["C/C++", "LiDAR", "IMU", "Path Planning", "Embedded Systems"],
     githubUrl: "https://github.com/z5360700/micromouse-from2024",
   },
   {
+    id: 7,
+    title: "Rubik's Cube Solving Robot",
+    description:
+      "5-axis robotic manipulator that physically solves a scrambled Rubik's Cube. Details coming soon.",
+    image: "/placeholder.svg",
+    tags: ["Robotics", "Manipulation", "Automation"],
+    githubUrl: "#",
+    comingSoon: true,
+  },
+  {
     id: 3,
     title: "Custom Cooling Funnels for PC Hardware",
     description:
-      "Designed and 3D-printed ducted airflow funnels for GPU cooling, inspired by automotive cooling systems. Achieved 7°C reduction in GPU temperatures under load.",
+      "Designed and 3D-printed ducted airflow funnels across 3 design iterations. Achieved 7°C reduction in GPU temperatures under full load.",
     image: "/images/pc-cooling-installed.jpeg",
     tags: ["Fusion 360", "3D Printing", "PLA", "Thermal Engineering"],
     githubUrl: "#",
@@ -43,7 +44,7 @@ const projects = [
     id: 4,
     title: "UR5e Robotic Writing System",
     description:
-      "MATLAB program using RTDE interface to command UR5e industrial robot arm to trace digits and execute mathematical operations. Implemented coordinate frame transformations with consistent positional accuracy.",
+      "Programmed a UR5e industrial robot for autonomous handwriting, pick-and-place, and orientation adjustment using MATLAB and the RTDE interface. Developed trajectory planning for smooth pen lifts and legible output.",
     image: "/images/ur5e-main-setup.jpeg",
     tags: ["MATLAB", "RTDE", "UR5e", "Robotics", "Coordinate Transforms"],
     githubUrl: "#",
@@ -52,9 +53,21 @@ const projects = [
     id: 5,
     title: "Cat Door Monitoring System",
     description:
-      "IoT system built around ESP32 and break-beam sensors to detect and log cat movement through pet door. Sends real-time Telegram push notifications with complete end-to-end embedded + cloud pipeline.",
+      "IoT system built on ESP32 with break-beam sensors. Detects and logs cat movement, sending real-time Telegram push notifications — complete end-to-end embedded and cloud pipeline.",
     image: "/images/cat-door-v2-system.png",
     tags: ["ESP32", "IoT", "Embedded C", "Telegram API", "Sensors"],
+    githubUrl: "#",
+  },
+]
+
+const handsOnProjects = [
+  {
+    id: 1,
+    title: "Residential Construction & Renovation",
+    description:
+      "Full residential build completed alongside engineering degree. Structural framing, roofing, plumbing, and electrical from foundation to finish. Managing real deadlines, tradespeople, and physical work while keeping up with coursework built resilience no classroom could.",
+    image: "/images/construction-after.jpg",
+    tags: ["Construction Management", "Structural", "Electrical", "Plumbing"],
     githubUrl: "#",
   },
   {
@@ -93,62 +106,114 @@ export default function Projects() {
           </p>
         </div>
 
-        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 50 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-            >
-              <Card
-                className="overflow-hidden h-full flex flex-col hover-lift cursor-pointer group"
-                onClick={() => handleProjectClick(project.id)}
-              >
-                <div className="relative h-48 md:h-52 w-full overflow-hidden bg-muted">
-                  <Image
-                    src={project.image || "/placeholder.svg"}
-                    alt={project.title}
-                    fill
-                    className="object-cover transition-transform group-hover:scale-105 duration-300"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                </div>
-                <CardContent className="flex flex-col flex-grow p-4">
-                  <h3 className="text-base font-semibold mb-2 group-hover:text-primary transition-colors duration-300 line-clamp-2">
-                    {project.title}
-                  </h3>
-                  <p className="text-foreground/60 mb-3 flex-grow text-sm leading-relaxed line-clamp-3">{project.description}</p>
+        <div ref={ref} className="space-y-10">
+          {/* Technical Projects */}
+          <div>
+            <h3 className="text-base font-semibold text-foreground/50 uppercase tracking-widest mb-4">Technical Projects</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {technicalProjects.map((project, index) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card
+                    className="overflow-hidden h-full flex flex-col hover-lift cursor-pointer group"
+                    onClick={() => !project.comingSoon && handleProjectClick(project.id)}
+                  >
+                    <div className="relative h-48 md:h-52 w-full overflow-hidden bg-muted">
+                      <Image
+                        src={project.image || "/placeholder.svg"}
+                        alt={project.title}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105 duration-300"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    </div>
+                    <CardContent className="flex flex-col flex-grow p-4">
+                      <h3 className="text-base font-semibold mb-2 group-hover:text-primary transition-colors duration-300 line-clamp-2">
+                        {project.title}
+                      </h3>
+                      <p className="text-foreground/60 mb-3 flex-grow text-sm leading-relaxed line-clamp-3">{project.description}</p>
 
-                  <div className="flex flex-wrap gap-2 mt-auto">
-                    {project.id === 1 || project.id === 3 || project.id === 4 || project.id === 6 ? (
-                      // For construction, PC cooling, and UR5e projects, don't show GitHub button
-                      <div className="ml-auto bg-slate-700 text-white px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors duration-300 flex items-center gap-1 font-medium text-sm">
-                        View Details
-                        <ArrowRight size={14} />
+                      <div className="flex flex-wrap gap-2 mt-auto">
+                        {project.comingSoon ? (
+                          <div className="ml-auto bg-muted text-foreground/40 px-3 py-1.5 rounded-lg flex items-center gap-1 font-medium text-sm cursor-default">
+                            Coming Soon
+                          </div>
+                        ) : project.id === 3 || project.id === 4 ? (
+                          <div className="ml-auto bg-slate-700 text-white px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors duration-300 flex items-center gap-1 font-medium text-sm">
+                            View Details
+                            <ArrowRight size={14} />
+                          </div>
+                        ) : (
+                          <>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex items-center gap-1 bg-transparent text-xs px-2 py-1"
+                              onClick={(e) => handleGithubClick(e, project.githubUrl)}
+                            >
+                              <Github size={14} />
+                              Code
+                            </Button>
+                            <div className="ml-auto bg-slate-700 text-white px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors duration-300 flex items-center gap-1 font-medium text-sm">
+                              View Details
+                              <ArrowRight size={14} />
+                            </div>
+                          </>
+                        )}
                       </div>
-                    ) : (
-                      <>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex items-center gap-1 bg-transparent text-xs px-2 py-1"
-                          onClick={(e) => handleGithubClick(e, project.githubUrl)}
-                        >
-                          <Github size={14} />
-                          Code
-                        </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Hands-On Builds */}
+          <div>
+            <h3 className="text-base font-semibold text-foreground/50 uppercase tracking-widest mb-4">Hands-On Builds</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {handsOnProjects.map((project, index) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card
+                    className="overflow-hidden h-full flex flex-col hover-lift cursor-pointer group"
+                    onClick={() => handleProjectClick(project.id)}
+                  >
+                    <div className="relative h-48 md:h-52 w-full overflow-hidden bg-muted">
+                      <Image
+                        src={project.image || "/placeholder.svg"}
+                        alt={project.title}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105 duration-300"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    </div>
+                    <CardContent className="flex flex-col flex-grow p-4">
+                      <h3 className="text-base font-semibold mb-2 group-hover:text-primary transition-colors duration-300 line-clamp-2">
+                        {project.title}
+                      </h3>
+                      <p className="text-foreground/60 mb-3 flex-grow text-sm leading-relaxed line-clamp-3">{project.description}</p>
+
+                      <div className="flex flex-wrap gap-2 mt-auto">
                         <div className="ml-auto bg-slate-700 text-white px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors duration-300 flex items-center gap-1 font-medium text-sm">
                           View Details
                           <ArrowRight size={14} />
                         </div>
-                      </>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
