@@ -45,13 +45,13 @@ export default function ConstructionSlideshowModal({
   useEffect(() => {
     if (!isOpen) return
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") goNext()
-      else if (e.key === "ArrowLeft") goPrev()
+      if (e.key === "ArrowRight") setCurrentIndex((prev) => (prev + 1) % images.length)
+      else if (e.key === "ArrowLeft") setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
       else if (e.key === "Escape") onClose()
     }
     window.addEventListener("keydown", handleKey)
     return () => window.removeEventListener("keydown", handleKey)
-  }, [isOpen, onClose])
+  }, [isOpen, onClose, images.length])
 
   if (!mounted) return null
 

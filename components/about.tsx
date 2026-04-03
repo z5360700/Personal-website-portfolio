@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 
 export default function About() {
   const ref = useRef(null)
+  const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [activeImage, setActiveImage] = useState<"personal" | "samsung" | "store">("personal")
   const [isTransitioning, setIsTransitioning] = useState(false)
@@ -29,16 +30,25 @@ export default function About() {
     (newImage: "personal" | "samsung" | "store") => {
       if (isTransitioning || newImage === activeImage) return
 
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current)
+
       setIsTransitioning(true)
       setActiveImage(newImage)
 
       // Reset transition lock after animation completes
-      setTimeout(() => {
+      transitionTimerRef.current = setTimeout(() => {
         setIsTransitioning(false)
       }, 500) // Slightly longer than the 0.4s animation
     },
     [activeImage, isTransitioning],
   )
+
+  // Clear pending transition timer on unmount
+  useEffect(() => {
+    return () => {
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current)
+    }
+  }, [])
 
   const handleSwipe = useCallback(
     (direction: "left" | "right") => {

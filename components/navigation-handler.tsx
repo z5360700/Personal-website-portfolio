@@ -18,8 +18,9 @@ export function NavigationHandler() {
     }
 
     // Handle initial load with hash
+    let initialHashTimer: ReturnType<typeof setTimeout> | null = null
     if (window.location.hash) {
-      setTimeout(handleHashChange, 100)
+      initialHashTimer = setTimeout(handleHashChange, 100)
     }
 
     // Handle browser back/forward navigation
@@ -27,6 +28,7 @@ export function NavigationHandler() {
     window.addEventListener("popstate", handleHashChange)
 
     return () => {
+      if (initialHashTimer) clearTimeout(initialHashTimer)
       window.removeEventListener("hashchange", handleHashChange)
       window.removeEventListener("popstate", handleHashChange)
     }
