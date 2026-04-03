@@ -20,12 +20,20 @@ export const metadata: Metadata = {
   generator: "v0.dev",
   icons: {
     icon: "/Favicon - ML.png",
+    shortcut: "/Favicon - ML.png",
     apple: "/Favicon - ML.png",
   },
   openGraph: {
     title: "Michael Lo Russo - Portfolio",
     description: "Engineering portfolio showcasing projects in mechanical engineering, robotics, and construction.",
     type: "website",
+    images: ["/Favicon - ML.png"],
+  },
+  twitter: {
+    card: "summary",
+    title: "Michael Lo Russo - Portfolio",
+    description: "Engineering portfolio showcasing projects in mechanical engineering, robotics, and construction.",
+    images: ["/Favicon - ML.png"],
   },
 }
 
