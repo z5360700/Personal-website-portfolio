@@ -631,10 +631,38 @@ function ProjectDetailClient() {
           <div className="space-y-8">
             <ProjectHeader project={project} />
 
-            {/* Main Project Image */}
-            <div className="bg-muted/10 rounded-lg p-6 border">
-              <div className="relative rounded-lg overflow-hidden max-w-2xl mx-auto">
-                <Image src={project.image || "/placeholder.svg"} alt={project.title} width={800} height={800} className="w-full h-auto rounded-lg" />
+            {/* Image + Specs side by side */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-muted/10 rounded-lg p-6 border flex items-center justify-center">
+                <Image
+                  src={project.image || "/placeholder.svg"}
+                  alt={project.title}
+                  width={600}
+                  height={600}
+                  className="w-full h-auto rounded-lg max-h-[480px] object-contain"
+                />
+              </div>
+
+              <div className="space-y-4">
+                {/* Quick specs */}
+                <div className="bg-muted/10 rounded-lg p-6 border h-full flex flex-col justify-center">
+                  <h2 className="text-lg font-bold mb-5">Build Specs</h2>
+                  <div className="space-y-4">
+                    {[
+                      { label: "Movement", value: "Seiko NH35A" },
+                      { label: "Type", value: "Mechanical Automatic" },
+                      { label: "Power Reserve", value: "41 hours" },
+                      { label: "Assembly", value: "Hand-built from individual parts" },
+                      { label: "Environment", value: "Dust-free, clean room conditions" },
+                      { label: "Parts Sourced", value: "Case, dial, hands, crystal, crown, bracelet" },
+                    ].map(({ label, value }) => (
+                      <div key={label} className="flex justify-between items-start gap-4 border-b border-border/40 pb-3 last:border-0 last:pb-0">
+                        <span className="text-foreground/50 text-sm font-medium shrink-0">{label}</span>
+                        <span className="text-foreground/90 text-sm text-right">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -668,31 +696,6 @@ function ProjectDetailClient() {
                 ))}
               </div>
             )}
-
-            {/* How This Connects to Engineering */}
-            <div className="bg-muted/10 rounded-lg p-6 border">
-              <h2 className="text-xl font-bold text-center mb-6">Skills That Transfer</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="space-y-2">
-                  <h3 className="font-bold text-primary text-sm">Precision & Detail</h3>
-                  <p className="text-foreground/80 text-sm leading-relaxed">
-                    Working with sub-millimeter tolerances in watchmaking builds the same discipline needed for PCB soldering, CAD modeling, and robotic calibration.
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-bold text-primary text-sm">Patience & Methodology</h3>
-                  <p className="text-foreground/80 text-sm leading-relaxed">
-                    Each step must be completed correctly before moving on. This mirrors the careful sequencing required in construction, 3D printing, and embedded systems development.
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-bold text-primary text-sm">Planning & Problem-Solving</h3>
-                  <p className="text-foreground/80 text-sm leading-relaxed">
-                    Sourcing compatible parts, mapping assembly order, and troubleshooting issues are directly applicable to every engineering project on this portfolio.
-                  </p>
-                </div>
-              </div>
-            </div>
 
             {project.results && <ResultsSection results={project.results} />}
 
