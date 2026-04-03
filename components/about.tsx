@@ -200,16 +200,13 @@ export default function About() {
           >
             <h3 className="text-xl font-bold">Who I Am</h3>
             <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
-              I'm a mechatronics engineering student who thrives on solving problems and watching ideas come to
-              life. One of my proudest achievements was building a house with my family — it taught me that with the
-              right mindset, I can tackle any challenge. Before engineering, I played semi-professional football,
-              which instilled discipline, teamwork, and resilience.
+              {"I'm a final-year Mechatronics Engineering student at UNSW. I like to build things, and once that included an entire house with my father. That project taught me how to manage real deadlines, coordinate tradespeople, and back myself on problems I'd never solved before."}
             </p>
             <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
-              I'm currently working at Samsung, improving my communication and presentation skills daily. The confidence I gained from that house build pushes me to dive into new technical challenges, while my experience at Samsung reinforces my ability to explain ideas clearly and work effectively in a team.
+              Before engineering I played semi-professional football, which gave me the discipline and team mindset I bring to every project. I currently work at Samsung, which has sharpened my ability to work with people and solve problems quickly.
             </p>
             <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
-              Outside work, I hit the gym, run, and play video games. My goal is to step into an engineering role where I can collaborate, keep learning, and build solutions that genuinely help people.
+              Outside of work I hit the gym, go for runs, play video games, and relax with family.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
               {/* C++ Logo */}
