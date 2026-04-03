@@ -6,7 +6,7 @@ import { useRef } from "react"
 import Image from "next/image"
 import { useInView } from "framer-motion"
 import { motion } from "framer-motion"
-import { Github, ArrowRight } from "lucide-react"
+import { Github, ArrowRight, Youtube } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
@@ -29,6 +29,7 @@ const technicalProjects = [
     image: "/images/RubikCubeFrontImage.png",
     tags: ["Robotics", "Manipulation", "Automation"],
     githubUrl: "#",
+    youtubeUrl: "https://youtu.be/JZ8aRIcxxO0",
     comingSoon: true,
   },
   {
@@ -139,9 +140,23 @@ export default function Projects() {
 
                       <div className="flex flex-wrap gap-2 mt-auto">
                         {project.comingSoon ? (
-                          <div className="ml-auto bg-muted text-foreground/40 px-3 py-1.5 rounded-lg flex items-center gap-1 font-medium text-sm cursor-default">
-                            Coming Soon
-                          </div>
+                          <>
+                            {project.youtubeUrl && (
+                              <a
+                                href={project.youtubeUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition-colors duration-300 font-medium text-sm"
+                              >
+                                <Youtube size={14} />
+                                Watch
+                              </a>
+                            )}
+                            <div className="ml-auto bg-muted text-foreground/40 px-3 py-1.5 rounded-lg flex items-center gap-1 font-medium text-sm cursor-default">
+                              Coming Soon
+                            </div>
+                          </>
                         ) : project.id === 3 || project.id === 4 ? (
                           <div className="ml-auto bg-slate-700 text-white px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors duration-300 flex items-center gap-1 font-medium text-sm">
                             View Details
