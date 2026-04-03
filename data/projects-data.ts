@@ -43,6 +43,7 @@ export interface Project {
   learnings?: string[]
   course?: string
   tagline?: string
+  imagePosition?: string
 }
 
 export const projectsData: Project[] = [
@@ -563,6 +564,7 @@ Sourcing compatible parts was its own challenge - not all cases and hands market
         isShort: false,
       },
     ],
+    imagePosition: "top",
     tags: ["Horology", "Precision Assembly", "Mechanical Engineering", "Component Sourcing"],
     liveUrl: null,
     githubUrl: null,

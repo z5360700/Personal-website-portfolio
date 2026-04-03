@@ -77,6 +77,7 @@ const handsOnProjects = [
     description:
       "Sourced and hand-assembled individual components around Seiko NH35 movement. Precision assembly requiring dust-free environment, component compatibility verification, and steady hands for hand-setting.",
     image: "/images/WatchCoverImage.png",
+    imagePosition: "top",
     tags: ["Horology", "Precision Assembly", "Mechanical Engineering", "Component Sourcing"],
     githubUrl: "#",
   },
@@ -123,12 +124,13 @@ export default function Projects() {
                     className="overflow-hidden h-full flex flex-col hover-lift cursor-pointer group"
                     onClick={() => !project.comingSoon && handleProjectClick(project.id)}
                   >
-                    <div className="relative h-48 md:h-52 w-full overflow-hidden bg-muted">
+                    <div className="relative h-64 md:h-72 w-full overflow-hidden bg-muted">
                       <Image
                         src={project.image || "/placeholder.svg"}
                         alt={project.title}
                         fill
                         className="object-cover transition-transform group-hover:scale-105 duration-300"
+                        style={{ objectPosition: project.imagePosition || "center" }}
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                     </div>
@@ -202,12 +204,13 @@ export default function Projects() {
                     className="overflow-hidden h-full flex flex-col hover-lift cursor-pointer group"
                     onClick={() => handleProjectClick(project.id)}
                   >
-                    <div className="relative h-48 md:h-52 w-full overflow-hidden bg-muted">
+                    <div className="relative h-64 md:h-72 w-full overflow-hidden bg-muted">
                       <Image
                         src={project.image || "/placeholder.svg"}
                         alt={project.title}
                         fill
                         className="object-cover transition-transform group-hover:scale-105 duration-300"
+                        style={{ objectPosition: project.imagePosition || "center" }}
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                     </div>
