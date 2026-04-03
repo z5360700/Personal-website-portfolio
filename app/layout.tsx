@@ -19,8 +19,8 @@ export const metadata: Metadata = {
   description: "Engineering portfolio showcasing projects in mechanical engineering, robotics, and construction.",
   generator: "v0.dev",
   icons: {
-    icon: "/favicon.ico",
-    apple: "/favicon.ico",
+    icon: "/Favicon - ML.png",
+    apple: "/Favicon - ML.png",
   },
   openGraph: {
     title: "Michael Lo Russo - Portfolio",

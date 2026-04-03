@@ -7,7 +7,7 @@ import Image from "next/image"
 import WavyLines from "./wavy-lines"
 
 export default function Hero() {
-  const resumeUrl = "/LoRusso_CV_12_2025a.pdf"
+  const resumeUrl = "/MichaelLoRusso_RESUME.pdf"
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative pt-20 pb-12 overflow-hidden">
@@ -76,7 +76,7 @@ export default function Hero() {
               <a href="#projects">View My Work</a>
             </Button>
             <Button size="lg" variant="outline" className="px-6 py-5 text-base font-medium" asChild>
-              <a href={resumeUrl} download="LoRusso_CV_12_2025a.pdf" className="flex items-center gap-2">
+              <a href={resumeUrl} download="MichaelLoRusso_RESUME.pdf" className="flex items-center gap-2">
                 <Download className="w-4 h-4" />
                 Resume
               </a>
