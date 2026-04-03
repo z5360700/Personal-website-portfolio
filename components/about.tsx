@@ -109,8 +109,8 @@ export default function About() {
               >
                 <div className="relative h-full w-full overflow-hidden rounded-lg border-4 border-white shadow-xl">
                   <Image
-                    src="/images/about-michael.jpeg"
-                    alt="Michael Lo Russo in a restaurant setting"
+                    src="/images/michael-melbourne.jpg"
+                    alt="Michael Lo Russo at Melbourne waterfront sunset"
                     fill
                     className="object-cover"
                     priority

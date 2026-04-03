@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { ArrowDown, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -8,14 +7,6 @@ import Image from "next/image"
 import WavyLines from "./wavy-lines"
 
 export default function Hero() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
-
   const resumeUrl = "/LoRusso_CV_12_2025a.pdf"
 
   return (
@@ -70,7 +61,8 @@ export default function Hero() {
             className="max-w-xl mb-6"
           >
             <p className="text-foreground/70 text-base md:text-lg leading-relaxed">
-              Final year Mechatronics Engineering student at UNSW. I like to build things — from robots to an entire house.
+              Final year Mechatronics Engineering student at UNSW.<br />
+              I like to build things.
             </p>
           </motion.div>
 
