@@ -4,7 +4,19 @@ import { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, ExternalLink, Github } from "lucide-react"
+import {
+  ArrowLeft,
+  ExternalLink,
+  Github,
+  Hammer,
+  HardHat,
+  Zap,
+  Droplets,
+  Home,
+  PaintRoller,
+  Layers,
+  Ruler,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import EnhancedBeforeAfterSlider from "@/components/enhanced-before-after-slider"
@@ -162,7 +174,83 @@ function ProjectDetailClient() {
         {/* Construction project layout */}
         {project.id === 1 ? (
           <div className="space-y-8">
-            <ProjectHeader project={project} />
+            {/* HERO — title + description + tags on the left, quick stats on the right */}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+              <div className="lg:col-span-3 bg-muted/20 rounded-lg p-8 border flex flex-col justify-center">
+                <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
+                  {project.title}
+                </h1>
+                <p className="text-base text-foreground/70 mb-5 leading-relaxed">
+                  {project.description}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs font-medium"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="lg:col-span-2 grid grid-cols-2 gap-3">
+                {[
+                  { label: "Scope", value: "Foundation to Finish" },
+                  { label: "Trades", value: "Framing · Roofing · Electrical · Plumbing" },
+                  { label: "Context", value: "Built alongside Engineering degree" },
+                  { label: "Standards", value: "Code-compliant throughout" },
+                ].map(({ label, value }) => (
+                  <div
+                    key={label}
+                    className="bg-muted/10 rounded-lg p-4 border flex flex-col justify-center"
+                  >
+                    <div className="text-[10px] uppercase tracking-widest text-foreground/50 mb-1">
+                      {label}
+                    </div>
+                    <div className="text-sm font-semibold text-foreground/90 leading-snug">
+                      {value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* SCOPE OF WORK — visual icon pills replacing text-heavy "Key Features" */}
+            <div className="bg-muted/10 rounded-lg p-6 border">
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-bold">Scope of Work</h2>
+                <p className="text-xs text-foreground/50 mt-1">
+                  The trades and systems I worked across
+                </p>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                  { icon: Ruler, label: "Planning", sub: "Assessment & layout" },
+                  { icon: HardHat, label: "Framing", sub: "Timber structure" },
+                  { icon: Home, label: "Roofing", sub: "Weatherproof shell" },
+                  { icon: Zap, label: "Electrical", sub: "Wiring & lighting" },
+                  { icon: Droplets, label: "Plumbing", sub: "Supply & drainage" },
+                  { icon: Layers, label: "Insulation & Drywall", sub: "Thermal & interior" },
+                  { icon: Hammer, label: "Kitchen & Bath", sub: "Fixtures & cabinetry" },
+                  { icon: PaintRoller, label: "Finishing", sub: "Paint, flooring, trim" },
+                ].map(({ icon: Icon, label, sub }) => (
+                  <div
+                    key={label}
+                    className="bg-background/40 hover:bg-background/60 transition-colors rounded-lg p-3 border border-border/60 flex items-center gap-3"
+                  >
+                    <div className="flex-shrink-0 w-9 h-9 rounded-md bg-primary/15 text-primary flex items-center justify-center">
+                      <Icon size={18} />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-sm font-semibold truncate">{label}</div>
+                      <div className="text-[11px] text-foreground/50 truncate">{sub}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             {/* Before/After Slider */}
             <div className="bg-muted/10 rounded-lg p-6 border">
@@ -177,23 +265,19 @@ function ProjectDetailClient() {
               </div>
             </div>
 
-            {/* Project Description */}
-            <div className="bg-muted/10 rounded-lg p-6 border">
-              <div className="prose dark:prose-invert max-w-none">
-                <p className="text-base leading-relaxed">{project.longDescription}</p>
-              </div>
-            </div>
-
             {/* Photo Galleries */}
             <div className="space-y-8">
               {project.exteriorGallery && (
                 <ImageGallery
                   title="Exterior Construction"
+                  subtitle="Framing, roofing and exterior finishing"
                   images={project.exteriorGallery}
                   selectedIndex={exteriorIndex}
                   onImageClick={openSlideshow}
                   onNavigate={navigateExterior}
                   altPrefix="Exterior construction"
+                  columns="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                  imageHeight="h-40"
                   showNavigation
                 />
               )}
@@ -201,6 +285,7 @@ function ProjectDetailClient() {
               {project.interiorGallery && (
                 <ImageGallery
                   title="Interior Work"
+                  subtitle="Insulation, drywall, electrical and plumbing rough-in"
                   images={project.interiorGallery}
                   selectedIndex={interiorIndex}
                   onImageClick={openSlideshow}
@@ -215,6 +300,7 @@ function ProjectDetailClient() {
               {project.finishedProductGallery && (
                 <ImageGallery
                   title="Finished Product"
+                  subtitle="Completed kitchen, bathrooms and living spaces"
                   images={project.finishedProductGallery}
                   selectedIndex={finishedIndex}
                   onImageClick={openSlideshow}
@@ -229,13 +315,16 @@ function ProjectDetailClient() {
               {project.miscellaneousGallery && (
                 <ImageGallery
                   title="Additional Photos"
+                  subtitle="Behind-the-scenes work and process shots"
                   images={project.miscellaneousGallery}
                   selectedIndex={additionalIndex}
                   onImageClick={openSlideshow}
                   onNavigate={navigateAdditional}
                   altPrefix="Additional photos"
+                  columns="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                  imageHeight="h-40"
                   showNavigation
-                  maxImages={18}
+                  maxImages={8}
                   showViewAll
                 />
               )}
@@ -250,7 +339,40 @@ function ProjectDetailClient() {
               altPrefix={slideshowAltPrefix}
             />
 
-            <ProjectTabs project={project} />
+            {/* Technologies + Challenges side-by-side (replaces bottom tabs) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="bg-muted/10 rounded-lg p-6 border">
+                <h2 className="text-lg font-bold mb-4">Technologies & Skills</h2>
+                <div className="space-y-4">
+                  {Object.entries(project.technologies).map(([category, items]) => (
+                    <div key={category}>
+                      <h3 className="text-[10px] uppercase tracking-widest text-foreground/50 mb-2">
+                        {category.replace(/([A-Z])/g, " $1").trim()}
+                      </h3>
+                      <div className="flex flex-wrap gap-1.5">
+                        {items.map((item) => (
+                          <span
+                            key={item}
+                            className="bg-background/60 border border-border/60 text-foreground/80 text-xs px-2.5 py-1 rounded-md"
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-muted/10 rounded-lg p-6 border">
+                <h2 className="text-lg font-bold mb-4">Challenges</h2>
+                <div className="relative border-l-2 border-primary/40 pl-4">
+                  <p className="text-foreground/80 leading-relaxed whitespace-pre-line text-sm">
+                    {project.challenges}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         ) : project.id === 2 ? (
           /* Micromouse project layout */

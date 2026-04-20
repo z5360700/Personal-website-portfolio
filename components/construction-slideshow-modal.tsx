@@ -89,29 +89,29 @@ export default function ConstructionSlideshowModal({
           )}
 
           <motion.div
-            className="flex items-center justify-center w-full h-full px-16"
+            className="flex items-center justify-center w-full h-full px-4 md:px-12 lg:px-16 gap-4 md:gap-6"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Previous image — left side, dimmed */}
+            {/* Previous image — peek on the left */}
             {hasSiblings && (
               <div
-                className="hidden md:flex items-center justify-center w-48 lg:w-64 flex-shrink-0 mr-4 lg:mr-6 cursor-pointer"
+                className="hidden md:flex items-center justify-center w-24 lg:w-32 xl:w-40 flex-shrink-0 cursor-pointer"
                 onClick={goPrev}
               >
-                <div className="relative w-full h-40 lg:h-48 rounded-lg overflow-hidden opacity-40 hover:opacity-60 transition-opacity">
+                <div className="relative w-full h-32 lg:h-44 xl:h-52 rounded-lg overflow-hidden opacity-40 hover:opacity-80 transition-opacity">
                   <Image
                     src={images[prevIndex] || "/placeholder.svg"}
                     alt={`${altPrefix} ${prevIndex + 1}`}
                     fill
                     loading="lazy"
                     className="object-cover"
-                    sizes="(max-width: 1024px) 192px, 256px"
+                    sizes="224px"
                   />
                 </div>
               </div>
             )}
 
-            {/* Current image — centre, full size */}
+            {/* Current image — large, fills available space */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
@@ -119,35 +119,33 @@ export default function ConstructionSlideshowModal({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="relative flex-1 max-w-3xl flex items-center justify-center"
+                className="relative flex-1 flex items-center justify-center min-w-0"
               >
-                <div className="relative w-full" style={{ maxHeight: "80vh" }}>
-                  <Image
-                    src={images[currentIndex] || "/placeholder.svg"}
-                    alt={`${altPrefix} ${currentIndex + 1}`}
-                    width={1200}
-                    height={900}
-                    className="object-contain max-h-[80vh] w-auto mx-auto rounded-lg"
-                    priority
-                  />
-                </div>
+                <Image
+                  src={images[currentIndex] || "/placeholder.svg"}
+                  alt={`${altPrefix} ${currentIndex + 1}`}
+                  width={2400}
+                  height={1600}
+                  className="object-contain max-h-[88vh] max-w-full w-auto h-auto mx-auto rounded-lg"
+                  priority
+                />
               </motion.div>
             </AnimatePresence>
 
-            {/* Next image — right side, dimmed */}
+            {/* Next image — peek on the right */}
             {hasSiblings && (
               <div
-                className="hidden md:flex items-center justify-center w-48 lg:w-64 flex-shrink-0 ml-4 lg:ml-6 cursor-pointer"
+                className="hidden md:flex items-center justify-center w-24 lg:w-32 xl:w-40 flex-shrink-0 cursor-pointer"
                 onClick={goNext}
               >
-                <div className="relative w-full h-40 lg:h-48 rounded-lg overflow-hidden opacity-40 hover:opacity-60 transition-opacity">
+                <div className="relative w-full h-32 lg:h-44 xl:h-52 rounded-lg overflow-hidden opacity-40 hover:opacity-80 transition-opacity">
                   <Image
                     src={images[nextIndex] || "/placeholder.svg"}
                     alt={`${altPrefix} ${nextIndex + 1}`}
                     fill
                     loading="lazy"
                     className="object-cover"
-                    sizes="(max-width: 1024px) 192px, 256px"
+                    sizes="224px"
                   />
                 </div>
               </div>
