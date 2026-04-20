@@ -29,7 +29,7 @@ const technicalProjects = [
     image: "/images/RubikCubeFrontImage.png",
     tags: ["Robotics", "Manipulation", "Automation"],
     githubUrl: "#",
-    youtubeUrl: "https://youtu.be/JZ8aRIcxxO0",
+    youtubeUrl: "https://www.youtube.com/watch?v=OC9h20jK2XQ",
     comingSoon: true,
   },
   {

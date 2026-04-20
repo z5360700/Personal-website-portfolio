@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 
 interface ImageGalleryProps {
   title: string
+  subtitle?: string
   images: string[]
   selectedIndex?: number
   onImageClick: (images: string[], index: number, altPrefix: string) => void
@@ -19,6 +20,7 @@ interface ImageGalleryProps {
 
 export function ImageGallery({
   title,
+  subtitle,
   images,
   selectedIndex = 0,
   onImageClick,
@@ -34,8 +36,9 @@ export function ImageGallery({
 
   return (
     <div className="bg-muted/10 rounded-lg p-6 border">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-center w-full">{title}</h2>
+      <div className="text-center mb-6">
+        <h2 className="text-xl font-bold">{title}</h2>
+        {subtitle && <p className="text-xs text-foreground/50 mt-1">{subtitle}</p>}
       </div>
       {/* </CHANGE> */}
       <div className={`grid ${columns} gap-3`}>
