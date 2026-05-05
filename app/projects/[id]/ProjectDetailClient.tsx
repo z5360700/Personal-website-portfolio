@@ -261,6 +261,11 @@ const getInitialRubiksPreviewMode = (): RubiksPreviewMode => {
 }
 
 type RubiksAxis = "x" | "y" | "z"
+type RubiksCubieState = {
+  id: string
+  position: THREE.Vector3
+  quaternion: THREE.Quaternion
+}
 
 const rubiksStickerColors: Record<RubiksFaceId, string> = {
   u: "#f8fafc",
@@ -301,6 +306,61 @@ const getRubiksSliceTurn = (face: RubiksFaceId, turn: RubiksTurnDirection) => {
   }
 }
 
+const getRubiksAxisVector = (axis: RubiksAxis) => {
+  if (axis === "x") return new THREE.Vector3(1, 0, 0)
+  if (axis === "y") return new THREE.Vector3(0, 1, 0)
+  return new THREE.Vector3(0, 0, 1)
+}
+
+const roundRubiksPosition = (position: THREE.Vector3) =>
+  new THREE.Vector3(Math.round(position.x), Math.round(position.y), Math.round(position.z))
+
+const createInitialRubiksCubeState = () => {
+  const cubies: RubiksCubieState[] = []
+
+  for (let x = -1; x <= 1; x += 1) {
+    for (let y = -1; y <= 1; y += 1) {
+      for (let z = -1; z <= 1; z += 1) {
+        cubies.push({
+          id: `${x}:${y}:${z}`,
+          position: new THREE.Vector3(x, y, z),
+          quaternion: new THREE.Quaternion(),
+        })
+      }
+    }
+  }
+
+  return cubies
+}
+
+const applyRubiksMoveToState = (state: RubiksCubieState[], move: string) => {
+  const visual = getRubiksMoveVisual(move)
+  const turnConfig = getRubiksSliceTurn(visual.face, visual.turn)
+  const axisVector = getRubiksAxisVector(turnConfig.axis)
+  const rotation = new THREE.Quaternion().setFromAxisAngle(axisVector, turnConfig.angle)
+
+  return state.map((cubie) => {
+    if (Math.round(cubie.position[turnConfig.axis]) !== turnConfig.layer) {
+      return {
+        ...cubie,
+        position: cubie.position.clone(),
+        quaternion: cubie.quaternion.clone(),
+      }
+    }
+
+    return {
+      ...cubie,
+      position: roundRubiksPosition(cubie.position.clone().applyQuaternion(rotation)),
+      quaternion: rotation.clone().multiply(cubie.quaternion),
+    }
+  })
+}
+
+const getRubiksCubeStateBeforeStep = (stepIndex: number) =>
+  rubiksMoveTrace
+    .slice(0, stepIndex)
+    .reduce((state, item) => applyRubiksMoveToState(state, item.move), createInitialRubiksCubeState())
+
 const disposeRubiksObject = (object: THREE.Object3D) => {
   const geometries = new Set<THREE.BufferGeometry>()
   const materials = new Set<THREE.Material>()
@@ -327,6 +387,7 @@ const disposeRubiksObject = (object: THREE.Object3D) => {
 function RubiksPhysicalCube({
   activeFace,
   turn,
+  stepIndex,
   previewMode,
   replayKey,
   moveLabel,
@@ -334,6 +395,7 @@ function RubiksPhysicalCube({
 }: {
   activeFace: RubiksFaceId
   turn: RubiksTurnDirection
+  stepIndex: number
   previewMode: RubiksPreviewMode
   replayKey: number
   moveLabel: string
@@ -399,10 +461,10 @@ function RubiksPhysicalCube({
     scene.add(floor)
 
     const turnConfig = getRubiksSliceTurn(activeFace, turn)
+    const cubieStates = getRubiksCubeStateBeforeStep(stepIndex)
     const cubieGeometry = new THREE.BoxGeometry(0.92, 0.92, 0.92, 3, 3, 3)
     const cubieEdgeGeometry = new THREE.EdgesGeometry(cubieGeometry)
     const stickerGeometry = new THREE.PlaneGeometry(0.72, 0.72)
-    const edgeGeometry = new THREE.EdgesGeometry(stickerGeometry)
     const bodyMaterial = new THREE.MeshStandardMaterial({
       color: 0x07080c,
       roughness: 0.54,
@@ -415,7 +477,6 @@ function RubiksPhysicalCube({
       roughness: 0.52,
       metalness: 0.2,
     })
-    const activeLineMaterial = new THREE.LineBasicMaterial({ color: 0x2f6df6, linewidth: 2 })
     const sliceLineMaterial = new THREE.LineBasicMaterial({
       color: 0x2f6df6,
       transparent: true,
@@ -426,7 +487,7 @@ function RubiksPhysicalCube({
         face,
         new THREE.MeshStandardMaterial({
           color,
-          emissive: face === activeFace ? 0x101d45 : 0x000000,
+          emissive: 0x000000,
           roughness: 0.48,
           metalness: 0.02,
           side: THREE.DoubleSide,
@@ -437,67 +498,43 @@ function RubiksPhysicalCube({
     const makeSticker = (face: RubiksFaceId) => {
       const faceNormal = rubiksFaceNormals[face]
       const sticker = new THREE.Mesh(stickerGeometry.clone(), stickerMaterials[face])
-      const outline = new THREE.LineSegments(edgeGeometry.clone(), activeLineMaterial)
 
       sticker.position[faceNormal.axis] = faceNormal.layer * 0.468
-      outline.position.copy(sticker.position)
       sticker.rotation.set(...faceNormal.rotation)
-      outline.rotation.copy(sticker.rotation)
-      outline.scale.setScalar(face === activeFace ? 1.09 : 1.01)
-      outline.visible = face === activeFace
 
-      return { sticker, outline }
+      return sticker
     }
 
-    for (let x = -1; x <= 1; x += 1) {
-      for (let y = -1; y <= 1; y += 1) {
-        for (let z = -1; z <= 1; z += 1) {
-          const cubie = new THREE.Group()
-          cubie.position.set(x * 1.02, y * 1.02, z * 1.02)
+    cubieStates.forEach((cubieState) => {
+      const { position } = cubieState
+      const cubie = new THREE.Group()
+      cubie.position.set(position.x * 1.02, position.y * 1.02, position.z * 1.02)
+      cubie.quaternion.copy(cubieState.quaternion)
 
-          const coordinate = { x, y, z }
-          const isMovingSlice = coordinate[turnConfig.axis] === turnConfig.layer
-          const body = new THREE.Mesh(cubieGeometry.clone(), isMovingSlice ? sliceBodyMaterial : bodyMaterial)
-          body.castShadow = true
-          body.receiveShadow = true
-          cubie.add(body)
+      const isMovingSlice = Math.round(position[turnConfig.axis]) === turnConfig.layer
+      const body = new THREE.Mesh(cubieGeometry.clone(), isMovingSlice ? sliceBodyMaterial : bodyMaterial)
+      body.castShadow = true
+      body.receiveShadow = true
+      cubie.add(body)
 
-          if (isMovingSlice) {
-            const sliceOutline = new THREE.LineSegments(cubieEdgeGeometry.clone(), sliceLineMaterial)
-            sliceOutline.scale.setScalar(1.035)
-            cubie.add(sliceOutline)
-          }
-
-          if (y === 1) {
-            const { sticker, outline } = makeSticker("u")
-            cubie.add(sticker, outline)
-          }
-          if (y === -1) {
-            const { sticker, outline } = makeSticker("d")
-            cubie.add(sticker, outline)
-          }
-          if (x === 1) {
-            const { sticker, outline } = makeSticker("r")
-            cubie.add(sticker, outline)
-          }
-          if (x === -1) {
-            const { sticker, outline } = makeSticker("l")
-            cubie.add(sticker, outline)
-          }
-          if (z === 1) {
-            const { sticker, outline } = makeSticker("f")
-            cubie.add(sticker, outline)
-          }
-          if (z === -1) {
-            const { sticker, outline } = makeSticker("b")
-            cubie.add(sticker, outline)
-          }
-
-          const parent = isMovingSlice ? movingGroup : fixedGroup
-          parent.add(cubie)
-        }
+      if (isMovingSlice) {
+        const sliceOutline = new THREE.LineSegments(cubieEdgeGeometry.clone(), sliceLineMaterial)
+        sliceOutline.scale.setScalar(1.035)
+        cubie.add(sliceOutline)
       }
-    }
+
+      const [startX, startY, startZ] = cubieState.id.split(":").map(Number)
+
+      if (startY === 1) cubie.add(makeSticker("u"))
+      if (startY === -1) cubie.add(makeSticker("d"))
+      if (startX === 1) cubie.add(makeSticker("r"))
+      if (startX === -1) cubie.add(makeSticker("l"))
+      if (startZ === 1) cubie.add(makeSticker("f"))
+      if (startZ === -1) cubie.add(makeSticker("b"))
+
+      const parent = isMovingSlice ? movingGroup : fixedGroup
+      parent.add(cubie)
+    })
 
     const getStaticAngle = () => {
       if (previewMode === "turn") return turnConfig.angle * 0.68
@@ -586,7 +623,6 @@ function RubiksPhysicalCube({
       cubieGeometry.dispose()
       cubieEdgeGeometry.dispose()
       stickerGeometry.dispose()
-      edgeGeometry.dispose()
       floor.geometry.dispose()
       if (Array.isArray(floor.material)) {
         floor.material.forEach((material) => material.dispose())
@@ -596,13 +632,13 @@ function RubiksPhysicalCube({
       renderer.dispose()
       renderer.domElement.remove()
     }
-  }, [activeFace, turn, previewMode, replayKey])
+  }, [activeFace, turn, stepIndex, previewMode, replayKey])
 
   return (
     <div
       ref={mountRef}
       className="rubiks-three-cube"
-      aria-label={`Interactive 3D cube preview for ${moveLabel}: ${moveTitle}`}
+      aria-label={`Cumulative interactive 3D cube preview for step ${stepIndex + 1}, ${moveLabel}: ${moveTitle}`}
       role="img"
     />
   )
@@ -1563,8 +1599,8 @@ function ProjectDetailClient() {
                       <h2 className="text-2xl md:text-3xl font-bold tracking-tight">What is a U move?</h2>
                     </div>
                     <p className="text-sm leading-relaxed text-foreground/65">
-                      In cube notation, U means rotate the upper face. This robot has no top motor, so firmware replaces
-                      U with the 13 physical turns below.
+                      U rotates the upper face. This robot has no top motor, so the cube below carries 13 physical turns
+                      forward until the same top-turn outcome appears.
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {rubiksNotationLegend.map((item) => (
@@ -1625,6 +1661,7 @@ function ProjectDetailClient() {
                       <RubiksPhysicalCube
                         activeFace={activeRubiksVisual.face}
                         turn={activeRubiksVisual.turn}
+                        stepIndex={activeRubiksMove}
                         previewMode={rubiksPreviewMode}
                         replayKey={rubiksReplayKey}
                         moveLabel={activeRubiksTrace.move}
