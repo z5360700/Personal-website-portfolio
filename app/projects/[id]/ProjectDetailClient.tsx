@@ -162,7 +162,7 @@ function ProjectDetailClient() {
   }
 
   return (
-    <main className="min-h-screen bg-background py-8">
+    <main className="min-h-screen bg-background pt-24 pb-8">
       <div className="container mx-auto px-3 max-w-7xl">
         <Button variant="ghost" className="mb-4" asChild>
           <Link href="/" className="flex items-center">
@@ -747,6 +747,192 @@ function ProjectDetailClient() {
             {project.results && <ResultsSection results={project.results} />}
 
             <ProjectTabs project={project} />
+          </div>
+        ) : project.id === 7 ? (
+          /* Rubik's Cube Solver — minimal layout, prose pooled in one section */
+          <div className="relative space-y-14 md:space-y-20 pb-4">
+            {/* Decorative backgrounds — non-interactive */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 -z-10 bg-dot-pattern mask-fade-edges opacity-70"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-glow-primary"
+            />
+            {/* HERO — title + clickable video embed */}
+            <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center pt-2">
+              <div className="lg:col-span-5">
+                <h1 className="text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight">
+                  A robot that solves a Rubik&rsquo;s cube on its own.
+                </h1>
+              </div>
+              <div className="lg:col-span-7">
+                <div className="relative aspect-video rounded-xl overflow-hidden border border-border/60 bg-black">
+                  {project.videoGallery && project.videoGallery[0] ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${project.videoGallery[0].id}`}
+                      title={project.videoGallery[0].title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
+                  ) : (
+                    <Image
+                      src={project.image || "/placeholder.svg"}
+                      alt={project.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 60vw"
+                      priority
+                    />
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {/* DESIGN PILLARS — what makes this build different */}
+            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border/60 border border-border/60 rounded-xl overflow-hidden">
+              {[
+                "5-motor / 5-face design",
+                "Kociemba-inspired solver",
+                "Browser cube input",
+                "Fully local pipeline",
+              ].map((title, i) => (
+                <div key={i} className="bg-background/80 p-5 md:p-6 flex flex-col gap-2">
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-primary/70">
+                    {`0${i + 1}`}
+                  </div>
+                  <h3 className="text-base md:text-lg font-semibold leading-snug tracking-tight">
+                    {title}
+                  </h3>
+                </div>
+              ))}
+            </section>
+
+            {/* ABOUT — the only prose section */}
+            <section className="bg-muted/10 rounded-xl border p-6 md:p-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 items-start">
+                <div className="md:col-span-1">
+                  <div className="text-[11px] uppercase tracking-[0.25em] text-primary mb-2">
+                    About
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold leading-tight">
+                    5 motors. No top.
+                  </h2>
+                </div>
+                <div className="md:col-span-2 space-y-4">
+                  <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
+                    Type a scramble into the browser, hit solve, and the rig does the rest. The pipeline runs browser → local Python solver (Kociemba two-phase) → Serial → ESP32 → 5 motors.
+                  </p>
+                  <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
+                    Started with 4 motors (R, L, F, B) — but 4 faces alone can&rsquo;t reach every valid cube state. A 5th motor on D unlocks the full state space.
+                  </p>
+                  <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
+                    No motor on the top face. The U-face is reconstructed in firmware via a 13-move equivalence — a solve grows from ~21 to ~65 physical moves, in exchange for a simpler open-top chassis and 2-second cube swaps.
+                  </p>
+                  <div className="font-mono text-xs md:text-sm bg-background/60 border border-border/60 rounded-md p-3 text-foreground/80 overflow-x-auto whitespace-nowrap">
+                    U = R L F2 B2 R&apos; L&apos; D L&apos; R&apos; B2 F2 L R
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* HOW IT WORKS — visuals only, two-word labels */}
+            <section>
+              <div className="mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">How it works</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                {[
+                  { n: "01", title: "Browser input", img: "/images/rubiks-ui-filled.png" },
+                  { n: "02", title: "Python solver", img: "/images/rubiks-ui-solved.png" },
+                  { n: "03", title: "Motors execute", img: "/images/5motordesignfinal.jpg" },
+                ].map((step) => (
+                  <div key={step.n} className="space-y-3">
+                    <div
+                      className="relative aspect-[4/3] rounded-lg overflow-hidden bg-muted/10 border border-border/60 cursor-pointer group"
+                      onClick={() => openLightbox([step.img], 0, step.title)}
+                    >
+                      <Image
+                        src={step.img}
+                        alt={step.title}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                    </div>
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-xs font-mono text-primary/70">{step.n}</span>
+                      <h3 className="text-base font-semibold">{step.title}</h3>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* THE BUILD — magazine grid, no captions */}
+            <section>
+              <div className="mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">The build</h2>
+              </div>
+              <div className="grid grid-cols-12 gap-3 md:gap-4">
+                {[
+                  { src: "/images/5motordesign.jpg", span: "col-span-12 md:col-span-7", aspect: "aspect-[4/3]" },
+                  { src: "/images/5motordesignfinal.jpg", span: "col-span-12 md:col-span-5", aspect: "aspect-[4/3]" },
+                  { src: "/images/singlemotorwithbracket.jpg", span: "col-span-6 md:col-span-4", aspect: "aspect-[4/3]" },
+                  { src: "/images/motorwithadapterissue.jpg", span: "col-span-6 md:col-span-4", aspect: "aspect-[4/3]" },
+                  { src: "/images/5motordesign.2.jpg", span: "col-span-12 md:col-span-4", aspect: "aspect-[4/3]" },
+                  { src: "/images/4motorbreadboardwiring.jpg", span: "col-span-12", aspect: "aspect-[16/9]" },
+                ].map((p, i) => (
+                  <div
+                    key={i}
+                    className={`${p.span} relative ${p.aspect} rounded-lg overflow-hidden border border-border/60 bg-muted/10 cursor-pointer group`}
+                    onClick={() =>
+                      openLightbox(
+                        (project.hardwareGallery || []),
+                        (project.hardwareGallery || []).indexOf(p.src),
+                        "Build",
+                      )
+                    }
+                  >
+                    <Image
+                      src={p.src}
+                      alt="Rubik's cube solver build"
+                      fill
+                      className="object-cover transition-transform group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* STACK — compact tech list */}
+            <section className="bg-muted/10 rounded-xl border p-6 md:p-8">
+              <div className="text-[11px] uppercase tracking-[0.25em] text-primary/70 mb-5">
+                Stack
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {Object.entries(project.technologies).map(([category, items]) => (
+                  <div key={category}>
+                    <h3 className="text-xs font-semibold text-foreground/85 mb-2 capitalize">
+                      {category.replace(/([A-Z])/g, " $1").trim()}
+                    </h3>
+                    <ul className="space-y-1">
+                      {items.map((item) => (
+                        <li
+                          key={item}
+                          className="text-[12px] text-foreground/60 leading-snug"
+                        >
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
         ) : project.id === 6 ? (
           /* Custom Watch Build layout */

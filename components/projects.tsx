@@ -23,14 +23,13 @@ const technicalProjects = [
   },
   {
     id: 7,
-    title: "Rubik's Cube Solving Robot",
+    title: "5-Motor Robotic Rubik's Cube Solver",
     description:
-      "5-axis robotic manipulator that physically solves a scrambled Rubik's Cube. Details coming soon.",
+      "Solo-built rig that solves any scrambled 3×3 end-to-end. ESP32 drives 5× NEMA 17 steppers through TMC2209 drivers, fed by a Kociemba two-phase solver and a browser-based colour-input UI.",
     image: "/images/RubikCubeFrontImage.png",
-    tags: ["Robotics", "Manipulation", "Automation"],
+    tags: ["ESP32", "C++/Arduino", "Python", "Kociemba", "TMC2209", "Fusion 360"],
     githubUrl: "#",
     youtubeUrl: "https://www.youtube.com/watch?v=OC9h20jK2XQ",
-    comingSoon: true,
   },
   {
     id: 3,
@@ -60,6 +59,19 @@ const technicalProjects = [
     githubUrl: "#",
   },
 ]
+
+// Thesis Work — temporarily disabled, re-enable when content is ready
+// const thesisProjects = [
+//   {
+//     id: 8,
+//     title: "PVT Calculator Tool",
+//     description:
+//       "Thesis project — a PVT calculator tool, built in collaboration with CoolSheet.",
+//     image: "/placeholder.svg",
+//     tags: [],
+//     githubUrl: "https://github.com/m-lorusso/PVT-calculator-tool",
+//   },
+// ]
 
 const handsOnProjects = [
   {
@@ -141,22 +153,21 @@ export default function Projects() {
                       <p className="text-foreground/60 mb-3 flex-grow text-sm leading-relaxed line-clamp-3">{project.description}</p>
 
                       <div className="flex flex-wrap gap-2 mt-auto">
-                        {project.comingSoon ? (
+                        {project.youtubeUrl ? (
                           <>
-                            {project.youtubeUrl && (
-                              <a
-                                href={project.youtubeUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
-                                className="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition-colors duration-300 font-medium text-sm"
-                              >
-                                <Youtube size={14} />
-                                Watch
-                              </a>
-                            )}
-                            <div className="ml-auto bg-muted text-foreground/40 px-3 py-1.5 rounded-lg flex items-center gap-1 font-medium text-sm cursor-default">
-                              Coming Soon
+                            <a
+                              href={project.youtubeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition-colors duration-300 font-medium text-sm"
+                            >
+                              <Youtube size={14} />
+                              Watch
+                            </a>
+                            <div className="ml-auto bg-slate-700 text-white px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors duration-300 flex items-center gap-1 font-medium text-sm">
+                              View Details
+                              <ArrowRight size={14} />
                             </div>
                           </>
                         ) : project.id === 3 || project.id === 4 ? (
@@ -188,6 +199,59 @@ export default function Projects() {
               ))}
             </div>
           </div>
+
+          {/* Thesis Work — temporarily hidden, re-enable when content is ready
+          <div>
+            <h3 className="text-base font-semibold text-foreground/50 uppercase tracking-widest mb-4">Thesis Work</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {thesisProjects.map((project, index) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card
+                    className="overflow-hidden h-full flex flex-col hover-lift cursor-pointer group"
+                    onClick={() => handleProjectClick(project.id)}
+                  >
+                    <div className="relative h-64 md:h-72 w-full overflow-hidden bg-muted">
+                      <Image
+                        src={project.image || "/placeholder.svg"}
+                        alt={project.title}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105 duration-300"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    </div>
+                    <CardContent className="flex flex-col flex-grow p-4">
+                      <h3 className="text-base font-semibold mb-2 group-hover:text-primary transition-colors duration-300 line-clamp-2">
+                        {project.title}
+                      </h3>
+                      <p className="text-foreground/60 mb-3 flex-grow text-sm leading-relaxed line-clamp-3">{project.description}</p>
+
+                      <div className="flex flex-wrap gap-2 mt-auto">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-1 bg-transparent text-xs px-2 py-1"
+                          onClick={(e) => handleGithubClick(e, project.githubUrl)}
+                        >
+                          <Github size={14} />
+                          Code
+                        </Button>
+                        <div className="ml-auto bg-slate-700 text-white px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors duration-300 flex items-center gap-1 font-medium text-sm">
+                          View Details
+                          <ArrowRight size={14} />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+          */}
 
           {/* Hands-On Builds */}
           <div>

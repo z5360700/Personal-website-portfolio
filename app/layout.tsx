@@ -5,6 +5,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Suspense } from "react"
 import { NavigationHandler } from "@/components/navigation-handler"
+import Navbar from "@/components/navbar"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
@@ -53,6 +54,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <NavigationHandler />
+            <Navbar />
             {children}
           </ThemeProvider>
         </Suspense>

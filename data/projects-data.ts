@@ -603,4 +603,109 @@ Pressing on the hands was the most nerve-wracking step. Too much force damages t
 
 More importantly, this project reinforced the value of patience and careful planning - the same mindset that drives quality in every other project on this portfolio. Rushing never pays off when the tolerances are this tight, and that lesson applies equally to soldering, 3D printing, coding, and construction.`,
   },
+  {
+    id: 7,
+    title: "5-Motor Robotic Rubik's Cube Solver",
+    description:
+      "Solo-built electromechanical rig that solves any scrambled 3×3 end-to-end. ESP32 drives 5× NEMA 17 steppers through TMC2209 drivers, fed by a Kociemba two-phase solver and a browser-based colour-input UI.",
+    longDescription: `Solo-built electromechanical system that solves any valid scrambled 3×3 Rubik's cube end-to-end. Once the cube state is entered through the web UI, the full pipeline (solve computation, move translation, physical actuation) runs without human intervention.
+
+An ESP32 DevKitC drives 5× NEMA 17 steppers (R, L, F, B, D faces) through TMC2209 V2.0 drivers on a 12V 8A supply. The cube is loaded through slidable, removable L-brackets on the open top — no top-face motor, so U-face moves are reproduced in firmware via a 13-move equivalence using the surrounding faces. That trade trims mechanical complexity in exchange for a longer move list.
+
+The solver is the Kociemba two-phase algorithm — the same class of solver used in record-setting cube robots and the algorithmic basis for the proof that any cube state is solvable in 20 moves or fewer. A Python implementation runs on localhost and streams space-separated moves to the firmware over Serial.
+
+V1 deliberately defers computer-vision colour detection and a 6th U-face motor in favour of an open-top, manual-input design that prioritises mechanical simplicity, cube accessibility, and reliable end-to-end solving.`,
+    image: "/images/RubikCubeFrontImage.png",
+    hardwareGallery: [
+      "/images/5motordesign.jpg",
+      "/images/5motordesignfinal.jpg",
+      "/images/4motorbreadboardwiring.jpg",
+      "/images/5motordesign.2.jpg",
+      "/images/motorwithadapterissue.jpg",
+      "/images/singlemotorwithbracket.jpg",
+    ],
+    softwareGallery: [
+      "/images/rubiks-ui-empty.png",
+      "/images/rubiks-ui-filled.png",
+      "/images/rubiks-ui-solved.png",
+    ],
+    videoGallery: [
+      {
+        id: "OC9h20jK2XQ",
+        title: "Cube Solver in Action",
+        description: "End-to-end demonstration: cube state entered through the web UI, solver runs locally, and the rig executes the move sequence on a scrambled cube.",
+        isShort: false,
+      },
+    ],
+    tags: ["ESP32", "C++/Arduino", "Python", "Kociemba", "TMC2209", "Fusion 360", "3D Printing"],
+    liveUrl: null,
+    githubUrl: null,
+    features: [
+      "5-motor open-top architecture (R, L, F, B, D) — slidable L-brackets allow cube swap without disassembly",
+      "U-face moves synthesised in firmware via a 13-move equivalence (U = R L F2 B2 R' L' D L' R' B2 F2 L R)",
+      "Kociemba two-phase solver running locally in Python, streamed to ESP32 over Serial",
+      "Browser-based colour-palette input with real-time state validation and solve timing",
+      "Move map handles both Kociemba numeric (B1, B3, R2) and prime notation — no moves silently dropped",
+      "TMC2209 V2.0 drivers on a 12V 8A supply for quiet, micro-stepped face rotations",
+      "Custom 3D printed chassis, motor mounts, baseplate, and cube couplers (Fusion 360 / Bambu Studio / PLA+)",
+      "Arduino/AccelStepper firmware accepting space-separated move sequences from any host",
+    ],
+    technologies: {
+      firmware: [
+        "ESP32 DevKitC",
+        "C++ / Arduino",
+        "AccelStepper library",
+        "TMC2209 V2.0 stepper drivers",
+        "Serial command protocol",
+      ],
+      solver: [
+        "Python",
+        "Kociemba two-phase algorithm",
+        "Localhost Python service",
+        "Numeric + prime move notation",
+      ],
+      frontend: [
+        "HTML / JavaScript",
+        "Colour-palette cube input",
+        "Real-time state validation",
+        "Solve timing + move list display",
+      ],
+      mechanical: [
+        "5× NEMA 17 stepper motors",
+        "Fusion 360 CAD",
+        "Bambu Studio slicing",
+        "PLA+ filament",
+        "12V 8A bench supply",
+      ],
+    },
+    challenges: `The U-face is the hardest part of any Rubik's cube robot — there is nothing for a motor to grip on the top. Adding a 6th motor and arm would have meant a closed-top chassis and a cube that has to be loaded through a side hatch. Instead, V1 leaves the top open and synthesises U with a 13-move sequence on the surrounding faces. The solve is longer, but the rig stays mechanically simple and the cube can be inserted or swapped in seconds through removable L-brackets.
+
+Sourcing compatible parts and getting consistent torque without skipped steps required tuning the TMC2209 current limits and AccelStepper acceleration curves carefully. A face that under-rotates by a few degrees throws off every subsequent move, so calibration of the per-motor zero positions and step-per-quarter-turn ratios was iterative.
+
+The colour-input UI also had to be defensive — Kociemba rejects any invalid cube state outright, so the frontend validates colour counts and centre-piece consistency before sending the state, otherwise a user could spend a minute typing in a state that the solver will refuse a second later.`,
+    results: `End-to-end pipeline works on arbitrary valid scrambles: state is typed into the browser, solved locally in Python (typically well under a second), expanded into 5-motor moves, and pushed to the ESP32 over Serial. A 21-move Kociemba solution expands to roughly 60–70 physical moves once U-face equivalences are substituted in.
+
+The open-top, manual-input design has been a clear win for V1 — it keeps the mechanical envelope small, makes cube changes trivial, and lets the focus stay on solver correctness and motor control rather than on a vision pipeline. Computer-vision colour detection and a 6th U-face motor are the obvious next steps for V2.`,
+    learnings: [
+      "Mechanical scope discipline — choosing a 5-motor open-top design and synthesising U in firmware",
+      "Embedded motor control with TMC2209 drivers and AccelStepper",
+      "Integrating a Python solver with embedded firmware over Serial",
+      "Building a defensive web UI for state input where downstream tools are strict",
+      "Trade-offs between move-count efficiency and mechanical complexity",
+    ],
+  },
+  {
+    id: 8,
+    title: "PVT Calculator Tool",
+    description:
+      "Thesis project — a PVT calculator tool, built in collaboration with CoolSheet.",
+    longDescription: `Thesis project, built in collaboration with CoolSheet. A browser-based PVT calculator tool.`,
+    image: "/placeholder.svg",
+    tags: [],
+    liveUrl: "https://m-lorusso.github.io/PVT-calculator-tool/",
+    githubUrl: "https://github.com/m-lorusso/PVT-calculator-tool",
+    features: [],
+    technologies: {},
+    challenges: "",
+  },
 ]
