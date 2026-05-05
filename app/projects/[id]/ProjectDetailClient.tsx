@@ -23,6 +23,7 @@ import {
   Home,
   PaintRoller,
   Layers,
+  Lock,
   RotateCcw,
   Ruler,
   Timer,
@@ -52,8 +53,8 @@ const rubiksNavItems = [
 
 const rubiksMetricCards = [
   { icon: CircuitBoard, label: "Motors", value: "5", detail: "R, L, F, B, D" },
-  { icon: RotateCcw, label: "Top turn", value: "13", detail: "move workaround" },
-  { icon: Timer, label: "Solver", value: "<1s", detail: "local Kociemba" },
+  { icon: RotateCcw, label: "Top turn", value: "13", detail: "U move workaround" },
+  { icon: Timer, label: "Solver", value: "<1s", detail: "Kociemba plan" },
   { icon: Gauge, label: "Physical", value: "~65", detail: "moves after expansion" },
 ]
 
@@ -68,8 +69,8 @@ const rubiksPipelineSteps = [
   {
     icon: Cpu,
     stage: "Solve",
-    title: "Kociemba runs locally",
-    description: "Python returns a short two-phase move list.",
+    title: "Kociemba plans the solve",
+    description: "Python returns an efficient six-face move list.",
     image: "/images/rubiks-ui-solved.png",
   },
   {
@@ -164,6 +165,74 @@ const rubiksMoveTrace = [
   },
 ]
 
+const rubiksMoveTraceUPrime = [
+  {
+    move: "R'",
+    title: "Right face counter-clockwise",
+    detail: "The right motor turns its face 90 deg counter-clockwise, viewed from the right side.",
+  },
+  {
+    move: "L'",
+    title: "Left face counter-clockwise",
+    detail: "The left motor turns its face 90 deg counter-clockwise, viewed from the left side.",
+  },
+  {
+    move: "F2",
+    title: "Front face 180",
+    detail: "The front motor makes a half-turn, equal to two quarter turns.",
+  },
+  {
+    move: "B2",
+    title: "Back face 180",
+    detail: "The back motor makes the matching half-turn.",
+  },
+  {
+    move: "R",
+    title: "Right face clockwise",
+    detail: "The right motor reverses one quarter turn.",
+  },
+  {
+    move: "L",
+    title: "Left face clockwise",
+    detail: "The left motor reverses one quarter turn.",
+  },
+  {
+    move: "D'",
+    title: "Bottom face counter-clockwise",
+    detail: "The bottom motor makes the key turn that substitutes for the missing top motor (in reverse).",
+  },
+  {
+    move: "L",
+    title: "Left face clockwise",
+    detail: "The left face starts restoring the cube's orientation.",
+  },
+  {
+    move: "R",
+    title: "Right face clockwise",
+    detail: "The right face continues the restore step.",
+  },
+  {
+    move: "B2",
+    title: "Back face 180",
+    detail: "The back face returns with another half-turn.",
+  },
+  {
+    move: "F2",
+    title: "Front face 180",
+    detail: "The front face returns with another half-turn.",
+  },
+  {
+    move: "L'",
+    title: "Left face counter-clockwise",
+    detail: "The left face closes the restore sequence.",
+  },
+  {
+    move: "R'",
+    title: "Right face counter-clockwise",
+    detail: "The right face closes it. Net result: one top counter-turn, no top motor.",
+  },
+]
+
 const rubiksBuildPhotos = [
   {
     src: "/images/5motordesign.jpg",
@@ -220,10 +289,26 @@ type RubiksTurnDirection = "clockwise" | "prime" | "half"
 
 const rubiksPreviewModes = [
   { id: "animate", label: "Play" },
-  { id: "start", label: "Start" },
-  { id: "turn", label: "Turn" },
+  { id: "start", label: "Before" },
   { id: "result", label: "Result" },
 ] as const
+
+const rubiksObjectives = {
+  cw: {
+    symbol: "U",
+    label: "U move",
+    detail: "Replicated by 13 physical moves on the surrounding faces (no top-face motor).",
+    trace: rubiksMoveTrace,
+  },
+  ccw: {
+    symbol: "U'",
+    label: "U' move",
+    detail: "Counter-clockwise top turn — the same 13-move equivalence run in reverse.",
+    trace: rubiksMoveTraceUPrime,
+  },
+} as const
+
+type RubiksDirection = keyof typeof rubiksObjectives
 
 type RubiksPreviewMode = (typeof rubiksPreviewModes)[number]["id"]
 
@@ -252,12 +337,18 @@ const getInitialRubiksMove = () => {
 }
 
 const getInitialRubiksPreviewMode = (): RubiksPreviewMode => {
-  if (typeof window === "undefined") return "animate"
+  if (typeof window === "undefined") return "start"
 
   const requestedFrame = new URLSearchParams(window.location.search).get("frame")
   const requestedMode = rubiksPreviewModes.find((mode) => mode.id === requestedFrame)
 
-  return requestedMode?.id || "animate"
+  return requestedMode?.id || "start"
+}
+
+const getInitialRubiksDirection = (): RubiksDirection => {
+  if (typeof window === "undefined") return "cw"
+
+  return new URLSearchParams(window.location.search).get("direction") === "ccw" ? "ccw" : "cw"
 }
 
 type RubiksAxis = "x" | "y" | "z"
@@ -356,8 +447,8 @@ const applyRubiksMoveToState = (state: RubiksCubieState[], move: string) => {
   })
 }
 
-const getRubiksCubeStateBeforeStep = (stepIndex: number) =>
-  rubiksMoveTrace
+const getRubiksCubeStateBeforeStep = (moveSequence: readonly { move: string }[], stepIndex: number) =>
+  moveSequence
     .slice(0, stepIndex)
     .reduce((state, item) => applyRubiksMoveToState(state, item.move), createInitialRubiksCubeState())
 
@@ -366,7 +457,7 @@ const disposeRubiksObject = (object: THREE.Object3D) => {
   const materials = new Set<THREE.Material>()
 
   object.traverse((child) => {
-    if (!(child instanceof THREE.Mesh) && !(child instanceof THREE.LineSegments)) return
+    if (!(child instanceof THREE.Mesh) && !(child instanceof THREE.Line)) return
 
     if (child.geometry) {
       geometries.add(child.geometry)
@@ -388,18 +479,24 @@ function RubiksPhysicalCube({
   activeFace,
   turn,
   stepIndex,
+  moveSequence,
+  direction,
   previewMode,
   replayKey,
   moveLabel,
   moveTitle,
+  highlightTopFace = false,
 }: {
   activeFace: RubiksFaceId
   turn: RubiksTurnDirection
   stepIndex: number
+  moveSequence: readonly { move: string }[]
+  direction: RubiksDirection
   previewMode: RubiksPreviewMode
   replayKey: number
   moveLabel: string
   moveTitle: string
+  highlightTopFace?: boolean
 }) {
   const mountRef = useRef<HTMLDivElement>(null)
 
@@ -409,7 +506,7 @@ function RubiksPhysicalCube({
 
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100)
-    camera.position.set(4.2, 3.4, 5.6)
+    camera.position.set(6.2, 5.0, 8.3)
     camera.lookAt(0, 0, 0)
 
     const renderer = new THREE.WebGLRenderer({
@@ -426,7 +523,7 @@ function RubiksPhysicalCube({
     mount.appendChild(renderer.domElement)
 
     const root = new THREE.Group()
-    root.rotation.set(-0.38, -0.62, 0.04)
+    root.rotation.set(0, 0, 0)
     scene.add(root)
 
     const fixedGroup = new THREE.Group()
@@ -461,10 +558,12 @@ function RubiksPhysicalCube({
     scene.add(floor)
 
     const turnConfig = getRubiksSliceTurn(activeFace, turn)
-    const cubieStates = getRubiksCubeStateBeforeStep(stepIndex)
+    const isSettledFinalResult = previewMode === "result" && highlightTopFace
+    const cubieStates = getRubiksCubeStateBeforeStep(moveSequence, stepIndex + (isSettledFinalResult ? 1 : 0))
     const cubieGeometry = new THREE.BoxGeometry(0.92, 0.92, 0.92, 3, 3, 3)
     const cubieEdgeGeometry = new THREE.EdgesGeometry(cubieGeometry)
     const stickerGeometry = new THREE.PlaneGeometry(0.72, 0.72)
+    const topHighlightGeometry = new THREE.BoxGeometry(3.18, 0.045, 3.18)
     const bodyMaterial = new THREE.MeshStandardMaterial({
       color: 0x07080c,
       roughness: 0.54,
@@ -481,6 +580,45 @@ function RubiksPhysicalCube({
       color: 0x2f6df6,
       transparent: true,
       opacity: 0.82,
+    })
+    const topHighlightMaterial = new THREE.MeshStandardMaterial({
+      color: 0x2f6df6,
+      emissive: 0x123b8f,
+      emissiveIntensity: 0.85,
+      roughness: 0.35,
+      metalness: 0.08,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+    })
+    const topHighlightLineMaterial = new THREE.LineBasicMaterial({
+      color: 0x7fb1ff,
+      transparent: true,
+      opacity: 0,
+    })
+    const targetPlateMaterial = new THREE.MeshStandardMaterial({
+      color: 0x2f6df6,
+      emissive: 0x123b8f,
+      emissiveIntensity: 0.75,
+      roughness: 0.38,
+      metalness: 0.08,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+    })
+    const targetArrowMaterial = new THREE.LineBasicMaterial({
+      color: 0x7fb1ff,
+      transparent: true,
+      opacity: 0,
+    })
+    const targetArrowHeadMaterial = new THREE.MeshStandardMaterial({
+      color: 0x7fb1ff,
+      emissive: 0x123b8f,
+      emissiveIntensity: 0.8,
+      roughness: 0.35,
+      metalness: 0.1,
+      transparent: true,
+      opacity: 0,
     })
     const stickerMaterials = Object.fromEntries(
       Object.entries(rubiksStickerColors).map(([face, color]) => [
@@ -511,7 +649,7 @@ function RubiksPhysicalCube({
       cubie.position.set(position.x * 1.02, position.y * 1.02, position.z * 1.02)
       cubie.quaternion.copy(cubieState.quaternion)
 
-      const isMovingSlice = Math.round(position[turnConfig.axis]) === turnConfig.layer
+      const isMovingSlice = !isSettledFinalResult && Math.round(position[turnConfig.axis]) === turnConfig.layer
       const body = new THREE.Mesh(cubieGeometry.clone(), isMovingSlice ? sliceBodyMaterial : bodyMaterial)
       body.castShadow = true
       body.receiveShadow = true
@@ -536,8 +674,41 @@ function RubiksPhysicalCube({
       parent.add(cubie)
     })
 
+    const topHighlight = new THREE.Group()
+    const topPlate = new THREE.Mesh(topHighlightGeometry, topHighlightMaterial)
+    const topOutline = new THREE.LineSegments(new THREE.EdgesGeometry(topHighlightGeometry), topHighlightLineMaterial)
+    topHighlight.position.y = 1.55
+    topHighlight.visible = false
+    topHighlight.add(topPlate, topOutline)
+    root.add(topHighlight)
+
+    const targetCue = new THREE.Group()
+    const targetPlate = new THREE.Mesh(topHighlightGeometry.clone(), targetPlateMaterial)
+    const targetDirectionSign = direction === "cw" ? -1 : 1
+    const targetRadius = 1.88
+    const targetStartAngle = direction === "cw" ? Math.PI * 0.08 : Math.PI * 0.92
+    const targetArcLength = Math.PI * 1.45 * targetDirectionSign
+    const targetArcPoints = Array.from({ length: 44 }, (_, index) => {
+      const progress = index / 43
+      const angle = targetStartAngle + targetArcLength * progress
+
+      return new THREE.Vector3(Math.cos(angle) * targetRadius, 1.96, Math.sin(angle) * targetRadius)
+    })
+    const targetArrow = new THREE.Line(new THREE.BufferGeometry().setFromPoints(targetArcPoints), targetArrowMaterial)
+    const targetArrowHead = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.32, 24), targetArrowHeadMaterial)
+    const targetArrowEnd = targetArcPoints[targetArcPoints.length - 1]
+    const targetArrowBeforeEnd = targetArcPoints[targetArcPoints.length - 4]
+    const targetArrowDirection = targetArrowEnd.clone().sub(targetArrowBeforeEnd).normalize()
+
+    targetPlate.position.y = 1.58
+    targetArrowHead.position.copy(targetArrowEnd)
+    targetArrowHead.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), targetArrowDirection)
+    targetCue.visible = false
+    targetCue.add(targetPlate, targetArrow, targetArrowHead)
+    root.add(targetCue)
+
     const getStaticAngle = () => {
-      if (previewMode === "turn") return turnConfig.angle * 0.68
+      if (isSettledFinalResult) return 0
       if (previewMode === "result") return turnConfig.angle
       return 0
     }
@@ -596,15 +767,36 @@ function RubiksPhysicalCube({
     const easeOutCubic = (value: number) => 1 - Math.pow(1 - value, 3)
     let animationFrame = 0
 
+    const setTopHighlightOpacity = (opacity: number) => {
+      const visibleOpacity = THREE.MathUtils.clamp(opacity, 0, 1)
+      topHighlight.visible = visibleOpacity > 0.01
+      topHighlightMaterial.opacity = visibleOpacity * 0.24
+      topHighlightLineMaterial.opacity = visibleOpacity * 0.95
+      topHighlight.scale.setScalar(1 + visibleOpacity * 0.025)
+    }
+
+    const setTargetCueOpacity = (opacity: number) => {
+      const visibleOpacity = THREE.MathUtils.clamp(opacity, 0, 1)
+      targetCue.visible = visibleOpacity > 0.01
+      targetPlateMaterial.opacity = visibleOpacity * 0.22
+      targetArrowMaterial.opacity = visibleOpacity * 0.95
+      targetArrowHeadMaterial.opacity = visibleOpacity
+      targetCue.scale.setScalar(1 + Math.sin(performance.now() * 0.004) * 0.01 * visibleOpacity)
+    }
+
     const render = (time: number) => {
       let angle = getStaticAngle()
+      let moveProgress = previewMode === "result" ? 1 : 0
 
       if (previewMode === "animate") {
         const progress = THREE.MathUtils.clamp((time - startedAt - 160) / 1150, 0, 1)
-        angle = turnConfig.angle * easeOutCubic(progress)
+        moveProgress = progress
+        angle = turnConfig.angle * easeOutCubic(moveProgress)
       }
 
       movingGroup.rotation[turnConfig.axis] = angle
+      setTopHighlightOpacity(highlightTopFace ? THREE.MathUtils.smoothstep(moveProgress, 0.78, 1) : 0)
+      setTargetCueOpacity(previewMode === "start" ? 1 : 0)
       floor.rotation.z += 0.0012
       renderer.render(scene, camera)
       animationFrame = window.requestAnimationFrame(render)
@@ -632,7 +824,7 @@ function RubiksPhysicalCube({
       renderer.dispose()
       renderer.domElement.remove()
     }
-  }, [activeFace, turn, stepIndex, previewMode, replayKey])
+  }, [activeFace, turn, stepIndex, moveSequence, direction, previewMode, replayKey, highlightTopFace])
 
   return (
     <div
@@ -652,7 +844,18 @@ function ProjectDetailClient() {
   const [activeRubiksMove, setActiveRubiksMove] = useState(getInitialRubiksMove)
   const [rubiksPreviewMode, setRubiksPreviewMode] = useState<RubiksPreviewMode>(getInitialRubiksPreviewMode)
   const [rubiksReplayKey, setRubiksReplayKey] = useState(0)
+  const [rubiksDirection, setRubiksDirection] = useState<RubiksDirection>(getInitialRubiksDirection)
+  const [isRubiksSequencePlaying, setIsRubiksSequencePlaying] = useState(false)
   const [showRubiksVideo, setShowRubiksVideo] = useState(false)
+
+  const activeRubiksObjective = rubiksObjectives[rubiksDirection]
+  const activeMoveSequence = activeRubiksObjective.trace
+  const safeRubiksMove = Math.min(activeRubiksMove, activeMoveSequence.length - 1)
+  const activeRubiksTrace = activeMoveSequence[safeRubiksMove]
+  const activeRubiksVisual = getRubiksMoveVisual(activeRubiksTrace.move)
+  const isRubiksFinalStep = safeRubiksMove === activeMoveSequence.length - 1
+  const shouldHighlightTopFace = isRubiksFinalStep && rubiksPreviewMode !== "start"
+  const showRubiksFinalOutcome = isRubiksFinalStep && rubiksPreviewMode === "result"
 
   // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false)
@@ -719,8 +922,32 @@ function ProjectDetailClient() {
       setActiveRubiksMove(requestedMove - 1)
     }
 
+    setRubiksDirection(getInitialRubiksDirection())
     setRubiksPreviewMode(getInitialRubiksPreviewMode())
   }, [project])
+
+  useEffect(() => {
+    if (!isRubiksSequencePlaying) return
+
+    setRubiksPreviewMode("animate")
+
+    const timer = window.setTimeout(() => {
+      setActiveRubiksMove((current) => {
+        const currentStep = Math.min(current, activeMoveSequence.length - 1)
+
+        if (currentStep >= activeMoveSequence.length - 1) {
+          setIsRubiksSequencePlaying(false)
+          setRubiksPreviewMode("result")
+          return currentStep
+        }
+
+        setRubiksReplayKey((key) => key + 1)
+        return currentStep + 1
+      })
+    }, 1420)
+
+    return () => window.clearTimeout(timer)
+  }, [activeMoveSequence.length, isRubiksSequencePlaying, safeRubiksMove])
 
   // Lightbox functions
   const openLightbox = (images: string[], index: number, altPrefix: string) => {
@@ -800,14 +1027,28 @@ function ProjectDetailClient() {
     )
   }
 
-  const activeRubiksTrace = rubiksMoveTrace[activeRubiksMove]
-  const activeRubiksVisual = getRubiksMoveVisual(activeRubiksTrace.move)
   const replayRubiksAnimation = () => {
+    setIsRubiksSequencePlaying(false)
     setRubiksPreviewMode("animate")
     setRubiksReplayKey((current) => current + 1)
   }
   const goToRubiksMove = (moveIndex: number) => {
-    setActiveRubiksMove(Math.min(Math.max(moveIndex, 0), rubiksMoveTrace.length - 1))
+    setIsRubiksSequencePlaying(false)
+    setActiveRubiksMove(Math.min(Math.max(moveIndex, 0), activeMoveSequence.length - 1))
+    setRubiksReplayKey((current) => current + 1)
+  }
+  const playRubiksFullSequence = () => {
+    setActiveRubiksMove(0)
+    setRubiksPreviewMode("animate")
+    setRubiksReplayKey((current) => current + 1)
+    setIsRubiksSequencePlaying(true)
+  }
+  const setRubiksDirectionAndReset = (direction: RubiksDirection) => {
+    if (direction === rubiksDirection) return
+    setIsRubiksSequencePlaying(false)
+    setRubiksDirection(direction)
+    setActiveRubiksMove(0)
+    setRubiksPreviewMode("start")
     setRubiksReplayKey((current) => current + 1)
   }
 
@@ -1408,11 +1649,6 @@ function ProjectDetailClient() {
 
             <section id="rubiks-demo" className="scroll-mt-28 grid min-w-0 grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center pt-2">
               <div className="min-w-0 lg:col-span-5 space-y-6">
-                <div className="inline-flex items-center gap-2 rounded-md border border-border/70 bg-background/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-                  Project 7
-                  <span className="h-1 w-1 rounded-full bg-primary/50" />
-                  Robotics
-                </div>
                 <div className="space-y-4">
                   <h1 className="max-w-[21rem] break-words text-3xl sm:max-w-xl sm:text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight">
                     A 5-motor robot that solves a Rubik&apos;s cube end-to-end.
@@ -1439,7 +1675,6 @@ function ProjectDetailClient() {
 
               <div className="min-w-0 lg:col-span-7 space-y-4">
                 <div className="relative aspect-video overflow-hidden rounded-xl border border-border/70 bg-black shadow-2xl shadow-primary/10">
-                  <div aria-hidden className="rubiks-video-scan absolute inset-y-0 left-0 z-10 w-1/3" />
                   {showRubiksVideo && project.videoGallery && project.videoGallery[0] ? (
                     <iframe
                       src={`https://www.youtube.com/embed/${project.videoGallery[0].id}?autoplay=1&rel=0`}
@@ -1526,15 +1761,15 @@ function ProjectDetailClient() {
                   <div className="min-w-0 lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
-                        The browser captures the cube state, Python solves it locally, and the ESP32 executes the moves.
+                        Python runs Kociemba locally: a fast two-phase solver used in speed-solving software to create efficient cube move lists.
                       </p>
                       <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
-                        The open top makes cube swaps easy. The cost: top-face turns need a workaround.
+                        Kociemba assumes all six faces can turn. This robot keeps the top open, so U and U&apos; moves are expanded into a workaround using the surrounding motors.
                       </p>
                     </div>
                     <div className="space-y-4">
                       <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
-                        Four motors proved the concept. The fifth bottom-face motor made it a general solver.
+                        The ESP32 still follows the same solve plan, but top-face requests become physical R, L, F, B, and D moves.
                       </p>
                       <div className="overflow-x-auto rounded-md border border-border/70 bg-background/70 p-3 font-mono text-xs md:text-sm text-foreground/80">
                         U = R L F2 B2 R&apos; L&apos; D L&apos; R&apos; B2 F2 L R
@@ -1610,25 +1845,71 @@ function ProjectDetailClient() {
                         </div>
                       ))}
                     </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-foreground/10">
-                      <div
-                        className="h-full rounded-full bg-primary transition-all duration-300"
-                        style={{ width: `${((activeRubiksMove + 1) / rubiksMoveTrace.length) * 100}%` }}
-                      />
-                    </div>
                   </div>
 
                   <div className="lg:col-span-7 space-y-5">
                     <div className="rounded-lg border border-border/70 bg-background/75 p-4 md:p-5">
-                      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                      <div className="mb-3 flex flex-col items-start justify-between gap-3 border-b border-border/60 pb-3 sm:flex-row sm:items-center">
                         <div>
-                          <div className="text-xs font-mono text-primary/80">{activeRubiksTrace.move}</div>
-                          <div className="text-sm font-semibold">{activeRubiksTrace.title}</div>
+                          <div className="text-[10px] uppercase tracking-[0.2em] text-foreground/50">
+                            Objective
+                          </div>
+                          <div className="mt-0.5 flex items-baseline gap-2">
+                            <span className="text-lg font-semibold">{activeRubiksObjective.label}</span>
+                            <span className="font-mono text-xs text-primary/80">
+                              {activeRubiksObjective.symbol}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex rounded-md border border-border/70 bg-background/80 p-1">
+                          {([
+                            { id: "cw" as const, label: "Clockwise" },
+                            { id: "ccw" as const, label: "Counter" },
+                          ]).map((option) => (
+                            <button
+                              key={option.id}
+                              type="button"
+                              aria-pressed={rubiksDirection === option.id}
+                              onClick={() => setRubiksDirectionAndReset(option.id)}
+                              className={`w-20 rounded px-2.5 py-1 text-center text-xs font-medium transition-colors ${
+                                rubiksDirection === option.id
+                                  ? "bg-primary text-primary-foreground"
+                                  : "text-foreground/60 hover:text-foreground"
+                              }`}
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="mb-2 hidden text-[11px] text-foreground/55 sm:block">
+                        {activeRubiksObjective.detail}
+                      </div>
+                      <div className="mb-4 space-y-3">
+                        <div>
+                          <div className="text-[10px] uppercase tracking-[0.2em] text-foreground/50">
+                            {showRubiksFinalOutcome ? "Result" : `Step ${safeRubiksMove + 1} / ${activeMoveSequence.length}`}
+                          </div>
+                          <div className="mt-0.5 flex items-baseline gap-2">
+                            <span className="text-sm font-semibold">
+                              {showRubiksFinalOutcome ? `${activeRubiksObjective.symbol} achieved` : activeRubiksTrace.title}
+                            </span>
+                            <span className="font-mono text-xs text-primary/80">
+                              {showRubiksFinalOutcome ? activeRubiksObjective.symbol : activeRubiksTrace.move}
+                            </span>
+                          </div>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <div className="rounded-md border border-border/70 bg-background/80 px-3 py-1.5 text-xs text-foreground/65">
-                            {activeRubiksVisual.turnLabel}
-                          </div>
+                          <Button
+                            type="button"
+                            size="sm"
+                            className="h-8 rounded-md"
+                            disabled={isRubiksSequencePlaying}
+                            onClick={playRubiksFullSequence}
+                          >
+                            <Play className="h-3.5 w-3.5 fill-current" />
+                            {isRubiksSequencePlaying ? "Playing" : "Play full sequence"}
+                          </Button>
                           <div className="flex rounded-md border border-border/70 bg-background/80 p-1">
                             {rubiksPreviewModes.map((mode) => (
                               <button
@@ -1636,6 +1917,7 @@ function ProjectDetailClient() {
                                 type="button"
                                 aria-pressed={rubiksPreviewMode === mode.id}
                                 onClick={() => {
+                                  setIsRubiksSequencePlaying(false)
                                   setRubiksPreviewMode(mode.id)
                                   if (mode.id === "animate") {
                                     setRubiksReplayKey((current) => current + 1)
@@ -1658,25 +1940,51 @@ function ProjectDetailClient() {
                         </div>
                       </div>
 
+                      {rubiksPreviewMode === "start" && (
+                        <div className="rubiks-cube-intent" aria-hidden="true">
+                          <div className="rubiks-cube-intent-primary">
+                            Goal: rotate top face {rubiksDirection === "cw" ? "clockwise" : "anticlockwise"}
+                          </div>
+                          <div className="rubiks-cube-intent-lock">
+                            <Lock className="h-3.5 w-3.5" />
+                            Top face locked: no motor
+                          </div>
+                        </div>
+                      )}
                       <RubiksPhysicalCube
                         activeFace={activeRubiksVisual.face}
                         turn={activeRubiksVisual.turn}
-                        stepIndex={activeRubiksMove}
+                        stepIndex={safeRubiksMove}
+                        moveSequence={activeMoveSequence}
+                        direction={rubiksDirection}
                         previewMode={rubiksPreviewMode}
                         replayKey={rubiksReplayKey}
                         moveLabel={activeRubiksTrace.move}
                         moveTitle={activeRubiksTrace.title}
+                        highlightTopFace={shouldHighlightTopFace}
                       />
+                      <div className="mt-4 h-2 overflow-hidden rounded-full bg-foreground/10" aria-label={`Step ${safeRubiksMove + 1} of ${activeMoveSequence.length}`}>
+                        <div
+                          className="h-full rounded-full bg-primary transition-all duration-300"
+                          style={{ width: `${((safeRubiksMove + 1) / activeMoveSequence.length) * 100}%` }}
+                        />
+                      </div>
+                      {showRubiksFinalOutcome && (
+                        <div className="mt-4 rounded-lg border border-primary/35 bg-primary/10 px-4 py-3 text-sm leading-relaxed text-foreground/75">
+                          <span className="font-semibold text-foreground">{activeRubiksObjective.symbol} achieved.</span>{" "}
+                          The highlighted top face is the rotation created by using the surrounding motors instead of a top-face motor.
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex flex-wrap gap-2">
-                      {rubiksMoveTrace.map((item, index) => (
+                      {activeMoveSequence.map((item, index) => (
                         <button
                           key={`${item.move}-${index}`}
                           type="button"
                           onClick={() => goToRubiksMove(index)}
                           className={`rounded-md border px-3 py-2 font-mono text-xs transition-all ${
-                            activeRubiksMove === index
+                            safeRubiksMove === index && !showRubiksFinalOutcome
                               ? "border-primary bg-primary text-primary-foreground shadow-md shadow-primary/20"
                               : "border-border/70 bg-background/70 text-foreground/70 hover:border-primary/60 hover:text-foreground"
                           }`}
@@ -1688,11 +1996,15 @@ function ProjectDetailClient() {
 
                     <div className="rounded-lg border border-border/70 bg-background/75 p-5">
                       <div className="mb-2 text-xs font-mono text-primary/80">
-                        Step {activeRubiksMove + 1} of {rubiksMoveTrace.length}
+                        {showRubiksFinalOutcome ? "Result" : `Step ${safeRubiksMove + 1} of ${activeMoveSequence.length}`}
                       </div>
-                      <h3 className="text-lg font-semibold">{activeRubiksTrace.title}</h3>
+                      <h3 className="text-lg font-semibold">
+                        {showRubiksFinalOutcome ? `${activeRubiksObjective.symbol} achieved` : activeRubiksTrace.title}
+                      </h3>
                       <p className="mt-2 text-sm leading-relaxed text-foreground/65">
-                        {activeRubiksTrace.detail}
+                        {showRubiksFinalOutcome
+                          ? "The top face reached the target rotation by chaining the surrounding face motors."
+                          : activeRubiksTrace.detail}
                       </p>
                       <div className="mt-5 flex flex-wrap gap-2">
                         <Button
@@ -1700,8 +2012,8 @@ function ProjectDetailClient() {
                           variant="outline"
                           size="sm"
                           className="rounded-md bg-background/80"
-                          disabled={activeRubiksMove === 0}
-                          onClick={() => goToRubiksMove(activeRubiksMove - 1)}
+                          disabled={safeRubiksMove === 0}
+                          onClick={() => goToRubiksMove(safeRubiksMove - 1)}
                         >
                           Previous
                         </Button>
@@ -1710,7 +2022,8 @@ function ProjectDetailClient() {
                           size="sm"
                           className="rounded-md"
                           onClick={() => {
-                            setActiveRubiksMove((current) => (current + 1) % rubiksMoveTrace.length)
+                            setIsRubiksSequencePlaying(false)
+                            setActiveRubiksMove((current) => (current + 1) % activeMoveSequence.length)
                             setRubiksReplayKey((current) => current + 1)
                           }}
                         >
