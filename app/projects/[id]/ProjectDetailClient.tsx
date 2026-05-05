@@ -4,18 +4,29 @@ import { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
+import * as THREE from "three"
 import {
   ArrowLeft,
+  ArrowRight,
+  Cable,
+  CircuitBoard,
+  Cpu,
   ExternalLink,
   Github,
+  Gauge,
   Hammer,
   HardHat,
+  Monitor,
+  Play,
   Zap,
   Droplets,
   Home,
   PaintRoller,
   Layers,
+  RotateCcw,
   Ruler,
+  Timer,
+  Wrench,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -30,11 +41,582 @@ import { VideoGallery } from "@/components/project-detail/video-gallery"
 import { ResultsSection } from "@/components/project-detail/results-section"
 import ConstructionSlideshowModal from "@/components/construction-slideshow-modal"
 
+const rubiksNavItems = [
+  { label: "Demo", href: "#rubiks-demo" },
+  { label: "Overview", href: "#rubiks-overview" },
+  { label: "Pipeline", href: "#rubiks-pipeline" },
+  { label: "Top turn", href: "#rubiks-trace" },
+  { label: "Build", href: "#rubiks-build" },
+  { label: "Stack", href: "#rubiks-stack" },
+]
+
+const rubiksMetricCards = [
+  { icon: CircuitBoard, label: "Motors", value: "5", detail: "R, L, F, B, D" },
+  { icon: RotateCcw, label: "Top turn", value: "13", detail: "move workaround" },
+  { icon: Timer, label: "Solver", value: "<1s", detail: "local Kociemba" },
+  { icon: Gauge, label: "Physical", value: "~65", detail: "moves after expansion" },
+]
+
+const rubiksPipelineSteps = [
+  {
+    icon: Monitor,
+    stage: "Input",
+    title: "Paint the cube state",
+    description: "The browser checks colour counts before solving.",
+    image: "/images/rubiks-ui-filled.png",
+  },
+  {
+    icon: Cpu,
+    stage: "Solve",
+    title: "Kociemba runs locally",
+    description: "Python returns a short two-phase move list.",
+    image: "/images/rubiks-ui-solved.png",
+  },
+  {
+    icon: Cable,
+    stage: "Stream",
+    title: "Serial talks to ESP32",
+    description: "Moves become serial commands for the firmware.",
+    image: "/images/4motorbreadboardwiring.jpg",
+  },
+  {
+    icon: Wrench,
+    stage: "Actuate",
+    title: "The chassis does the work",
+    description: "Five steppers turn the gripped faces.",
+    image: "/images/5motordesignfinal.jpg",
+  },
+]
+
+const rubiksNotationLegend = [
+  { symbol: "R", label: "Right face clockwise" },
+  { symbol: "L", label: "Left face clockwise" },
+  { symbol: "F2 / B2", label: "Front or back half-turn" },
+  { symbol: "D", label: "Bottom face clockwise" },
+  { symbol: "'", label: "Prime: turn counter-clockwise" },
+]
+
+const rubiksMoveTrace = [
+  {
+    move: "R",
+    title: "Right face clockwise",
+    detail: "The right motor turns its face 90 deg clockwise, viewed from the right side.",
+  },
+  {
+    move: "L",
+    title: "Left face clockwise",
+    detail: "The left motor turns its face 90 deg clockwise, viewed from the left side.",
+  },
+  {
+    move: "F2",
+    title: "Front face 180",
+    detail: "The front motor makes a half-turn, equal to two quarter turns.",
+  },
+  {
+    move: "B2",
+    title: "Back face 180",
+    detail: "The back motor makes the matching half-turn.",
+  },
+  {
+    move: "R'",
+    title: "Right face counter-clockwise",
+    detail: "The right motor reverses one quarter turn.",
+  },
+  {
+    move: "L'",
+    title: "Left face counter-clockwise",
+    detail: "The left motor reverses one quarter turn.",
+  },
+  {
+    move: "D",
+    title: "Bottom face clockwise",
+    detail: "The bottom motor makes the key turn that substitutes for the missing top motor.",
+  },
+  {
+    move: "L'",
+    title: "Left face counter-clockwise",
+    detail: "The left face starts restoring the cube's orientation.",
+  },
+  {
+    move: "R'",
+    title: "Right face counter-clockwise",
+    detail: "The right face continues the restore step.",
+  },
+  {
+    move: "B2",
+    title: "Back face 180",
+    detail: "The back face returns with another half-turn.",
+  },
+  {
+    move: "F2",
+    title: "Front face 180",
+    detail: "The front face returns with another half-turn.",
+  },
+  {
+    move: "L",
+    title: "Left face clockwise",
+    detail: "The left face closes the restore sequence.",
+  },
+  {
+    move: "R",
+    title: "Right face clockwise",
+    detail: "The right face closes it. Net result: one top turn, no top motor.",
+  },
+]
+
+const rubiksBuildPhotos = [
+  {
+    src: "/images/5motordesign.jpg",
+    label: "Early 5-motor CAD",
+    span: "col-span-12 md:col-span-7",
+    aspect: "aspect-[4/3]",
+  },
+  {
+    src: "/images/5motordesignfinal.jpg",
+    label: "Final chassis direction",
+    span: "col-span-12 md:col-span-5",
+    aspect: "aspect-[4/3]",
+  },
+  {
+    src: "/images/singlemotorwithbracket.jpg",
+    label: "Motor and bracket detail",
+    span: "col-span-6 md:col-span-4",
+    aspect: "aspect-[4/3]",
+  },
+  {
+    src: "/images/motorwithadapterissue.jpg",
+    label: "Adapter issue",
+    span: "col-span-6 md:col-span-4",
+    aspect: "aspect-[4/3]",
+  },
+  {
+    src: "/images/5motordesign.2.jpg",
+    label: "Fitment iteration",
+    span: "col-span-12 md:col-span-4",
+    aspect: "aspect-[4/3]",
+  },
+  {
+    src: "/images/4motorbreadboardwiring.jpg",
+    label: "Stepper driver wiring",
+    span: "col-span-12",
+    aspect: "aspect-[16/9]",
+  },
+]
+
+const rubiksFaceTiles = [
+  "#f8fafc",
+  "#ef4444",
+  "#22c55e",
+  "#facc15",
+  "#3b82f6",
+  "#f97316",
+  "#e2e8f0",
+  "#ef4444",
+  "#22c55e",
+]
+
+type RubiksFaceId = "u" | "l" | "f" | "r" | "b" | "d"
+type RubiksTurnDirection = "clockwise" | "prime" | "half"
+
+const rubiksPreviewModes = [
+  { id: "animate", label: "Play" },
+  { id: "start", label: "Start" },
+  { id: "turn", label: "Turn" },
+  { id: "result", label: "Result" },
+] as const
+
+type RubiksPreviewMode = (typeof rubiksPreviewModes)[number]["id"]
+
+const getRubiksMoveVisual = (move: string) => {
+  const face = move[0].toLowerCase() as RubiksFaceId
+  const turn: RubiksTurnDirection = move.includes("2") ? "half" : move.includes("'") ? "prime" : "clockwise"
+  const turnLabel = turn === "half" ? "180 degree turn" : turn === "prime" ? "counter-clockwise" : "clockwise"
+
+  return {
+    face,
+    turn,
+    turnLabel,
+  }
+}
+
+const getInitialRubiksMove = () => {
+  if (typeof window === "undefined") return 0
+
+  const requestedMove = Number.parseInt(new URLSearchParams(window.location.search).get("move") || "", 10)
+
+  if (!Number.isNaN(requestedMove) && requestedMove >= 1 && requestedMove <= rubiksMoveTrace.length) {
+    return requestedMove - 1
+  }
+
+  return 0
+}
+
+const getInitialRubiksPreviewMode = (): RubiksPreviewMode => {
+  if (typeof window === "undefined") return "animate"
+
+  const requestedFrame = new URLSearchParams(window.location.search).get("frame")
+  const requestedMode = rubiksPreviewModes.find((mode) => mode.id === requestedFrame)
+
+  return requestedMode?.id || "animate"
+}
+
+type RubiksAxis = "x" | "y" | "z"
+
+const rubiksStickerColors: Record<RubiksFaceId, string> = {
+  u: "#f8fafc",
+  l: "#f97316",
+  f: "#22c55e",
+  r: "#ef4444",
+  b: "#3b82f6",
+  d: "#facc15",
+}
+
+const rubiksFaceNormals: Record<RubiksFaceId, { axis: RubiksAxis; layer: number; rotation: [number, number, number] }> = {
+  u: { axis: "y", layer: 1, rotation: [-Math.PI / 2, 0, 0] },
+  l: { axis: "x", layer: -1, rotation: [0, -Math.PI / 2, 0] },
+  f: { axis: "z", layer: 1, rotation: [0, 0, 0] },
+  r: { axis: "x", layer: 1, rotation: [0, Math.PI / 2, 0] },
+  b: { axis: "z", layer: -1, rotation: [0, Math.PI, 0] },
+  d: { axis: "y", layer: -1, rotation: [Math.PI / 2, 0, 0] },
+}
+
+const rubiksClockwiseSigns: Record<RubiksFaceId, number> = {
+  u: -1,
+  l: 1,
+  f: -1,
+  r: -1,
+  b: 1,
+  d: 1,
+}
+
+const getRubiksSliceTurn = (face: RubiksFaceId, turn: RubiksTurnDirection) => {
+  const faceNormal = rubiksFaceNormals[face]
+  const turnSign = turn === "prime" ? -1 : 1
+  const turnMagnitude = turn === "half" ? Math.PI : Math.PI / 2
+
+  return {
+    axis: faceNormal.axis,
+    layer: faceNormal.layer,
+    angle: rubiksClockwiseSigns[face] * turnSign * turnMagnitude,
+  }
+}
+
+const disposeRubiksObject = (object: THREE.Object3D) => {
+  const geometries = new Set<THREE.BufferGeometry>()
+  const materials = new Set<THREE.Material>()
+
+  object.traverse((child) => {
+    if (!(child instanceof THREE.Mesh) && !(child instanceof THREE.LineSegments)) return
+
+    if (child.geometry) {
+      geometries.add(child.geometry)
+    }
+
+    const material = child.material
+    if (Array.isArray(material)) {
+      material.forEach((item) => materials.add(item))
+    } else {
+      materials.add(material)
+    }
+  })
+
+  geometries.forEach((geometry) => geometry.dispose())
+  materials.forEach((material) => material.dispose())
+}
+
+function RubiksPhysicalCube({
+  activeFace,
+  turn,
+  previewMode,
+  replayKey,
+  moveLabel,
+  moveTitle,
+}: {
+  activeFace: RubiksFaceId
+  turn: RubiksTurnDirection
+  previewMode: RubiksPreviewMode
+  replayKey: number
+  moveLabel: string
+  moveTitle: string
+}) {
+  const mountRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const mount = mountRef.current
+    if (!mount) return
+
+    const scene = new THREE.Scene()
+    const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100)
+    camera.position.set(4.2, 3.4, 5.6)
+    camera.lookAt(0, 0, 0)
+
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance",
+    })
+    renderer.outputColorSpace = THREE.SRGBColorSpace
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+    renderer.setClearColor(0x000000, 0)
+    renderer.shadowMap.enabled = true
+    renderer.domElement.dataset.rubiksCanvas = "true"
+    renderer.domElement.className = "rubiks-three-canvas"
+    mount.appendChild(renderer.domElement)
+
+    const root = new THREE.Group()
+    root.rotation.set(-0.38, -0.62, 0.04)
+    scene.add(root)
+
+    const fixedGroup = new THREE.Group()
+    const movingGroup = new THREE.Group()
+    root.add(fixedGroup, movingGroup)
+
+    const ambientLight = new THREE.HemisphereLight(0xffffff, 0x14213d, 2.35)
+    scene.add(ambientLight)
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 3.4)
+    keyLight.position.set(4, 5, 6)
+    keyLight.castShadow = true
+    scene.add(keyLight)
+
+    const rimLight = new THREE.DirectionalLight(0x2f6df6, 1.6)
+    rimLight.position.set(-4, 1.8, -3)
+    scene.add(rimLight)
+
+    const floor = new THREE.Mesh(
+      new THREE.CircleGeometry(2.9, 72),
+      new THREE.MeshStandardMaterial({
+        color: 0x111827,
+        roughness: 0.82,
+        metalness: 0.08,
+        transparent: true,
+        opacity: 0.38,
+      }),
+    )
+    floor.position.y = -1.82
+    floor.rotation.x = -Math.PI / 2
+    floor.receiveShadow = true
+    scene.add(floor)
+
+    const turnConfig = getRubiksSliceTurn(activeFace, turn)
+    const cubieGeometry = new THREE.BoxGeometry(0.92, 0.92, 0.92, 3, 3, 3)
+    const cubieEdgeGeometry = new THREE.EdgesGeometry(cubieGeometry)
+    const stickerGeometry = new THREE.PlaneGeometry(0.72, 0.72)
+    const edgeGeometry = new THREE.EdgesGeometry(stickerGeometry)
+    const bodyMaterial = new THREE.MeshStandardMaterial({
+      color: 0x07080c,
+      roughness: 0.54,
+      metalness: 0.18,
+    })
+    const sliceBodyMaterial = new THREE.MeshStandardMaterial({
+      color: 0x08111f,
+      emissive: 0x0f2f76,
+      emissiveIntensity: 0.48,
+      roughness: 0.52,
+      metalness: 0.2,
+    })
+    const activeLineMaterial = new THREE.LineBasicMaterial({ color: 0x2f6df6, linewidth: 2 })
+    const sliceLineMaterial = new THREE.LineBasicMaterial({
+      color: 0x2f6df6,
+      transparent: true,
+      opacity: 0.82,
+    })
+    const stickerMaterials = Object.fromEntries(
+      Object.entries(rubiksStickerColors).map(([face, color]) => [
+        face,
+        new THREE.MeshStandardMaterial({
+          color,
+          emissive: face === activeFace ? 0x101d45 : 0x000000,
+          roughness: 0.48,
+          metalness: 0.02,
+          side: THREE.DoubleSide,
+        }),
+      ]),
+    ) as Record<RubiksFaceId, THREE.MeshStandardMaterial>
+
+    const makeSticker = (face: RubiksFaceId) => {
+      const faceNormal = rubiksFaceNormals[face]
+      const sticker = new THREE.Mesh(stickerGeometry.clone(), stickerMaterials[face])
+      const outline = new THREE.LineSegments(edgeGeometry.clone(), activeLineMaterial)
+
+      sticker.position[faceNormal.axis] = faceNormal.layer * 0.468
+      outline.position.copy(sticker.position)
+      sticker.rotation.set(...faceNormal.rotation)
+      outline.rotation.copy(sticker.rotation)
+      outline.scale.setScalar(face === activeFace ? 1.09 : 1.01)
+      outline.visible = face === activeFace
+
+      return { sticker, outline }
+    }
+
+    for (let x = -1; x <= 1; x += 1) {
+      for (let y = -1; y <= 1; y += 1) {
+        for (let z = -1; z <= 1; z += 1) {
+          const cubie = new THREE.Group()
+          cubie.position.set(x * 1.02, y * 1.02, z * 1.02)
+
+          const coordinate = { x, y, z }
+          const isMovingSlice = coordinate[turnConfig.axis] === turnConfig.layer
+          const body = new THREE.Mesh(cubieGeometry.clone(), isMovingSlice ? sliceBodyMaterial : bodyMaterial)
+          body.castShadow = true
+          body.receiveShadow = true
+          cubie.add(body)
+
+          if (isMovingSlice) {
+            const sliceOutline = new THREE.LineSegments(cubieEdgeGeometry.clone(), sliceLineMaterial)
+            sliceOutline.scale.setScalar(1.035)
+            cubie.add(sliceOutline)
+          }
+
+          if (y === 1) {
+            const { sticker, outline } = makeSticker("u")
+            cubie.add(sticker, outline)
+          }
+          if (y === -1) {
+            const { sticker, outline } = makeSticker("d")
+            cubie.add(sticker, outline)
+          }
+          if (x === 1) {
+            const { sticker, outline } = makeSticker("r")
+            cubie.add(sticker, outline)
+          }
+          if (x === -1) {
+            const { sticker, outline } = makeSticker("l")
+            cubie.add(sticker, outline)
+          }
+          if (z === 1) {
+            const { sticker, outline } = makeSticker("f")
+            cubie.add(sticker, outline)
+          }
+          if (z === -1) {
+            const { sticker, outline } = makeSticker("b")
+            cubie.add(sticker, outline)
+          }
+
+          const parent = isMovingSlice ? movingGroup : fixedGroup
+          parent.add(cubie)
+        }
+      }
+    }
+
+    const getStaticAngle = () => {
+      if (previewMode === "turn") return turnConfig.angle * 0.68
+      if (previewMode === "result") return turnConfig.angle
+      return 0
+    }
+
+    const resize = () => {
+      const width = Math.max(mount.clientWidth, 320)
+      const height = Math.max(mount.clientHeight, 320)
+
+      renderer.setSize(width, height, false)
+      camera.aspect = width / height
+      camera.updateProjectionMatrix()
+    }
+
+    const resizeObserver = new ResizeObserver(resize)
+    resizeObserver.observe(mount)
+    resize()
+
+    const dragState = {
+      active: false,
+      x: 0,
+      y: 0,
+    }
+
+    const handlePointerDown = (event: PointerEvent) => {
+      dragState.active = true
+      dragState.x = event.clientX
+      dragState.y = event.clientY
+      renderer.domElement.setPointerCapture(event.pointerId)
+      renderer.domElement.classList.add("is-grabbing")
+    }
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (!dragState.active) return
+
+      const deltaX = event.clientX - dragState.x
+      const deltaY = event.clientY - dragState.y
+      dragState.x = event.clientX
+      dragState.y = event.clientY
+
+      root.rotation.y += deltaX * 0.008
+      root.rotation.x = THREE.MathUtils.clamp(root.rotation.x + deltaY * 0.008, -1.25, 1.05)
+    }
+
+    const handlePointerUp = (event: PointerEvent) => {
+      dragState.active = false
+      renderer.domElement.releasePointerCapture(event.pointerId)
+      renderer.domElement.classList.remove("is-grabbing")
+    }
+
+    renderer.domElement.addEventListener("pointerdown", handlePointerDown)
+    renderer.domElement.addEventListener("pointermove", handlePointerMove)
+    renderer.domElement.addEventListener("pointerup", handlePointerUp)
+    renderer.domElement.addEventListener("pointercancel", handlePointerUp)
+
+    const startedAt = performance.now()
+    const easeOutCubic = (value: number) => 1 - Math.pow(1 - value, 3)
+    let animationFrame = 0
+
+    const render = (time: number) => {
+      let angle = getStaticAngle()
+
+      if (previewMode === "animate") {
+        const progress = THREE.MathUtils.clamp((time - startedAt - 160) / 1150, 0, 1)
+        angle = turnConfig.angle * easeOutCubic(progress)
+      }
+
+      movingGroup.rotation[turnConfig.axis] = angle
+      floor.rotation.z += 0.0012
+      renderer.render(scene, camera)
+      animationFrame = window.requestAnimationFrame(render)
+    }
+
+    animationFrame = window.requestAnimationFrame(render)
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame)
+      resizeObserver.disconnect()
+      renderer.domElement.removeEventListener("pointerdown", handlePointerDown)
+      renderer.domElement.removeEventListener("pointermove", handlePointerMove)
+      renderer.domElement.removeEventListener("pointerup", handlePointerUp)
+      renderer.domElement.removeEventListener("pointercancel", handlePointerUp)
+      disposeRubiksObject(root)
+      cubieGeometry.dispose()
+      cubieEdgeGeometry.dispose()
+      stickerGeometry.dispose()
+      edgeGeometry.dispose()
+      floor.geometry.dispose()
+      if (Array.isArray(floor.material)) {
+        floor.material.forEach((material) => material.dispose())
+      } else {
+        floor.material.dispose()
+      }
+      renderer.dispose()
+      renderer.domElement.remove()
+    }
+  }, [activeFace, turn, previewMode, replayKey])
+
+  return (
+    <div
+      ref={mountRef}
+      className="rubiks-three-cube"
+      aria-label={`Interactive 3D cube preview for ${moveLabel}: ${moveTitle}`}
+      role="img"
+    />
+  )
+}
+
 function ProjectDetailClient() {
   const router = useRouter()
   const { id } = useParams()
   const [project, setProject] = useState<Project | null>(null)
   const [loading, setLoading] = useState(true)
+  const [activeRubiksMove, setActiveRubiksMove] = useState(getInitialRubiksMove)
+  const [rubiksPreviewMode, setRubiksPreviewMode] = useState<RubiksPreviewMode>(getInitialRubiksPreviewMode)
+  const [rubiksReplayKey, setRubiksReplayKey] = useState(0)
+  const [showRubiksVideo, setShowRubiksVideo] = useState(false)
 
   // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false)
@@ -64,6 +646,7 @@ function ProjectDetailClient() {
 
     if (foundProject) {
       setProject(foundProject)
+      setShowRubiksVideo(false)
     } else {
       console.error(`Project with ID ${projectId} not found`)
     }
@@ -82,6 +665,26 @@ function ProjectDetailClient() {
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [project, lightboxOpen])
+
+  useEffect(() => {
+    if (!project || !window.location.hash) return
+
+    requestAnimationFrame(() => {
+      document.querySelector(window.location.hash)?.scrollIntoView()
+    })
+  }, [project])
+
+  useEffect(() => {
+    if (!project) return
+
+    const requestedMove = Number.parseInt(new URLSearchParams(window.location.search).get("move") || "", 10)
+
+    if (!Number.isNaN(requestedMove) && requestedMove >= 1 && requestedMove <= rubiksMoveTrace.length) {
+      setActiveRubiksMove(requestedMove - 1)
+    }
+
+    setRubiksPreviewMode(getInitialRubiksPreviewMode())
+  }, [project])
 
   // Lightbox functions
   const openLightbox = (images: string[], index: number, altPrefix: string) => {
@@ -159,6 +762,17 @@ function ProjectDetailClient() {
         </div>
       </main>
     )
+  }
+
+  const activeRubiksTrace = rubiksMoveTrace[activeRubiksMove]
+  const activeRubiksVisual = getRubiksMoveVisual(activeRubiksTrace.move)
+  const replayRubiksAnimation = () => {
+    setRubiksPreviewMode("animate")
+    setRubiksReplayKey((current) => current + 1)
+  }
+  const goToRubiksMove = (moveIndex: number) => {
+    setActiveRubiksMove(Math.min(Math.max(moveIndex, 0), rubiksMoveTrace.length - 1))
+    setRubiksReplayKey((current) => current + 1)
   }
 
   return (
@@ -749,190 +1363,401 @@ function ProjectDetailClient() {
             <ProjectTabs project={project} />
           </div>
         ) : project.id === 7 ? (
-          /* Rubik's Cube Solver — minimal layout, prose pooled in one section */
-          <div className="relative space-y-14 md:space-y-20 pb-4">
-            {/* Decorative backgrounds — non-interactive */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 -z-10 bg-dot-pattern mask-fade-edges opacity-70"
-            />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-glow-primary"
-            />
-            {/* HERO — title + clickable video embed */}
-            <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center pt-2">
-              <div className="lg:col-span-5">
-                <h1 className="text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight">
-                  A robot that solves a Rubik&rsquo;s cube on its own.
-                </h1>
+          /* Rubik's Cube Solver layout */
+          <div className="relative w-[calc(100vw-3rem)] pb-4 sm:w-full">
+            <div aria-hidden className="pointer-events-none absolute inset-x-0 top-[-6rem] bottom-[-2rem] -z-10 overflow-hidden">
+              <div className="absolute inset-0 rubiks-blueprint-bg" />
+              <div className="absolute inset-x-0 top-0 h-2 rubiks-color-ribbon" />
+            </div>
+
+            <section id="rubiks-demo" className="scroll-mt-28 grid min-w-0 grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center pt-2">
+              <div className="min-w-0 lg:col-span-5 space-y-6">
+                <div className="inline-flex items-center gap-2 rounded-md border border-border/70 bg-background/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+                  Project 7
+                  <span className="h-1 w-1 rounded-full bg-primary/50" />
+                  Robotics
+                </div>
+                <div className="space-y-4">
+                  <h1 className="max-w-[21rem] break-words text-3xl sm:max-w-xl sm:text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight">
+                    A 5-motor robot that solves a Rubik&apos;s cube end-to-end.
+                  </h1>
+                  <p className="max-w-[21rem] break-words text-sm sm:max-w-xl md:text-base leading-relaxed text-foreground/70">
+                    Browser input, local solving, serial commands, and ESP32-driven stepper motion in one compact pipeline.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button asChild size="sm" className="rounded-md">
+                    <a href="#rubiks-pipeline">
+                      See pipeline
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" size="sm" className="rounded-md bg-background/70">
+                    <a href="#rubiks-trace">
+                      Top-turn trick
+                      <Play className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </div>
               </div>
-              <div className="lg:col-span-7">
-                <div className="relative aspect-video rounded-xl overflow-hidden border border-border/60 bg-black">
-                  {project.videoGallery && project.videoGallery[0] ? (
+
+              <div className="min-w-0 lg:col-span-7 space-y-4">
+                <div className="relative aspect-video overflow-hidden rounded-xl border border-border/70 bg-black shadow-2xl shadow-primary/10">
+                  <div aria-hidden className="rubiks-video-scan absolute inset-y-0 left-0 z-10 w-1/3" />
+                  {showRubiksVideo && project.videoGallery && project.videoGallery[0] ? (
                     <iframe
-                      src={`https://www.youtube.com/embed/${project.videoGallery[0].id}`}
+                      src={`https://www.youtube.com/embed/${project.videoGallery[0].id}?autoplay=1&rel=0`}
                       title={project.videoGallery[0].title}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
-                      className="w-full h-full"
+                      className="h-full w-full"
                     />
                   ) : (
-                    <Image
-                      src={project.image || "/placeholder.svg"}
-                      alt={project.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 60vw"
-                      priority
-                    />
-                  )}
-                </div>
-              </div>
-            </section>
-
-            {/* DESIGN PILLARS — what makes this build different */}
-            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border/60 border border-border/60 rounded-xl overflow-hidden">
-              {[
-                "5-motor / 5-face design",
-                "Kociemba-inspired solver",
-                "Browser cube input",
-                "Fully local pipeline",
-              ].map((title, i) => (
-                <div key={i} className="bg-background/80 p-5 md:p-6 flex flex-col gap-2">
-                  <div className="text-[11px] uppercase tracking-[0.18em] text-primary/70">
-                    {`0${i + 1}`}
-                  </div>
-                  <h3 className="text-base md:text-lg font-semibold leading-snug tracking-tight">
-                    {title}
-                  </h3>
-                </div>
-              ))}
-            </section>
-
-            {/* ABOUT — the only prose section */}
-            <section className="bg-muted/10 rounded-xl border p-6 md:p-10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 items-start">
-                <div className="md:col-span-1">
-                  <div className="text-[11px] uppercase tracking-[0.25em] text-primary mb-2">
-                    About
-                  </div>
-                  <h2 className="text-2xl md:text-3xl font-bold leading-tight">
-                    5 motors. No top.
-                  </h2>
-                </div>
-                <div className="md:col-span-2 space-y-4">
-                  <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
-                    Type a scramble into the browser, hit solve, and the rig does the rest. The pipeline runs browser → local Python solver (Kociemba two-phase) → Serial → ESP32 → 5 motors.
-                  </p>
-                  <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
-                    Started with 4 motors (R, L, F, B) — but 4 faces alone can&rsquo;t reach every valid cube state. A 5th motor on D unlocks the full state space.
-                  </p>
-                  <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
-                    No motor on the top face. The U-face is reconstructed in firmware via a 13-move equivalence — a solve grows from ~21 to ~65 physical moves, in exchange for a simpler open-top chassis and 2-second cube swaps.
-                  </p>
-                  <div className="font-mono text-xs md:text-sm bg-background/60 border border-border/60 rounded-md p-3 text-foreground/80 overflow-x-auto whitespace-nowrap">
-                    U = R L F2 B2 R&apos; L&apos; D L&apos; R&apos; B2 F2 L R
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* HOW IT WORKS — visuals only, two-word labels */}
-            <section>
-              <div className="mb-8">
-                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">How it works</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                {[
-                  { n: "01", title: "Browser input", img: "/images/rubiks-ui-filled.png" },
-                  { n: "02", title: "Python solver", img: "/images/rubiks-ui-solved.png" },
-                  { n: "03", title: "Motors execute", img: "/images/5motordesignfinal.jpg" },
-                ].map((step) => (
-                  <div key={step.n} className="space-y-3">
-                    <div
-                      className="relative aspect-[4/3] rounded-lg overflow-hidden bg-muted/10 border border-border/60 cursor-pointer group"
-                      onClick={() => openLightbox([step.img], 0, step.title)}
+                    <button
+                      type="button"
+                      aria-label="Play Rubik's Cube solver demo"
+                      className="group relative h-full w-full"
+                      onClick={() => setShowRubiksVideo(true)}
                     >
                       <Image
-                        src={step.img}
-                        alt={step.title}
+                        src={project.image || "/placeholder.svg"}
+                        alt={project.title}
                         fill
-                        className="object-cover transition-transform group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 1024px) 100vw, 60vw"
+                        priority
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/10" />
+                      <div className="absolute bottom-5 left-5 flex items-center gap-3 rounded-lg border border-white/20 bg-black/55 px-4 py-3 text-left text-white backdrop-blur-md">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                          <Play className="h-5 w-5 fill-current" />
+                        </span>
+                        <span>
+                          <span className="block text-sm font-semibold">Watch the solve</span>
+                          <span className="block text-xs text-white/70">Loads the demo video here</span>
+                        </span>
+                      </div>
+                    </button>
+                  )}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                  {rubiksMetricCards.map(({ icon: Icon, label, value, detail }) => (
+                    <div key={label} className="min-w-0 rubiks-panel rounded-lg border border-border/70 p-4">
+                      <div className="mb-3 flex items-center justify-between gap-2">
+                        <span className="text-[10px] uppercase tracking-[0.18em] text-foreground/50">{label}</span>
+                        <Icon className="h-4 w-4 text-primary" />
+                      </div>
+                      <div className="text-2xl font-bold leading-none">{value}</div>
+                      <div className="mt-1 text-[11px] text-foreground/55">{detail}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <nav className="sticky top-20 z-30 my-10 max-w-full overflow-x-auto rounded-lg border border-border/70 bg-background/85 px-2 py-2 backdrop-blur-xl">
+              <div className="flex min-w-max items-center justify-center gap-1">
+                {rubiksNavItems.map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className="rounded-md px-3 py-2 text-xs font-medium text-foreground/65 transition-colors hover:bg-primary/10 hover:text-foreground"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </nav>
+
+            <div className="space-y-14 md:space-y-20">
+              <section id="rubiks-overview" className="scroll-mt-32 rubiks-panel rounded-xl border border-border/70 p-6 md:p-10">
+                <div className="grid min-w-0 grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+                  <div className="min-w-0 lg:col-span-4 space-y-6">
+                    <div>
+                      <div className="mb-2 text-[11px] uppercase tracking-[0.25em] text-primary">Overview</div>
+                      <h2 className="max-w-[18rem] break-words text-2xl md:text-3xl font-bold leading-tight sm:max-w-none">5 motors. Open top. Full solve.</h2>
+                    </div>
+                    <div className="grid w-36 grid-cols-3 gap-1.5 rounded-lg border border-border/70 bg-foreground/10 p-2">
+                      {rubiksFaceTiles.map((color, index) => (
+                        <div
+                          key={`${color}-${index}`}
+                          className="aspect-square rounded-sm border border-black/15 shadow-sm"
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="min-w-0 lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
+                        The browser captures the cube state, Python solves it locally, and the ESP32 executes the moves.
+                      </p>
+                      <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
+                        The open top makes cube swaps easy. The cost: top-face turns need a workaround.
+                      </p>
+                    </div>
+                    <div className="space-y-4">
+                      <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
+                        Four motors proved the concept. The fifth bottom-face motor made it a general solver.
+                      </p>
+                      <div className="overflow-x-auto rounded-md border border-border/70 bg-background/70 p-3 font-mono text-xs md:text-sm text-foreground/80">
+                        U = R L F2 B2 R&apos; L&apos; D L&apos; R&apos; B2 F2 L R
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section id="rubiks-pipeline" className="scroll-mt-32">
+                <div className="mb-8 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <div className="mb-2 text-[11px] uppercase tracking-[0.25em] text-primary">Pipeline</div>
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight">From colour input to physical motion</h2>
+                  </div>
+                  <p className="max-w-lg text-sm text-foreground/60">
+                    Click the images to inspect each stage.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+                  {rubiksPipelineSteps.map((step, index) => {
+                    const Icon = step.icon
+
+                    return (
+                      <div key={step.stage} className="group">
+                        <button
+                          type="button"
+                          className="relative block aspect-[4/3] w-full overflow-hidden rounded-lg border border-border/70 bg-muted/10 text-left"
+                          onClick={() => openLightbox([step.image], 0, step.title)}
+                        >
+                          <Image
+                            src={step.image}
+                            alt={step.title}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            sizes="(max-width: 768px) 100vw, 25vw"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent opacity-90" />
+                          <div className="absolute bottom-3 left-3 flex items-center gap-2 rounded-md bg-background/90 px-2.5 py-1.5 text-xs font-medium text-foreground shadow-sm">
+                            <Icon className="h-4 w-4 text-primary" />
+                            {step.stage}
+                          </div>
+                        </button>
+                        <div className="mt-4 flex gap-3">
+                          <span className="mt-1 font-mono text-xs text-primary/75">{String(index + 1).padStart(2, "0")}</span>
+                          <div>
+                            <h3 className="font-semibold leading-snug">{step.title}</h3>
+                            <p className="mt-1 text-sm leading-relaxed text-foreground/60">{step.description}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </section>
+
+              <section id="rubiks-trace" className="scroll-mt-32 rubiks-panel rounded-xl border border-border/70 p-6 md:p-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+                  <div className="lg:col-span-5 space-y-4">
+                    <div>
+                      <div className="mb-2 text-[11px] uppercase tracking-[0.25em] text-primary">Interactive</div>
+                      <h2 className="text-2xl md:text-3xl font-bold tracking-tight">What is a U move?</h2>
+                    </div>
+                    <p className="text-sm leading-relaxed text-foreground/65">
+                      In cube notation, U means rotate the upper face. This robot has no top motor, so firmware replaces
+                      U with the 13 physical turns below.
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {rubiksNotationLegend.map((item) => (
+                        <div key={item.symbol} className="rounded-md border border-border/70 bg-background/70 px-3 py-2">
+                          <div className="font-mono text-xs text-primary/80">{item.symbol}</div>
+                          <div className="mt-1 text-xs text-foreground/65">{item.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full bg-foreground/10">
+                      <div
+                        className="h-full rounded-full bg-primary transition-all duration-300"
+                        style={{ width: `${((activeRubiksMove + 1) / rubiksMoveTrace.length) * 100}%` }}
                       />
                     </div>
-                    <div className="flex items-baseline gap-3">
-                      <span className="text-xs font-mono text-primary/70">{step.n}</span>
-                      <h3 className="text-base font-semibold">{step.title}</h3>
+                  </div>
+
+                  <div className="lg:col-span-7 space-y-5">
+                    <div className="rounded-lg border border-border/70 bg-background/75 p-4 md:p-5">
+                      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <div className="text-xs font-mono text-primary/80">{activeRubiksTrace.move}</div>
+                          <div className="text-sm font-semibold">{activeRubiksTrace.title}</div>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <div className="rounded-md border border-border/70 bg-background/80 px-3 py-1.5 text-xs text-foreground/65">
+                            {activeRubiksVisual.turnLabel}
+                          </div>
+                          <div className="flex rounded-md border border-border/70 bg-background/80 p-1">
+                            {rubiksPreviewModes.map((mode) => (
+                              <button
+                                key={mode.id}
+                                type="button"
+                                aria-pressed={rubiksPreviewMode === mode.id}
+                                onClick={() => {
+                                  setRubiksPreviewMode(mode.id)
+                                  if (mode.id === "animate") {
+                                    setRubiksReplayKey((current) => current + 1)
+                                  }
+                                }}
+                                className={`rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                                  rubiksPreviewMode === mode.id
+                                    ? "bg-primary text-primary-foreground"
+                                    : "text-foreground/60 hover:text-foreground"
+                                }`}
+                              >
+                                {mode.label}
+                              </button>
+                            ))}
+                          </div>
+                          <Button type="button" variant="outline" size="sm" className="h-8 rounded-md bg-background/80" onClick={replayRubiksAnimation}>
+                            <RotateCcw className="h-3.5 w-3.5" />
+                            Replay
+                          </Button>
+                        </div>
+                      </div>
+
+                      <RubiksPhysicalCube
+                        activeFace={activeRubiksVisual.face}
+                        turn={activeRubiksVisual.turn}
+                        previewMode={rubiksPreviewMode}
+                        replayKey={rubiksReplayKey}
+                        moveLabel={activeRubiksTrace.move}
+                        moveTitle={activeRubiksTrace.title}
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {rubiksMoveTrace.map((item, index) => (
+                        <button
+                          key={`${item.move}-${index}`}
+                          type="button"
+                          onClick={() => goToRubiksMove(index)}
+                          className={`rounded-md border px-3 py-2 font-mono text-xs transition-all ${
+                            activeRubiksMove === index
+                              ? "border-primary bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                              : "border-border/70 bg-background/70 text-foreground/70 hover:border-primary/60 hover:text-foreground"
+                          }`}
+                        >
+                          {item.move}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="rounded-lg border border-border/70 bg-background/75 p-5">
+                      <div className="mb-2 text-xs font-mono text-primary/80">
+                        Step {activeRubiksMove + 1} of {rubiksMoveTrace.length}
+                      </div>
+                      <h3 className="text-lg font-semibold">{activeRubiksTrace.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-foreground/65">
+                        {activeRubiksTrace.detail}
+                      </p>
+                      <div className="mt-5 flex flex-wrap gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="rounded-md bg-background/80"
+                          disabled={activeRubiksMove === 0}
+                          onClick={() => goToRubiksMove(activeRubiksMove - 1)}
+                        >
+                          Previous
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          className="rounded-md"
+                          onClick={() => {
+                            setActiveRubiksMove((current) => (current + 1) % rubiksMoveTrace.length)
+                            setRubiksReplayKey((current) => current + 1)
+                          }}
+                        >
+                          Next move
+                          <ArrowRight className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </section>
+                </div>
+              </section>
 
-            {/* THE BUILD — magazine grid, no captions */}
-            <section>
-              <div className="mb-8">
-                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">The build</h2>
-              </div>
-              <div className="grid grid-cols-12 gap-3 md:gap-4">
-                {[
-                  { src: "/images/5motordesign.jpg", span: "col-span-12 md:col-span-7", aspect: "aspect-[4/3]" },
-                  { src: "/images/5motordesignfinal.jpg", span: "col-span-12 md:col-span-5", aspect: "aspect-[4/3]" },
-                  { src: "/images/singlemotorwithbracket.jpg", span: "col-span-6 md:col-span-4", aspect: "aspect-[4/3]" },
-                  { src: "/images/motorwithadapterissue.jpg", span: "col-span-6 md:col-span-4", aspect: "aspect-[4/3]" },
-                  { src: "/images/5motordesign.2.jpg", span: "col-span-12 md:col-span-4", aspect: "aspect-[4/3]" },
-                  { src: "/images/4motorbreadboardwiring.jpg", span: "col-span-12", aspect: "aspect-[16/9]" },
-                ].map((p, i) => (
-                  <div
-                    key={i}
-                    className={`${p.span} relative ${p.aspect} rounded-lg overflow-hidden border border-border/60 bg-muted/10 cursor-pointer group`}
-                    onClick={() =>
-                      openLightbox(
-                        (project.hardwareGallery || []),
-                        (project.hardwareGallery || []).indexOf(p.src),
-                        "Build",
-                      )
-                    }
-                  >
-                    <Image
-                      src={p.src}
-                      alt="Rubik's cube solver build"
-                      fill
-                      className="object-cover transition-transform group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
+              <section id="rubiks-build" className="scroll-mt-32">
+                <div className="mb-8 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <div className="mb-2 text-[11px] uppercase tracking-[0.25em] text-primary">Build</div>
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Mechanical iteration gallery</h2>
                   </div>
-                ))}
-              </div>
-            </section>
+                  <p className="max-w-md text-sm text-foreground/60">
+                    Click any image to inspect the chassis, wiring, and fitment details.
+                  </p>
+                </div>
+                <div className="grid grid-cols-12 gap-3 md:gap-4">
+                  {rubiksBuildPhotos.map((photo) => (
+                    <button
+                      key={photo.src}
+                      type="button"
+                      className={`${photo.span} relative ${photo.aspect} overflow-hidden rounded-lg border border-border/70 bg-muted/10 text-left group`}
+                      onClick={() =>
+                        openLightbox(
+                          project.hardwareGallery || [],
+                          Math.max((project.hardwareGallery || []).indexOf(photo.src), 0),
+                          "Build",
+                        )
+                      }
+                    >
+                      <Image
+                        src={photo.src}
+                        alt={photo.label}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-sm font-semibold text-white opacity-95">
+                        {photo.label}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </section>
 
-            {/* STACK — compact tech list */}
-            <section className="bg-muted/10 rounded-xl border p-6 md:p-8">
-              <div className="text-[11px] uppercase tracking-[0.25em] text-primary/70 mb-5">
-                Stack
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {Object.entries(project.technologies).map(([category, items]) => (
-                  <div key={category}>
-                    <h3 className="text-xs font-semibold text-foreground/85 mb-2 capitalize">
-                      {category.replace(/([A-Z])/g, " $1").trim()}
-                    </h3>
-                    <ul className="space-y-1">
-                      {items.map((item) => (
-                        <li
-                          key={item}
-                          className="text-[12px] text-foreground/60 leading-snug"
-                        >
-                          {item}
-                        </li>
+              <section id="rubiks-stack" className="scroll-mt-32 rubiks-panel rounded-xl border border-border/70 p-6 md:p-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                  <div className="lg:col-span-8">
+                    <div className="mb-5 text-[11px] uppercase tracking-[0.25em] text-primary/80">Stack</div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                      {Object.entries(project.technologies).map(([category, items]) => (
+                        <div key={category}>
+                          <h3 className="mb-2 text-xs font-semibold capitalize text-foreground/85">
+                            {category.replace(/([A-Z])/g, " $1").trim()}
+                          </h3>
+                          <ul className="space-y-1">
+                            {items.map((item) => (
+                              <li key={item} className="text-[12px] leading-snug text-foreground/60">
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       ))}
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-4 rounded-lg border border-border/70 bg-background/75 p-5">
+                    <div className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">V2 ideas</div>
+                    <ul className="space-y-3 text-sm leading-relaxed text-foreground/65">
+                      <li>Computer-vision colour capture to remove manual state entry.</li>
+                      <li>A 6th U-face mechanism for shorter physical solutions.</li>
+                      <li>Telemetry overlay: solve time, move expansion, and motor execution time.</li>
                     </ul>
                   </div>
-                ))}
-              </div>
-            </section>
+                </div>
+              </section>
+            </div>
           </div>
         ) : project.id === 6 ? (
           /* Custom Watch Build layout */

@@ -11,7 +11,19 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 
-const technicalProjects = [
+type ProjectCard = {
+  id: number
+  title: string
+  description: string
+  image: string
+  tags: string[]
+  githubUrl: string
+  youtubeUrl?: string
+  imagePosition?: string
+  comingSoon?: boolean
+}
+
+const technicalProjects: ProjectCard[] = [
   {
     id: 2,
     title: "Micromouse Maze Navigation Robot",
@@ -73,7 +85,7 @@ const technicalProjects = [
 //   },
 // ]
 
-const handsOnProjects = [
+const handsOnProjects: ProjectCard[] = [
   {
     id: 1,
     title: "Residential Construction & Renovation",

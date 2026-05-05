@@ -85,6 +85,81 @@
   .bg-glow-primary {
     background: radial-gradient(ellipse 70% 60% at 50% 0%, hsl(var(--primary) / 0.10), transparent 60%);
   }
+  .rubiks-blueprint-bg {
+    background:
+      linear-gradient(to right, hsl(var(--foreground) / 0.065) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--foreground) / 0.055) 1px, transparent 1px),
+      linear-gradient(120deg, transparent 0 46%, hsl(45 93% 47% / 0.08) 46% 47%, transparent 47% 100%),
+      linear-gradient(135deg, hsl(0 84% 60% / 0.16), transparent 34%),
+      linear-gradient(225deg, hsl(142 71% 45% / 0.16), transparent 36%),
+      linear-gradient(to bottom, hsl(var(--background)), hsl(var(--background) / 0.72));
+    background-size: 48px 48px, 48px 48px, 220px 220px, 100% 100%, 100% 100%, 100% 100%;
+  }
+  .rubiks-color-ribbon {
+    background: linear-gradient(
+      90deg,
+      hsl(0 84% 60% / 0.75),
+      hsl(45 93% 47% / 0.75),
+      hsl(142 71% 45% / 0.75),
+      hsl(221 83% 53% / 0.75),
+      hsl(24 95% 53% / 0.75)
+    );
+  }
+  .rubiks-panel {
+    background: linear-gradient(180deg, hsl(var(--background) / 0.9), hsl(var(--background) / 0.72));
+    backdrop-filter: blur(14px);
+  }
+  .rubiks-video-scan {
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.2), transparent);
+    transform: translateX(-120%);
+    animation: rubiks-scan 5.5s ease-in-out infinite;
+  }
+  .rubiks-three-cube {
+    position: relative;
+    height: clamp(320px, 44vw, 460px);
+    min-height: 320px;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background:
+      radial-gradient(circle at 52% 48%, hsl(var(--primary) / 0.18), transparent 34%),
+      radial-gradient(circle at 52% 72%, hsl(142 71% 45% / 0.08), transparent 31%),
+      linear-gradient(180deg, hsl(var(--foreground) / 0.04), transparent);
+    cursor: grab;
+    touch-action: none;
+  }
+  .rubiks-three-cube::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid hsl(var(--border) / 0.72);
+    border-radius: 0.5rem;
+    pointer-events: none;
+  }
+  .rubiks-three-canvas {
+    display: block;
+    height: 100%;
+    outline: none;
+    width: 100%;
+  }
+  .rubiks-three-canvas.is-grabbing {
+    cursor: grabbing;
+  }
+  @keyframes rubiks-scan {
+    0%,
+    42% {
+      transform: translateX(-120%);
+    }
+    70%,
+    100% {
+      transform: translateX(360%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rubiks-video-scan {
+      animation: none;
+      display: none;
+    }
+  }
   .mask-fade-edges {
     -webkit-mask-image: radial-gradient(ellipse at center, black 55%, transparent 100%);
             mask-image: radial-gradient(ellipse at center, black 55%, transparent 100%);
