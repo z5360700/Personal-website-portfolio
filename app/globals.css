@@ -105,6 +105,32 @@
       hsl(24 95% 53% / 0.75)
     );
   }
+  .cooling-flow-bg {
+    background:
+      linear-gradient(115deg, hsl(var(--primary) / 0.14), transparent 34%),
+      linear-gradient(180deg, hsl(var(--background) / 0.88), hsl(var(--background) / 0.66)),
+      repeating-linear-gradient(90deg, transparent 0 42px, hsl(var(--foreground) / 0.045) 42px 43px),
+      repeating-linear-gradient(0deg, transparent 0 42px, hsl(var(--foreground) / 0.035) 42px 43px);
+  }
+  .cooling-flow-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(120deg, transparent 0 18%, hsl(199 89% 58% / 0.16) 18% 19%, transparent 19% 36%, hsl(168 76% 42% / 0.12) 36% 37%, transparent 37% 100%);
+    mask-image: linear-gradient(90deg, transparent, black 18%, black 82%, transparent);
+  }
+  .cooling-flow-pulse {
+    stroke-dasharray: 48 26;
+    animation: cooling-flow-move 1.35s linear infinite;
+  }
+  .cooling-flow-pulse-late {
+    animation-delay: -0.55s;
+  }
+  .cat-door-beam {
+    box-shadow: 0 0 18px hsl(187 92% 69% / 0.9);
+    animation: cat-door-beam-scan 1.55s ease-in-out infinite;
+  }
   .rubiks-panel {
     background: linear-gradient(180deg, hsl(var(--background) / 0.9), hsl(var(--background) / 0.72));
     backdrop-filter: blur(14px);
@@ -261,6 +287,22 @@
     70%,
     100% {
       transform: translateX(360%);
+    }
+  }
+  @keyframes cooling-flow-move {
+    to {
+      stroke-dashoffset: -74;
+    }
+  }
+  @keyframes cat-door-beam-scan {
+    0%,
+    100% {
+      transform: translateX(-14%);
+      opacity: 0.45;
+    }
+    50% {
+      transform: translateX(110%);
+      opacity: 1;
     }
   }
   @media (prefers-reduced-motion: reduce) {

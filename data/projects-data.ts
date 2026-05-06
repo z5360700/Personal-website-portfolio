@@ -395,7 +395,7 @@ Custom ducting directs cool air from front intake fans straight to the GPU, allo
   Validating the effectiveness of the cooling solution required establishing baseline temperature measurements and conducting controlled testing under various load conditions. Ensuring that the ducting actually improved cooling performance rather than just redirecting airflow was essential to the project's success.
 `,
     results: `
-  The custom cooling ducts proved highly effective, reducing GPU temperatures by 8°C under full load compared to the standard case configuration. This temperature reduction allowed the GPU to maintain higher boost clocks for longer periods, resulting in more consistent performance during demanding tasks like gaming and 3D rendering.
+  The custom cooling ducts proved highly effective, reducing GPU temperatures by 7°C under full load compared to the standard case configuration. This temperature reduction allowed the GPU to maintain higher boost clocks for longer periods, resulting in more consistent performance during demanding tasks like gaming and 3D rendering.
 
   An unexpected benefit was the reduction in fan noise, as the GPU's cooling system didn't need to work as hard to maintain safe temperatures. The direct airflow path also reduced dust accumulation on the GPU, as air was now following a more controlled path through the case.
 
@@ -463,13 +463,11 @@ Getting the spacing right was tricky too - the robot needed to know exactly wher
     id: 5,
     title: "Cat Door Monitoring System",
     description:
-      "IoT system built around ESP32 and break-beam sensors to detect and log cat movement through pet door. Sends real-time Telegram push notifications with complete end-to-end embedded + cloud pipeline.",
+      "ESP32 break-beam monitor for a pet door. Detects movement, filters false triggers, and sends timestamped Telegram alerts.",
     longDescription: `
-IoT system built around ESP32 and break-beam sensors to detect and log cat movement. Sends real-time Telegram push notifications.
+ESP32 break-beam monitor for a pet door. V1 used PIR sensing, but false-triggered on insects and nearby door movement.
 
-Initially used PIR sensors but they proved unreliable, triggering on insects and door opening. Version 2 switched to break beam sensors for accurate, reliable detection.
-
-Within 2 days of deployment, the system detected the unauthorized intruder cat trying to enter, enabling immediate response. Future versions will include directional sensors and RFID identification.
+V2 switched to a beam across the opening, debounced events in firmware, and sent timestamped Telegram alerts. Within 2 days of deployment, it detected an intruder cat attempting to enter.
 `,
     image: "/images/cat-door-v2-system.png",
     designGallery: [
@@ -612,7 +610,7 @@ More importantly, this project reinforced the value of patience and careful plan
 
 An ESP32 DevKitC drives 5× NEMA 17 steppers (R, L, F, B, D faces) through TMC2209 V2.0 drivers on a 12V 8A supply. The cube is loaded through slidable, removable L-brackets on the open top — no top-face motor, so U-face moves are reproduced in firmware via a 13-move equivalence using the surrounding faces. That trade trims mechanical complexity in exchange for a longer move list.
 
-The solver is the Kociemba two-phase algorithm — the same class of solver used in record-setting cube robots and the algorithmic basis for the proof that any cube state is solvable in 20 moves or fewer. A Python implementation runs on localhost and streams space-separated moves to the firmware over Serial.
+The solver is the Kociemba two-phase algorithm — the same class of solver used in record-setting cube robots and the algorithmic basis for the proof that any cube state is solvable in 20 moves or fewer. A Python implementation runs on localhost, computes a near-optimal solution of roughly 20 moves in under 1 second, then streams the expanded physical move sequence to the firmware over Serial.
 
 V1 deliberately defers computer-vision colour detection and a 6th U-face motor in favour of an open-top, manual-input design that prioritises mechanical simplicity, cube accessibility, and reliable end-to-end solving.`,
     image: "/images/RubikCubeFrontImage.png",
@@ -645,7 +643,7 @@ V1 deliberately defers computer-vision colour detection and a 6th U-face motor i
     features: [
       "5-motor open-top architecture (R, L, F, B, D) — slidable L-brackets allow cube swap without disassembly",
       "U-face moves synthesised in firmware via a 13-move equivalence (U = R L F2 B2 R' L' D L' R' B2 F2 L R)",
-      "Kociemba two-phase solver running locally in Python, streamed to ESP32 over Serial",
+      "Kociemba two-phase solver running locally in Python: ~20-move near-optimal solves in under 1 second",
       "Browser-based colour-palette input with real-time state validation and solve timing",
       "Move map handles both Kociemba numeric (B1, B3, R2) and prime notation — no moves silently dropped",
       "TMC2209 V2.0 drivers on a 12V 8A supply for quiet, micro-stepped face rotations",
@@ -685,7 +683,7 @@ V1 deliberately defers computer-vision colour detection and a 6th U-face motor i
 Sourcing compatible parts and getting consistent torque without skipped steps required tuning the TMC2209 current limits and AccelStepper acceleration curves carefully. A face that under-rotates by a few degrees throws off every subsequent move, so calibration of the per-motor zero positions and step-per-quarter-turn ratios was iterative.
 
 The colour-input UI also had to be defensive — Kociemba rejects any invalid cube state outright, so the frontend validates colour counts and centre-piece consistency before sending the state, otherwise a user could spend a minute typing in a state that the solver will refuse a second later.`,
-    results: `End-to-end pipeline works on arbitrary valid scrambles: state is typed into the browser, solved locally in Python (typically well under a second), expanded into 5-motor moves, and pushed to the ESP32 over Serial. A 21-move Kociemba solution expands to roughly 60–70 physical moves once U-face equivalences are substituted in.
+    results: `End-to-end pipeline works on arbitrary valid scrambles: state is typed into the browser, solved locally in Python, and pushed to the ESP32 over Serial. Kociemba computes a near-optimal solution of roughly 20 moves in under 1 second, then the 5-axis configuration expands it to roughly 55 physical motor commands.
 
 The open-top, manual-input design has been a clear win for V1 — it keeps the mechanical envelope small, makes cube changes trivial, and lets the focus stay on solver correctness and motor control rather than on a vision pipeline. Computer-vision colour detection and a 6th U-face motor are the obvious next steps for V2.`,
     learnings: [

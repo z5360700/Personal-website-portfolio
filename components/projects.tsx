@@ -65,7 +65,7 @@ const technicalProjects: ProjectCard[] = [
     id: 5,
     title: "Cat Door Monitoring System",
     description:
-      "IoT system built on ESP32 with break-beam sensors. Detects and logs cat movement, sending real-time Telegram push notifications — complete end-to-end embedded and cloud pipeline.",
+      "ESP32 break-beam monitor for a pet door. Detects movement, filters false triggers, and sends timestamped Telegram alerts.",
     image: "/images/cat-door-v2-system.png",
     tags: ["ESP32", "IoT", "Embedded C", "Telegram API", "Sensors"],
     githubUrl: "#",

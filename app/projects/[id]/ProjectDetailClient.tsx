@@ -54,9 +54,9 @@ const rubiksNavItems = [
 
 const rubiksMetricCards = [
   { icon: CircuitBoard, label: "Motors", value: "5", detail: "R, L, F, B, D" },
-  { icon: RotateCcw, label: "Top turn", value: "13", detail: "U move workaround" },
-  { icon: Timer, label: "Solver", value: "<1s", detail: "Kociemba plan" },
-  { icon: Gauge, label: "Physical", value: "~65", detail: "moves after expansion" },
+  { icon: RotateCcw, label: "Solver moves", value: "~20", detail: "near-optimal Kociemba plan" },
+  { icon: Timer, label: "Solve time", value: "<1s", detail: "local Python compute" },
+  { icon: Gauge, label: "Physical", value: "~55", detail: "5-axis motor commands" },
 ]
 
 const rubiksPipelineSteps = [
@@ -71,14 +71,14 @@ const rubiksPipelineSteps = [
     icon: Cpu,
     stage: "Solve",
     title: "Kociemba plans the solve",
-    description: "Python returns an efficient six-face move list.",
+    description: "Python computes a near-optimal plan of roughly 20 moves in under 1 second.",
     image: "/images/rubiks-ui-solved.png",
   },
   {
     icon: Cable,
     stage: "Stream",
     title: "Serial talks to ESP32",
-    description: "Moves become serial commands for the firmware.",
+    description: "The plan expands to roughly 55 physical motor commands for the 5-axis rig.",
     image: "/images/5motordiagramimage.jpg",
   },
   {
@@ -516,6 +516,7 @@ function RubiksPhysicalCube({
   highlightTopFace?: boolean
 }) {
   const mountRef = useRef<HTMLDivElement>(null)
+  const viewRotationRef = useRef({ x: 0, y: 0, z: 0 })
 
   useEffect(() => {
     const mount = mountRef.current
@@ -540,7 +541,7 @@ function RubiksPhysicalCube({
     mount.appendChild(renderer.domElement)
 
     const root = new THREE.Group()
-    root.rotation.set(0, 0, 0)
+    root.rotation.set(viewRotationRef.current.x, viewRotationRef.current.y, viewRotationRef.current.z)
     root.position.y = 0.12
     scene.add(root)
 
@@ -786,10 +787,11 @@ function RubiksPhysicalCube({
 
     const targetCue = new THREE.Group()
     const targetPlate = new THREE.Mesh(topHighlightGeometry.clone(), targetPlateMaterial)
-    const targetDirectionSign = direction === "cw" ? -1 : 1
+    const targetCueDirection = direction === "cw" ? "ccw" : "cw"
+    const targetDirectionSign = targetCueDirection === "cw" ? -1 : 1
     const targetRadius = 2.24
     const targetArrowHeight = 2.84
-    const targetStartAngle = direction === "cw" ? Math.PI * -0.2 : Math.PI * 1.2
+    const targetStartAngle = targetCueDirection === "cw" ? Math.PI * -0.2 : Math.PI * 1.2
     const targetArcLength = Math.PI * 1.45 * targetDirectionSign
     const targetArcPoints = Array.from({ length: 44 }, (_, index) => {
       const progress = index / 43
@@ -856,6 +858,11 @@ function RubiksPhysicalCube({
 
       root.rotation.y += deltaX * 0.008
       root.rotation.x = THREE.MathUtils.clamp(root.rotation.x + deltaY * 0.008, -1.25, 1.05)
+      viewRotationRef.current = {
+        x: root.rotation.x,
+        y: root.rotation.y,
+        z: root.rotation.z,
+      }
     }
 
     const handlePointerUp = (event: PointerEvent) => {
@@ -912,6 +919,11 @@ function RubiksPhysicalCube({
     animationFrame = window.requestAnimationFrame(render)
 
     return () => {
+      viewRotationRef.current = {
+        x: root.rotation.x,
+        y: root.rotation.y,
+        z: root.rotation.z,
+      }
       window.cancelAnimationFrame(animationFrame)
       resizeObserver.disconnect()
       renderer.domElement.removeEventListener("pointerdown", handlePointerDown)
@@ -948,6 +960,8 @@ function ProjectDetailClient() {
   const [rubiksDirection, setRubiksDirection] = useState<RubiksDirection>(getInitialRubiksDirection)
   const [isRubiksSequencePlaying, setIsRubiksSequencePlaying] = useState(false)
   const [showRubiksVideo, setShowRubiksVideo] = useState(false)
+  const [coolingAirflowMode, setCoolingAirflowMode] = useState<"stock" | "ducted">("ducted")
+  const [coolingObstacle, setCoolingObstacle] = useState<{ x: number; y: number } | null>(null)
 
   const activeRubiksObjective = rubiksObjectives[rubiksDirection]
   const activeMoveSequence = activeRubiksObjective.trace
@@ -1127,6 +1141,30 @@ function ProjectDetailClient() {
       </main>
     )
   }
+
+  const coolingObstacleActive = Boolean(
+    coolingObstacle &&
+      coolingObstacle.x > 145 &&
+      coolingObstacle.x < 720 &&
+      coolingObstacle.y > 100 &&
+      coolingObstacle.y < 345,
+  )
+  const coolingObstacleX = coolingObstacle?.x ?? 500
+  const coolingObstacleY = coolingObstacle?.y ?? 250
+  const getCoolingStockPath = (startY: number, endX: number, endY: number, offset: number) => {
+    if (!coolingObstacleActive) {
+      return `M744 ${startY} C650 ${startY + offset * 0.25} 555 ${endY + offset * 0.2} ${endX} ${endY}`
+    }
+
+    const bendY = Math.min(360, Math.max(82, coolingObstacleY + offset))
+    return `M744 ${startY} C${coolingObstacleX + 110} ${startY} ${coolingObstacleX + 72} ${bendY} ${coolingObstacleX + 14} ${bendY} C${coolingObstacleX - 90} ${bendY} ${endX + 82} ${endY} ${endX} ${endY}`
+  }
+  const coolingDuctTopPath = coolingObstacleActive
+    ? `M746 272 C${coolingObstacleX + 126} 258 ${coolingObstacleX + 78} ${coolingObstacleY - 36} ${coolingObstacleX} ${coolingObstacleY - 36} C${coolingObstacleX - 114} ${coolingObstacleY - 36} 472 262 356 274`
+    : "M746 276 C642 262 520 254 356 274"
+  const coolingDuctBottomPath = coolingObstacleActive
+    ? `M746 322 C${coolingObstacleX + 126} 336 ${coolingObstacleX + 78} ${coolingObstacleY + 42} ${coolingObstacleX} ${coolingObstacleY + 42} C${coolingObstacleX - 114} ${coolingObstacleY + 42} 472 310 356 292`
+    : "M746 322 C640 334 510 326 356 292"
 
   const replayRubiksAnimation = () => {
     setIsRubiksSequencePlaying(false)
@@ -1440,13 +1478,264 @@ function ProjectDetailClient() {
           </div>
         ) : project.id === 3 ? (
           /* PC Cooling project with story steps layout */
-          <div className="space-y-8">
-            <ProjectHeader project={project} />
+          <div className="space-y-10">
+            <section className="relative overflow-hidden rounded-xl border bg-muted/10">
+              <div className="absolute inset-0 cooling-flow-bg" aria-hidden="true" />
+              <div className="relative grid grid-cols-1 gap-7 p-5 md:p-8 lg:grid-cols-12 lg:items-center">
+                <div className="lg:col-span-6">
+                  <div className="mb-3 text-[11px] uppercase tracking-[0.24em] text-primary">Thermal airflow retrofit</div>
+                  <h1 className="max-w-3xl text-3xl font-bold leading-tight tracking-tight md:text-5xl">
+                    Custom cooling funnels for PC hardware
+                  </h1>
+                  <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/72 md:text-base">
+                    A 3D-printed ducting system that channels front-intake airflow directly into the GPU instead of letting it disperse through the case.
+                  </p>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {project.tags.map((tag) => (
+                      <span key={tag} className="rounded-md border border-border/70 bg-background/70 px-2.5 py-1 text-xs font-medium text-foreground/75">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="lg:col-span-6">
+                  <button
+                    type="button"
+                    className="group relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-border/70 bg-background/70"
+                    onClick={() => openLightbox(["/images/pc-cooling-installed.jpeg"], 0, "Cooling funnel installed")}
+                  >
+                    <Image
+                      src="/images/pc-cooling-installed.jpeg"
+                      alt="Custom cooling funnel installed in PC case"
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
+                    <div className="absolute bottom-4 left-4 rounded-md border border-white/20 bg-black/55 px-3 py-2 text-left text-white backdrop-blur">
+                      <div className="text-[10px] uppercase tracking-[0.18em] text-white/60">Measured result</div>
+                      <div className="text-2xl font-bold">7°C lower GPU temps</div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </section>
 
-            {/* Before/After Slider */}
-            <div className="bg-muted/10 rounded-lg p-6 border">
-              <h2 className="text-xl font-bold text-center mb-6">Before &amp; After</h2>
-              <div className="max-w-5xl mx-auto">
+            <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="rounded-lg border border-primary/35 bg-primary/10 p-5">
+                <div className="text-[10px] uppercase tracking-[0.2em] text-primary/75">Measured gain</div>
+                <div className="mt-2 flex items-end gap-2">
+                  <span className="text-4xl font-bold tracking-tight">7°C</span>
+                  <span className="pb-1 text-sm font-semibold text-foreground/70">cooler under GPU load</span>
+                </div>
+              </div>
+              <div className="rounded-lg border border-border/70 bg-muted/10 p-5">
+                <div className="text-[10px] uppercase tracking-[0.2em] text-primary/75">Airflow change</div>
+                <div className="mt-2 text-2xl font-bold tracking-tight">Front intake straight to GPU</div>
+                <div className="mt-2 text-sm text-foreground/60">Less case turbulence. More useful air.</div>
+              </div>
+            </section>
+
+            <section className="grid grid-cols-1 gap-5 rounded-lg border bg-muted/10 p-5 md:p-6 lg:grid-cols-12 lg:items-center">
+              <div className="lg:col-span-4">
+                <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">Airflow lab</div>
+                <h2 className="text-2xl font-bold tracking-tight">The duct turns messy air into a path.</h2>
+                <div className="mt-5 inline-flex rounded-md border border-border/70 bg-background/80 p-1">
+                  {[
+                    { id: "stock", label: "Stock" },
+                    { id: "ducted", label: "Ducted" },
+                  ].map((mode) => (
+                    <button
+                      key={mode.id}
+                      type="button"
+                      aria-pressed={coolingAirflowMode === mode.id}
+                      onClick={() => setCoolingAirflowMode(mode.id as "stock" | "ducted")}
+                      className={`rounded px-3 py-1.5 text-xs font-semibold transition-colors ${
+                        coolingAirflowMode === mode.id
+                          ? "bg-primary text-primary-foreground"
+                          : "text-foreground/60 hover:text-foreground"
+                      }`}
+                    >
+                      {mode.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-4 max-w-sm text-sm leading-relaxed text-foreground/65">
+                  {coolingAirflowMode === "ducted"
+                    ? "Front fan air is funnelled directly into the GPU cooler."
+                    : "Front fan air enters the case, then spills upward and around the GPU."}
+                </p>
+              </div>
+              <div className="lg:col-span-8">
+                <div
+                  className="relative overflow-hidden rounded-lg border border-border/70 bg-background/70 p-2 md:p-4"
+                  onPointerMove={(event) => {
+                    const rect = event.currentTarget.getBoundingClientRect()
+                    setCoolingObstacle({
+                      x: ((event.clientX - rect.left) / rect.width) * 860,
+                      y: ((event.clientY - rect.top) / rect.height) * 430,
+                    })
+                  }}
+                  onPointerLeave={() => setCoolingObstacle(null)}
+                >
+                  <svg className="h-auto w-full" viewBox="0 0 860 430" role="img" aria-label={`${coolingAirflowMode === "ducted" ? "Ducted" : "Stock"} PC airflow diagram`}>
+                    <defs>
+                      <linearGradient id="coolingAir" x1="0" x2="1" y1="0" y2="0">
+                        <stop offset="0%" stopColor="#2dd4bf" stopOpacity="0.95" />
+                        <stop offset="52%" stopColor="#38bdf8" stopOpacity="0.9" />
+                        <stop offset="100%" stopColor="#60a5fa" stopOpacity="0" />
+                      </linearGradient>
+                      <linearGradient id="coolingDuct" x1="0" x2="1" y1="0" y2="0">
+                        <stop offset="0%" stopColor="#111827" stopOpacity="0.96" />
+                        <stop offset="55%" stopColor="#1f2937" stopOpacity="0.94" />
+                        <stop offset="100%" stopColor="#020617" stopOpacity="0.98" />
+                      </linearGradient>
+                      <linearGradient id="coolingCaseGlow" x1="0" x2="1" y1="0" y2="1">
+                        <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.16" />
+                        <stop offset="52%" stopColor="#0f172a" stopOpacity="0" />
+                        <stop offset="100%" stopColor="#2563eb" stopOpacity="0.12" />
+                      </linearGradient>
+                      <filter id="coolingGlow" x="-30%" y="-80%" width="160%" height="260%">
+                        <feGaussianBlur stdDeviation="7" result="blur" />
+                        <feMerge>
+                          <feMergeNode in="blur" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                      </filter>
+                      <marker id="coolingArrow" markerHeight="14" markerUnits="userSpaceOnUse" markerWidth="14" orient="auto" refX="12" refY="7">
+                        <path d="M0,0 L13,7 L0,14 Z" fill="#67e8f9" />
+                      </marker>
+                      <marker id="coolingHeatArrow" markerHeight="14" markerUnits="userSpaceOnUse" markerWidth="14" orient="auto" refX="12" refY="7">
+                        <path d="M0,0 L13,7 L0,14 Z" fill="#f87171" />
+                      </marker>
+                    </defs>
+
+                    <rect x="8" y="8" width="844" height="414" rx="18" fill="currentColor" className="text-black/5 dark:text-white/[0.025]" stroke="currentColor" strokeOpacity="0.12" />
+                    <rect x="72" y="52" width="714" height="326" rx="18" fill="#030712" fillOpacity="0.72" stroke="#334155" strokeOpacity="0.68" />
+                    <rect x="72" y="52" width="714" height="326" rx="18" fill="url(#coolingCaseGlow)" />
+
+                    <g opacity="0.24" stroke="currentColor" className="text-foreground">
+                      {Array.from({ length: 11 }).map((_, index) => (
+                        <line key={`case-v-${index}`} x1={118 + index * 58} x2={118 + index * 58} y1="80" y2="352" strokeWidth="1" />
+                      ))}
+                      {Array.from({ length: 5 }).map((_, index) => (
+                        <line key={`case-h-${index}`} x1="98" x2="762" y1={104 + index * 52} y2={104 + index * 52} strokeWidth="1" />
+                      ))}
+                    </g>
+
+                    <g aria-hidden="true">
+                      <rect x="78" y="54" width="34" height="322" fill="#111827" stroke="#475569" strokeOpacity="0.7" />
+                      <rect x="745" y="66" width="30" height="300" rx="6" fill="#111827" stroke="#475569" strokeOpacity="0.62" />
+                      <rect x="126" y="306" width="368" height="44" rx="8" fill="#0f172a" stroke="#334155" strokeOpacity="0.85" />
+                      <rect x="116" y="82" width="34" height="34" rx="6" fill="#020617" stroke="#334155" />
+                      {Array.from({ length: 6 }).map((_, index) => (
+                        <line key={`rear-slot-${index}`} x1="84" x2="104" y1={174 + index * 18} y2={174 + index * 18} stroke="#64748b" strokeOpacity="0.7" strokeWidth="4" strokeLinecap="round" />
+                      ))}
+                      {Array.from({ length: 22 }).map((_, index) => (
+                        <line key={`top-rad-${index}`} x1={232 + index * 15} x2={238 + index * 15} y1="75" y2="75" stroke="#64748b" strokeOpacity="0.55" strokeWidth="8" strokeLinecap="round" />
+                      ))}
+                    </g>
+
+                    <g>
+                      <rect x="704" y="92" width="50" height="246" rx="16" fill="#082f49" fillOpacity="0.62" stroke="#38bdf8" strokeOpacity="0.45" />
+                      {[132, 216, 300].map((fanY) => (
+                        <g key={`front-fan-${fanY}`}>
+                          <circle cx="730" cy={fanY} r="30" fill="#020617" stroke="#7dd3fc" strokeOpacity="0.82" strokeWidth="2" />
+                          <circle cx="730" cy={fanY} r="8" fill="#38bdf8" fillOpacity="0.8" />
+                          <g transform={`translate(730 ${fanY})`}>
+                            <animateTransform attributeName="transform" dur="1.4s" repeatCount="indefinite" type="rotate" from={`0 0 0`} to={`360 0 0`} additive="sum" />
+                            <path d="M0 -24 C8 -20 13 -11 8 -4 C3 -7 -1 -14 0 -24Z" fill="#67e8f9" fillOpacity="0.65" />
+                            <path d="M24 0 C20 8 11 13 4 8 C7 3 14 -1 24 0Z" fill="#67e8f9" fillOpacity="0.65" />
+                            <path d="M0 24 C-8 20 -13 11 -8 4 C-3 7 1 14 0 24Z" fill="#67e8f9" fillOpacity="0.65" />
+                            <path d="M-24 0 C-20 -8 -11 -13 -4 -8 C-7 -3 -14 1 -24 0Z" fill="#67e8f9" fillOpacity="0.65" />
+                          </g>
+                        </g>
+                      ))}
+                      <text x="682" y="362" fill="currentColor" className="text-[11px] uppercase tracking-[0.22em] text-foreground/55">Front intake</text>
+                    </g>
+
+                    <g>
+                      <rect x="188" y="168" width="390" height="54" rx="8" fill="#1f2937" stroke="#64748b" strokeOpacity="0.75" />
+                      <rect x="206" y="182" width="154" height="18" rx="4" fill="#0f172a" stroke="#94a3b8" strokeOpacity="0.45" />
+                      <text x="220" y="196" fill="#e5e7eb" className="text-[16px] font-bold tracking-[0.08em]">GEFORCE RTX</text>
+                      {Array.from({ length: 18 }).map((_, index) => (
+                        <line key={`gpu-fin-${index}`} x1={396 + index * 8} x2={400 + index * 8} y1="178" y2="212" stroke="#cbd5e1" strokeOpacity="0.24" strokeWidth="3" />
+                      ))}
+                      <rect x="244" y="224" width="286" height="56" rx="10" fill="#0f172a" stroke="#475569" strokeOpacity="0.8" />
+                      {Array.from({ length: 17 }).map((_, index) => (
+                        <line key={`gpu-sink-${index}`} x1={260 + index * 15} x2={260 + index * 15} y1="232" y2="272" stroke="#94a3b8" strokeOpacity="0.34" strokeWidth="3" />
+                      ))}
+                      <text x="246" y="158" fill="currentColor" className="text-[11px] uppercase tracking-[0.22em] text-foreground/55">GPU cooler intake</text>
+                    </g>
+
+                    <g>
+                      <circle cx="130" cy="210" r="34" fill="#020617" stroke="#7dd3fc" strokeOpacity="0.7" strokeWidth="2" />
+                      <circle cx="130" cy="210" r="11" fill="#38bdf8" fillOpacity="0.72" />
+                      <path d="M112 192 C125 184 143 186 151 199" stroke="#67e8f9" strokeOpacity="0.45" strokeWidth="6" strokeLinecap="round" fill="none" />
+                      <path d="M148 228 C134 236 118 232 110 220" stroke="#67e8f9" strokeOpacity="0.45" strokeWidth="6" strokeLinecap="round" fill="none" />
+                      <text x="102" y="266" fill="currentColor" className="text-[11px] uppercase tracking-[0.22em] text-foreground/55">Rear exhaust</text>
+                    </g>
+
+                    {coolingObstacleActive && (
+                      <g>
+                        <circle cx={coolingObstacleX} cy={coolingObstacleY} r="26" fill="#020617" fillOpacity="0.82" stroke="#f8fafc" strokeOpacity="0.5" />
+                        <circle cx={coolingObstacleX} cy={coolingObstacleY} r="39" fill="none" stroke="#f8fafc" strokeDasharray="4 8" strokeOpacity="0.25" />
+                      </g>
+                    )}
+                    {coolingAirflowMode === "ducted" ? (
+                      <g>
+                        <path
+                          d="M748 242 C646 232 556 230 482 248 C428 262 386 286 342 294 L342 330 C430 342 514 344 588 326 C664 308 716 294 748 302 Z"
+                          fill="url(#coolingDuct)"
+                          stroke="#64748b"
+                          strokeOpacity="0.78"
+                          strokeWidth="2"
+                        />
+                        <path d="M748 246 C642 242 522 246 355 282" stroke="#94a3b8" strokeOpacity="0.22" strokeWidth="2" fill="none" />
+                        <path d="M748 298 C640 312 516 318 355 304" stroke="#94a3b8" strokeOpacity="0.18" strokeWidth="2" fill="none" />
+                        {coolingObstacleActive ? (
+                          <>
+                            <path className="cooling-flow-pulse" d={coolingDuctTopPath} stroke="url(#coolingAir)" strokeWidth="10" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
+                            <path className="cooling-flow-pulse cooling-flow-pulse-late" d={coolingDuctBottomPath} stroke="url(#coolingAir)" strokeWidth="10" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
+                          </>
+                        ) : (
+                          <>
+                            <path className="cooling-flow-pulse" d={coolingDuctTopPath} stroke="url(#coolingAir)" strokeWidth="13" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
+                            <path className="cooling-flow-pulse cooling-flow-pulse-late" d={coolingDuctBottomPath} stroke="url(#coolingAir)" strokeWidth="13" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
+                          </>
+                        )}
+                        <path d="M344 284 L382 264 L378 304 Z" fill="#67e8f9" fillOpacity="0.9" filter="url(#coolingGlow)" />
+                        <rect x="412" y="288" width="88" height="28" rx="6" fill="#064e3b" fillOpacity="0.72" stroke="#34d399" strokeOpacity="0.65" />
+                        <text x="430" y="307" fill="#a7f3d0" className="text-[13px] font-bold">guided</text>
+                      </g>
+                    ) : (
+                      <g>
+                        <path className="cooling-flow-pulse" d={getCoolingStockPath(132, 198, 94, -86)} stroke="url(#coolingAir)" strokeWidth="9" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
+                        <path className="cooling-flow-pulse cooling-flow-pulse-late" d={getCoolingStockPath(216, 245, 235, 0)} stroke="url(#coolingAir)" strokeWidth="9" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
+                        <path className="cooling-flow-pulse" d={getCoolingStockPath(300, 420, 350, 78)} stroke="url(#coolingAir)" strokeWidth="9" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
+                        <path d="M360 112 C286 108 220 132 168 178" stroke="#f87171" strokeWidth="7" strokeLinecap="round" strokeOpacity="0.72" markerEnd="url(#coolingHeatArrow)" fill="none" />
+                        <path d="M512 342 C442 362 356 358 282 328" stroke="#f87171" strokeWidth="7" strokeLinecap="round" strokeOpacity="0.55" markerEnd="url(#coolingHeatArrow)" fill="none" />
+                        <rect x="432" y="120" width="90" height="28" rx="6" fill="#7f1d1d" fillOpacity="0.62" stroke="#f87171" strokeOpacity="0.58" />
+                        <text x="448" y="139" fill="#fecaca" className="text-[13px] font-bold">spills away</text>
+                      </g>
+                    )}
+                  </svg>
+                </div>
+              </div>
+            </section>
+
+            <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+              <div className="rounded-lg border bg-muted/10 p-5 md:p-6 lg:col-span-8">
+                <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">Before / After</div>
+                    <h2 className="text-2xl font-bold tracking-tight">Airflow redirected to the GPU</h2>
+                  </div>
+                  <p className="max-w-sm text-sm leading-relaxed text-foreground/60">
+                    Slide between the open case and the installed ducting to see the final airflow path.
+                  </p>
+                </div>
                 <EnhancedBeforeAfterSlider
                   beforeImage="/images/pc-without-ducting.jpeg"
                   afterImage="/images/pc-cooling-installed.jpeg"
@@ -1454,125 +1743,180 @@ function ProjectDetailClient() {
                   afterAlt="PC with custom cooling ducting installed"
                 />
               </div>
-            </div>
 
-            {/* Project Description */}
-            <div className="bg-muted/10 rounded-lg p-6 border">
-              <div className="prose dark:prose-invert max-w-none">
-                <p className="text-base leading-relaxed whitespace-pre-line">{project.longDescription}</p>
+              <div className="rounded-lg border bg-muted/10 p-5 md:p-6 lg:col-span-4">
+                <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">Why it worked</div>
+                <h2 className="text-xl font-bold tracking-tight">Less wasted airflow inside the case.</h2>
+                <div className="mt-5 space-y-4 text-sm leading-relaxed text-foreground/70">
+                  <p>
+                    The stock case airflow entered from the front, then spread into empty internal volume before reaching the GPU.
+                  </p>
+                  <p>
+                    The funnel creates a controlled path from intake fans to the GPU cooler, reducing recirculation and improving thermal consistency.
+                  </p>
+                  <div className="rounded-md border border-primary/25 bg-primary/10 p-3 text-xs font-medium text-primary">
+                    Inspired by automotive intake ducting: move air intentionally, not generally.
+                  </div>
+                </div>
               </div>
-            </div>
+            </section>
 
             {/* Story Steps */}
-            <div className="bg-muted/10 rounded-lg p-6 border">
-              <h2 className="text-xl font-bold text-center mb-8">Project Development Story</h2>
-              <div className="space-y-8">
-                {project.storySteps?.map((step, index) => (
-                  <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-                    <div className={`space-y-3 ${index % 2 === 1 ? "lg:order-2" : ""}`}>
-                      <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-sm">
-                          {index + 1}
+            <div className="rounded-lg border bg-muted/10 p-5 md:p-7">
+              <div className="mb-8 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">Timeline</div>
+                  <h2 className="text-2xl font-bold tracking-tight">Project development story</h2>
+                </div>
+                <p className="max-w-md text-sm leading-relaxed text-foreground/60">
+                  From airflow problem to printed ducting, with each stage shown without image cropping.
+                </p>
+              </div>
+              <div className="relative space-y-8 before:absolute before:left-3 before:top-2 before:hidden before:h-[calc(100%-1rem)] before:w-px before:bg-border md:before:block lg:before:left-1/2">
+                {project.storySteps?.map((step, index) => {
+                  const textPanel = (
+                    <div className="rounded-lg border border-border/70 bg-background/70 p-4 md:p-5">
+                      <div className="mb-3 flex items-center gap-3">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                          {String(index + 1).padStart(2, "0")}
                         </div>
-                        <h3 className="text-lg font-bold">{step.title}</h3>
+                        <h3 className="text-lg font-bold leading-tight">{step.title}</h3>
                       </div>
-                      <p className="text-foreground/80 leading-relaxed text-sm">{step.description}</p>
+                      <p className="text-sm leading-relaxed text-foreground/75">{step.description}</p>
                       {step.highlight && (
-                        <div className="bg-primary/10 border-l-4 border-primary p-3 rounded-r-lg">
-                          <p className="text-xs text-primary font-medium">{step.highlight}</p>
+                        <div className="mt-4 rounded-md border border-primary/25 bg-primary/10 px-3 py-2.5">
+                          <p className="text-xs font-medium leading-relaxed text-primary">{step.highlight}</p>
                         </div>
                       )}
                     </div>
-                    <div className={`${index % 2 === 1 ? "lg:order-1" : ""}`}>
-                      <div
-                        className={`relative ${step.aspectRatio || "aspect-video"} rounded-lg overflow-hidden cursor-pointer group`}
-                        onClick={() => openLightbox([step.image], 0, `Step ${index + 1}`)}
-                      >
+                  )
+                  const imagePanel = (
+                    <button
+                      type="button"
+                      className="group relative block w-full overflow-hidden rounded-lg border border-border/70 bg-background/80 p-3 text-left shadow-sm transition-colors hover:border-primary/45"
+                      onClick={() => openLightbox([step.image], 0, `Step ${index + 1}`)}
+                    >
+                      <div className={`relative ${step.aspectRatio || "aspect-video"} min-h-[240px] overflow-hidden rounded-md bg-black/5 dark:bg-white/[0.03]`}>
                         <Image
                           src={step.image || "/placeholder.svg"}
                           alt={step.title}
                           fill
-                          className="object-cover transition-transform group-hover:scale-105"
+                          className="object-contain p-2 transition-transform duration-500 group-hover:scale-[1.02]"
                           sizes="(max-width: 768px) 100vw, 50vw"
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                      </div>
+                    </button>
+                  )
+
+                  return (
+                    <div key={index} className="relative grid grid-cols-1 gap-4 pl-10 md:pl-12 lg:grid-cols-[minmax(0,1fr)_3rem_minmax(0,1fr)] lg:items-center lg:gap-6 lg:pl-0">
+                      <div className="absolute left-0 top-5 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-primary/40 bg-background text-[10px] font-bold text-primary lg:left-1/2 lg:-translate-x-1/2">
+                        {index + 1}
+                      </div>
+                      <div className={index % 2 === 0 ? "lg:col-start-1" : "lg:col-start-3"}>
+                        {textPanel}
+                      </div>
+                      <div className="hidden lg:col-start-2 lg:block" aria-hidden="true" />
+                      <div className={index % 2 === 0 ? "lg:col-start-3" : "lg:col-start-1 lg:row-start-1"}>
+                        {imagePanel}
                       </div>
                     </div>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Temperature Comparison Results */}
+            <section className="rounded-lg border bg-muted/10 p-5 md:p-7">
+              <div className="mb-7 grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-end">
+                <div className="lg:col-span-7">
+                  <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">Measured evidence</div>
+                  <h2 className="text-2xl font-bold tracking-tight md:text-3xl">Temperature test results</h2>
+                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/65">
+                    Same GPU workload, same case, same benchmark style. The ducted airflow reduced load temperature by 7°C.
+                  </p>
+                </div>
+                <div className="rounded-lg border border-primary/35 bg-primary/10 p-4 lg:col-span-5">
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-primary/75">Result delta</div>
+                  <div className="mt-1 flex items-end gap-2">
+                    <span className="text-4xl font-bold tracking-tight">7°C</span>
+                    <span className="pb-1 text-sm font-semibold text-foreground/70">cooler under load</span>
+                  </div>
+                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-foreground/10">
+                    <div className="h-full w-[72%] rounded-full bg-primary" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                {[
+                  {
+                    title: "Baseline",
+                    subtitle: "Without ducting",
+                    image: "/images/gpu-test-without-ducting.png",
+                    alt: "GPU temperature test without ducting",
+                    state: "Hotter GPU load temperature",
+                    tone: "border-red-400/35 bg-red-500/10 text-red-300",
+                    lightTone: "text-red-700 dark:text-red-300",
+                    lightSubtone: "text-red-600 dark:text-red-400",
+                  },
+                  {
+                    title: "Ducted airflow",
+                    subtitle: "With cooling funnel",
+                    image: "/images/gpu-test-with-ducting.png",
+                    alt: "GPU temperature test with ducting",
+                    state: "7°C lower GPU temperature",
+                    tone: "border-emerald-400/35 bg-emerald-500/10 text-emerald-300",
+                    lightTone: "text-emerald-700 dark:text-emerald-300",
+                    lightSubtone: "text-emerald-600 dark:text-emerald-400",
+                  },
+                ].map((item) => (
+                  <div key={item.title} className="rounded-lg border border-border/70 bg-background/70 p-4">
+                    <div className="mb-3 flex items-end justify-between gap-3">
+                      <div>
+                        <div className="text-[10px] uppercase tracking-[0.2em] text-foreground/45">{item.title}</div>
+                        <h3 className="text-lg font-semibold">{item.subtitle}</h3>
+                      </div>
+                      <span className={`rounded-md border px-2.5 py-1 text-xs font-semibold ${item.tone}`}>
+                        {item.state}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      className="group relative block aspect-[4/3] w-full overflow-hidden rounded-md border border-border/70 bg-black/5 dark:bg-white/[0.03]"
+                      onClick={() => openLightbox([item.image], 0, item.alt)}
+                    >
+                      <Image
+                        src={item.image}
+                        alt={item.alt}
+                        fill
+                        className="object-contain transition-transform duration-500 group-hover:scale-[1.01]"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                      />
+                    </button>
                   </div>
                 ))}
               </div>
-            </div>
 
-            {project.gallery && (
-              <ImageGallery
-                title="All Project Images"
-                images={project.gallery}
-                onImageClick={openLightbox}
-                altPrefix="Project images"
-              />
-            )}
-
-            {/* Temperature Comparison Results */}
-            <div className="bg-muted/10 rounded-lg p-6 border">
-              <h2 className="text-xl font-bold text-center mb-6">Temperature Test Results</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-center">Without Ducting</h3>
-                  <div
-                    className="relative aspect-video rounded-lg overflow-hidden cursor-pointer group"
-                    onClick={() =>
-                      openLightbox(["/images/gpu-test-without-ducting.png"], 0, "GPU test without ducting")
-                    }
-                  >
-                    <Image
-                      src="/images/gpu-test-without-ducting.png"
-                      alt="GPU temperature test without ducting"
-                      fill
-                      className="object-cover transition-transform group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                  </div>
-                  <div className="text-center bg-red-50 dark:bg-red-900/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
-                    <p className="text-red-700 dark:text-red-300 font-semibold">Higher GPU temperatures</p>
-                    <p className="text-red-600 dark:text-red-400 text-sm">Less efficient cooling performance</p>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-center">With Ducting</h3>
-                  <div
-                    className="relative aspect-video rounded-lg overflow-hidden cursor-pointer group"
-                    onClick={() => openLightbox(["/images/gpu-test-with-ducting.png"], 0, "GPU test with ducting")}
-                  >
-                    <Image
-                      src="/images/gpu-test-with-ducting.png"
-                      alt="GPU temperature test with ducting"
-                      fill
-                      className="object-cover transition-transform group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                  </div>
-                  <div className="text-center bg-green-50 dark:bg-green-900/20 p-3 rounded-lg border border-green-200 dark:border-green-800">
-                    <p className="text-green-700 dark:text-green-300 font-semibold">8°C temperature reduction</p>
-                    <p className="text-green-600 dark:text-green-400 text-sm">Improved cooling efficiency</p>
-                  </div>
-                </div>
+              <div className="mt-5 rounded-lg border border-border/70 bg-background/70 p-4 text-sm leading-relaxed text-foreground/70">
+                The result matters because a lower sustained GPU temperature helps the card hold boost clocks longer while reducing how hard the fans need to work.
               </div>
+            </section>
 
-              <div className="mt-6 text-center bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                <h4 className="font-bold text-blue-800 dark:text-blue-200 mb-2">Key Improvement</h4>
-                <p className="text-blue-700 dark:text-blue-300 text-sm">
-                  The custom ducting system achieved an 8°C reduction in GPU temperatures under full load, allowing for
-                  better performance and reduced fan noise.
-                </p>
+            <section className="rounded-lg border bg-muted/10 p-5 md:p-6">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                {[
+                  { label: "Problem", value: "Air scattered inside the case." },
+                  { label: "Fix", value: "Duct the intake toward the GPU." },
+                  { label: "Result", value: "7°C lower under load." },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-md border border-border/70 bg-background/70 p-4">
+                    <div className="text-[10px] uppercase tracking-[0.2em] text-primary/75">{item.label}</div>
+                    <div className="mt-2 text-sm font-semibold leading-snug text-foreground/85">{item.value}</div>
+                  </div>
+                ))}
               </div>
-            </div>
-
-            {project.results && <ResultsSection results={project.results} />}
-
-            <ProjectTabs project={project} />
+            </section>
           </div>
         ) : project.id === 4 ? (
           /* UR5e Robotic Writing System */
@@ -1663,88 +2007,181 @@ function ProjectDetailClient() {
           </div>
         ) : project.id === 5 ? (
           /* Cat Door project layout */
-          <div className="space-y-8">
-            <ProjectHeader project={project} />
-
-            {/* Main Project Image */}
-            <div className="bg-muted/10 rounded-lg p-6 border">
-              <div className="relative aspect-video rounded-lg overflow-hidden max-w-4xl mx-auto">
-                <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
-              </div>
-            </div>
-
-            {/* Project Description */}
-            <div className="bg-muted/10 rounded-lg p-6 border">
-              <div className="prose dark:prose-invert max-w-none">
-                <p className="text-base leading-relaxed whitespace-pre-line">{project.longDescription}</p>
-              </div>
-            </div>
-
-            {/* Video Demonstration */}
-            {project.videoGallery && (
-              <div className="bg-muted/10 rounded-lg p-6 border">
-                <h2 className="text-xl font-bold text-center mb-6">System Demonstration</h2>
-                {project.videoGallery.map((video, index) => (
-                  <div key={index} className="space-y-3 max-w-4xl mx-auto">
-                    <div className="relative w-full aspect-video rounded-lg overflow-hidden">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${video.id}`}
-                        title={video.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="w-full h-full"
-                      />
+          <div className="space-y-7">
+            <section className="overflow-hidden rounded-xl border bg-[#05070b] text-white">
+              <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.92fr)]">
+                <button
+                  type="button"
+                  className="group relative min-h-[360px] overflow-hidden text-left md:min-h-[480px]"
+                  onClick={() => openLightbox(["/images/cat-door-v1.jpeg"], 0, "Cat door monitor installed")}
+                >
+                  <Image
+                    src="/images/cat-door-v1.jpeg"
+                    alt="Cat door monitor installed on security door"
+                    fill
+                    className="object-cover opacity-80 transition-transform duration-700 group-hover:scale-[1.03]"
+                    sizes="(max-width: 1024px) 100vw, 56vw"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/82 via-black/35 to-transparent" />
+                  <div className="absolute inset-x-6 bottom-6 md:left-8 md:max-w-lg">
+                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-300/35 bg-emerald-400/15 px-3 py-1 text-xs font-semibold text-emerald-200">
+                      <span className="h-2 w-2 rounded-full bg-emerald-300" />
+                      Armed at pet door
                     </div>
-                    <div className="text-center">
-                      <h3 className="font-bold text-sm mb-1">{video.title}</h3>
-                      <p className="text-foreground/70 text-xs">{video.description}</p>
+                    <h1 className="max-w-xl text-3xl font-bold leading-tight tracking-tight md:text-5xl">
+                      Cat door monitoring system
+                    </h1>
+                    <p className="mt-4 max-w-md text-sm leading-relaxed text-white/72 md:text-base">
+                      A compact ESP32 guard that watches the pet door and sends a phone alert when the beam is broken.
+                    </p>
+                  </div>
+                </button>
+
+                <div className="border-t border-white/10 bg-black/55 p-5 md:p-7 lg:border-l lg:border-t-0">
+                  <div className="mb-5 flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-[0.24em] text-primary">Live console</div>
+                      <h2 className="mt-2 text-xl font-bold">Beam activity</h2>
+                    </div>
+                    {project.videoGallery?.[0] && (
+                      <Button asChild size="sm" className="h-9 rounded-md">
+                        <a href={`https://www.youtube.com/watch?v=${project.videoGallery[0].id}`} target="_blank" rel="noopener noreferrer">
+                          <Play className="mr-2 h-4 w-4" />
+                          Demo
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+
+                  <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
+                    <div className="mb-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                      <div className="rounded-md border border-cyan-300/25 bg-cyan-300/10 p-3">
+                        <div className="text-[10px] uppercase tracking-[0.18em] text-cyan-200/70">Emitter</div>
+                        <div className="mt-1 text-sm font-bold text-cyan-100">IR beam</div>
+                      </div>
+                      <div className="relative h-2 w-20 overflow-hidden rounded-full bg-cyan-200/20 md:w-28">
+                        <div className="cat-door-beam absolute inset-y-0 left-0 w-1/2 rounded-full bg-cyan-200" />
+                      </div>
+                      <div className="rounded-md border border-cyan-300/25 bg-cyan-300/10 p-3 text-right">
+                        <div className="text-[10px] uppercase tracking-[0.18em] text-cyan-200/70">Receiver</div>
+                        <div className="mt-1 text-sm font-bold text-cyan-100">ESP32</div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      {[
+                        { time: "05:24", event: "Beam broken", state: "cat detected" },
+                        { time: "08:43", event: "Debounced event", state: "valid trigger" },
+                        { time: "08:43", event: "Telegram sent", state: "phone alerted" },
+                      ].map((item) => (
+                        <div key={`${item.time}-${item.event}`} className="flex items-center justify-between gap-3 rounded-md border border-white/10 bg-black/35 px-3 py-2">
+                          <div>
+                            <div className="text-sm font-semibold">{item.event}</div>
+                            <div className="text-xs text-white/46">{item.state}</div>
+                          </div>
+                          <span className="font-mono text-xs text-primary">{item.time}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
 
-            {/* Design Evolution and Notifications */}
-            <div className="space-y-8">
-              {project.designGallery && (
-                <ImageGallery
-                  title="Design Evolution"
-                  images={project.designGallery}
-                  onImageClick={openLightbox}
-                  altPrefix="Design evolution"
-                  columns="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                  imageHeight="h-40"
-                />
-              )}
-
-              {/* Notification Gallery */}
-              {project.notificationGallery && (
-                <div className="bg-muted/10 rounded-lg p-6 border">
-                  <h2 className="text-xl font-bold text-center mb-6">Telegram Notifications</h2>
-                  <div className="flex justify-center">
-                    {project.notificationGallery.map((image, index) => (
-                      <div
-                        key={index}
-                        className="relative w-full max-w-sm h-80 rounded-lg overflow-hidden cursor-pointer group"
-                        onClick={() => openLightbox(project.notificationGallery || [], index, "Telegram notifications")}
-                      >
-                        <Image
-                          src={image || "/placeholder.svg"}
-                          alt={`Telegram notification ${index + 1}`}
-                          fill
-                          className="object-cover transition-transform group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                      </div>
-                    ))}
+                  <div className="mt-4 rounded-lg border border-emerald-300/25 bg-emerald-400/10 p-4">
+                    <div className="text-[10px] uppercase tracking-[0.2em] text-emerald-200/70">Result</div>
+                    <div className="mt-1 text-2xl font-bold">Intruder detected in 2 days</div>
+                    <p className="mt-2 text-sm leading-relaxed text-white/62">
+                      V2 replaced unreliable PIR sensing with a beam break across the opening.
+                    </p>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            </section>
 
-            {project.results && <ResultsSection results={project.results} />}
+            <section className="grid grid-cols-1 gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+              <div className="rounded-xl border bg-muted/10 p-5 md:p-6">
+                <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">V1 to V2</div>
+                <h2 className="text-2xl font-bold tracking-tight">The sensor choice made the project work.</h2>
+                <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-stretch">
+                  <div className="rounded-lg border border-red-400/30 bg-red-500/10 p-4">
+                    <div className="text-[10px] uppercase tracking-[0.18em] text-red-300">V1 PIR</div>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/70">
+                      Triggered on insects and nearby door movement.
+                    </p>
+                  </div>
+                  <div className="hidden items-center text-primary sm:flex">
+                    <ArrowRight className="h-5 w-5" />
+                  </div>
+                  <div className="rounded-lg border border-emerald-400/30 bg-emerald-500/10 p-4">
+                    <div className="text-[10px] uppercase tracking-[0.18em] text-emerald-300">V2 beam</div>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/70">
+                      Only fires when the pet-door opening is crossed.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            <ProjectTabs project={project} />
+              <button
+                type="button"
+                className="group grid grid-cols-1 overflow-hidden rounded-xl border bg-muted/10 text-left md:grid-cols-[0.78fr_1fr]"
+                onClick={() => openLightbox(["/images/cat-door-telegram-notifications.png"], 0, "Telegram alert log")}
+              >
+                <div className="relative min-h-[260px] bg-black/5 dark:bg-white/[0.03]">
+                  <Image
+                    src="/images/cat-door-telegram-notifications.png"
+                    alt="Telegram notification log"
+                    fill
+                    className="object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                    sizes="(max-width: 1024px) 100vw, 34vw"
+                  />
+                </div>
+                <div className="flex flex-col justify-center p-5 md:p-6">
+                  <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">Phone evidence</div>
+                  <h2 className="text-2xl font-bold tracking-tight">Every detection became a timestamped alert.</h2>
+                  <p className="mt-3 text-sm leading-relaxed text-foreground/65">
+                    The Telegram bot made the prototype useful immediately: beam break, timestamp, notification.
+                  </p>
+                </div>
+              </button>
+            </section>
+
+            <section className="rounded-xl border bg-muted/10 p-4 md:p-5">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                {[
+                  {
+                    title: "CAD housing",
+                    image: "/images/cat-door-cad-design.jpeg",
+                    alt: "Cat door CAD housing design",
+                  },
+                  {
+                    title: "Printed frame",
+                    image: "/images/cat-door-3d-printed.png",
+                    alt: "3D printed cat door monitor housing",
+                  },
+                  {
+                    title: "Bench validation",
+                    image: "/images/cat-door-v2-system.png",
+                    alt: "ESP32 break beam bench test",
+                  },
+                ].map((item) => (
+                  <button
+                    key={item.title}
+                    type="button"
+                    className="group relative aspect-[4/3] overflow-hidden rounded-lg border border-border/70 bg-background/60"
+                    onClick={() => openLightbox([item.image], 0, item.title)}
+                  >
+                    <Image
+                      src={item.image}
+                      alt={item.alt}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      sizes="(max-width: 768px) 100vw, 30vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
+                    <div className="absolute bottom-3 left-3 text-sm font-bold text-white">{item.title}</div>
+                  </button>
+                ))}
+              </div>
+            </section>
           </div>
         ) : project.id === 7 ? (
           /* Rubik's Cube Solver layout */
@@ -1868,7 +2305,7 @@ function ProjectDetailClient() {
                   <div className="min-w-0 lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
-                        Python runs Kociemba locally: a fast two-phase solver used in speed-solving software to create efficient cube move lists.
+                        Python runs Kociemba locally: a fast two-phase solver used in speed-solving software to compute a near-optimal solution of roughly 20 moves in under 1 second.
                       </p>
                       <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
                         Kociemba assumes all six faces can turn. This robot keeps the top open, so U and U&apos; moves are expanded into a workaround using the surrounding motors.
@@ -1876,7 +2313,7 @@ function ProjectDetailClient() {
                     </div>
                     <div className="space-y-4">
                       <p className="text-sm md:text-base text-foreground/75 leading-relaxed">
-                        The ESP32 still follows the same solve plan, but top-face requests become physical R, L, F, B, and D moves.
+                        The ESP32 still follows the same solve plan, but top-face requests are expanded for the 5-axis configuration, producing roughly 55 physical motor commands.
                       </p>
                       <div className="overflow-x-auto rounded-md border border-border/70 bg-background/70 p-3 font-mono text-xs md:text-sm text-foreground/80">
                         U = R L F2 B2 R&apos; L&apos; D L&apos; R&apos; B2 F2 L R
