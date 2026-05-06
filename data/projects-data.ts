@@ -617,6 +617,8 @@ The solver is the Kociemba two-phase algorithm — the same class of solver used
 V1 deliberately defers computer-vision colour detection and a 6th U-face motor in favour of an open-top, manual-input design that prioritises mechanical simplicity, cube accessibility, and reliable end-to-end solving.`,
     image: "/images/RubikCubeFrontImage.png",
     hardwareGallery: [
+      "/images/final5motorcubedesign.jpg",
+      "/images/5motordiagramimage.jpg",
       "/images/5motordesign.jpg",
       "/images/5motordesignfinal.jpg",
       "/images/4motorbreadboardwiring.jpg",

@@ -9,6 +9,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Cable,
+  CheckCircle2,
   CircuitBoard,
   Cpu,
   ExternalLink,
@@ -78,14 +79,14 @@ const rubiksPipelineSteps = [
     stage: "Stream",
     title: "Serial talks to ESP32",
     description: "Moves become serial commands for the firmware.",
-    image: "/images/4motorbreadboardwiring.jpg",
+    image: "/images/5motordiagramimage.jpg",
   },
   {
     icon: Wrench,
     stage: "Actuate",
     title: "The chassis does the work",
     description: "Five steppers turn the gripped faces.",
-    image: "/images/5motordesignfinal.jpg",
+    image: "/images/final5motorcubedesign.jpg",
   },
 ]
 
@@ -235,15 +236,27 @@ const rubiksMoveTraceUPrime = [
 
 const rubiksBuildPhotos = [
   {
+    src: "/images/final5motorcubedesign.jpg",
+    label: "Final 5-motor cube grip",
+    span: "col-span-12 md:col-span-7",
+    aspect: "aspect-[4/3]",
+  },
+  {
+    src: "/images/5motordiagramimage.jpg",
+    label: "Electronics wiring layout",
+    span: "col-span-12 md:col-span-5",
+    aspect: "aspect-[4/3]",
+  },
+  {
     src: "/images/5motordesign.jpg",
     label: "Early 5-motor CAD",
-    span: "col-span-12 md:col-span-7",
+    span: "col-span-12 md:col-span-5",
     aspect: "aspect-[4/3]",
   },
   {
     src: "/images/5motordesignfinal.jpg",
     label: "Final chassis direction",
-    span: "col-span-12 md:col-span-5",
+    span: "col-span-12 md:col-span-7",
     aspect: "aspect-[4/3]",
   },
   {
@@ -607,18 +620,57 @@ function RubiksPhysicalCube({
       depthWrite: false,
     })
     const targetArrowMaterial = new THREE.LineBasicMaterial({
-      color: 0x7fb1ff,
+      color: 0xffd166,
+      transparent: true,
+      opacity: 0,
+    })
+    const targetArrowTubeMaterial = new THREE.MeshStandardMaterial({
+      color: 0xffc857,
+      emissive: 0xb45309,
+      emissiveIntensity: 1.15,
+      roughness: 0.3,
+      metalness: 0.05,
+      transparent: true,
+      opacity: 0,
+    })
+    const targetPlateOutlineMaterial = new THREE.LineBasicMaterial({
+      color: 0x8cc4ff,
       transparent: true,
       opacity: 0,
     })
     const targetArrowHeadMaterial = new THREE.MeshStandardMaterial({
-      color: 0x7fb1ff,
-      emissive: 0x123b8f,
-      emissiveIntensity: 0.8,
+      color: 0xffd166,
+      emissive: 0xb45309,
+      emissiveIntensity: 1.15,
       roughness: 0.35,
       metalness: 0.1,
       transparent: true,
       opacity: 0,
+    })
+    const motorBodyMaterial = new THREE.MeshStandardMaterial({
+      color: 0x162033,
+      roughness: 0.55,
+      metalness: 0.38,
+      transparent: true,
+      opacity: 0.7,
+    })
+    const motorFaceMaterial = new THREE.MeshStandardMaterial({
+      color: 0x25364f,
+      emissive: 0x123b8f,
+      emissiveIntensity: 0.32,
+      roughness: 0.5,
+      metalness: 0.28,
+      transparent: true,
+      opacity: 0.78,
+    })
+    const motorCouplerMaterial = new THREE.MeshStandardMaterial({
+      color: 0x60a5fa,
+      emissive: 0x0f2f76,
+      emissiveIntensity: 0.48,
+      roughness: 0.34,
+      metalness: 0.18,
+      transparent: true,
+      opacity: 0.68,
     })
     const stickerMaterials = Object.fromEntries(
       Object.entries(rubiksStickerColors).map(([face, color]) => [
@@ -674,6 +726,66 @@ function RubiksPhysicalCube({
       parent.add(cubie)
     })
 
+    const motorRig = new THREE.Group()
+    const motorBodyGeometry = new THREE.BoxGeometry(0.62, 0.62, 0.62)
+    const motorFaceGeometry = new THREE.BoxGeometry(0.66, 0.66, 0.06)
+    const couplerGeometry = new THREE.CylinderGeometry(0.055, 0.055, 1.02, 16)
+    const motorConfigs = [
+      {
+        bodyPosition: new THREE.Vector3(2.92, 0, 0),
+        facePosition: new THREE.Vector3(2.55, 0, 0),
+        faceRotation: new THREE.Euler(0, Math.PI / 2, 0),
+        couplerPosition: new THREE.Vector3(2.05, 0, 0),
+        couplerRotation: new THREE.Euler(0, 0, Math.PI / 2),
+      },
+      {
+        bodyPosition: new THREE.Vector3(-2.92, 0, 0),
+        facePosition: new THREE.Vector3(-2.55, 0, 0),
+        faceRotation: new THREE.Euler(0, Math.PI / 2, 0),
+        couplerPosition: new THREE.Vector3(-2.05, 0, 0),
+        couplerRotation: new THREE.Euler(0, 0, Math.PI / 2),
+      },
+      {
+        bodyPosition: new THREE.Vector3(0, 0, 2.92),
+        facePosition: new THREE.Vector3(0, 0, 2.55),
+        faceRotation: new THREE.Euler(0, 0, 0),
+        couplerPosition: new THREE.Vector3(0, 0, 2.05),
+        couplerRotation: new THREE.Euler(Math.PI / 2, 0, 0),
+      },
+      {
+        bodyPosition: new THREE.Vector3(0, 0, -2.92),
+        facePosition: new THREE.Vector3(0, 0, -2.55),
+        faceRotation: new THREE.Euler(0, 0, 0),
+        couplerPosition: new THREE.Vector3(0, 0, -2.05),
+        couplerRotation: new THREE.Euler(Math.PI / 2, 0, 0),
+      },
+      {
+        bodyPosition: new THREE.Vector3(0, -2.82, 0),
+        facePosition: new THREE.Vector3(0, -2.45, 0),
+        faceRotation: new THREE.Euler(Math.PI / 2, 0, 0),
+        couplerPosition: new THREE.Vector3(0, -2.0, 0),
+        couplerRotation: new THREE.Euler(0, 0, 0),
+      },
+    ]
+
+    motorConfigs.forEach((config) => {
+      const motor = new THREE.Group()
+      const body = new THREE.Mesh(motorBodyGeometry, motorBodyMaterial)
+      const facePlate = new THREE.Mesh(motorFaceGeometry, motorFaceMaterial)
+      const coupler = new THREE.Mesh(couplerGeometry, motorCouplerMaterial)
+
+      body.position.copy(config.bodyPosition)
+      facePlate.position.copy(config.facePosition)
+      facePlate.rotation.copy(config.faceRotation)
+      coupler.position.copy(config.couplerPosition)
+      coupler.rotation.copy(config.couplerRotation)
+      body.castShadow = true
+      facePlate.castShadow = true
+      motor.add(body, facePlate, coupler)
+      motorRig.add(motor)
+    })
+    root.add(motorRig)
+
     const topHighlight = new THREE.Group()
     const topPlate = new THREE.Mesh(topHighlightGeometry, topHighlightMaterial)
     const topOutline = new THREE.LineSegments(new THREE.EdgesGeometry(topHighlightGeometry), topHighlightLineMaterial)
@@ -685,26 +797,30 @@ function RubiksPhysicalCube({
     const targetCue = new THREE.Group()
     const targetPlate = new THREE.Mesh(topHighlightGeometry.clone(), targetPlateMaterial)
     const targetDirectionSign = direction === "cw" ? -1 : 1
-    const targetRadius = 1.88
-    const targetStartAngle = direction === "cw" ? Math.PI * 0.08 : Math.PI * 0.92
+    const targetRadius = 2.02
+    const targetArrowHeight = 2.56
+    const targetStartAngle = direction === "cw" ? Math.PI * -0.2 : Math.PI * 1.2
     const targetArcLength = Math.PI * 1.45 * targetDirectionSign
     const targetArcPoints = Array.from({ length: 44 }, (_, index) => {
       const progress = index / 43
       const angle = targetStartAngle + targetArcLength * progress
 
-      return new THREE.Vector3(Math.cos(angle) * targetRadius, 1.96, Math.sin(angle) * targetRadius)
+      return new THREE.Vector3(Math.cos(angle) * targetRadius, targetArrowHeight, Math.sin(angle) * targetRadius)
     })
-    const targetArrow = new THREE.Line(new THREE.BufferGeometry().setFromPoints(targetArcPoints), targetArrowMaterial)
-    const targetArrowHead = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.32, 24), targetArrowHeadMaterial)
+    const targetArrowCurve = new THREE.CatmullRomCurve3(targetArcPoints)
+    const targetArrow = new THREE.Mesh(new THREE.TubeGeometry(targetArrowCurve, 56, 0.018, 10, false), targetArrowTubeMaterial)
+    const targetPlateOutline = new THREE.LineSegments(new THREE.EdgesGeometry(topHighlightGeometry), targetPlateOutlineMaterial)
+    const targetArrowHead = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.42, 28), targetArrowHeadMaterial)
     const targetArrowEnd = targetArcPoints[targetArcPoints.length - 1]
     const targetArrowBeforeEnd = targetArcPoints[targetArcPoints.length - 4]
     const targetArrowDirection = targetArrowEnd.clone().sub(targetArrowBeforeEnd).normalize()
 
     targetPlate.position.y = 1.58
+    targetPlateOutline.position.y = 1.61
     targetArrowHead.position.copy(targetArrowEnd)
     targetArrowHead.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), targetArrowDirection)
     targetCue.visible = false
-    targetCue.add(targetPlate, targetArrow, targetArrowHead)
+    targetCue.add(targetPlate, targetPlateOutline, targetArrow, targetArrowHead)
     root.add(targetCue)
 
     const getStaticAngle = () => {
@@ -778,10 +894,12 @@ function RubiksPhysicalCube({
     const setTargetCueOpacity = (opacity: number) => {
       const visibleOpacity = THREE.MathUtils.clamp(opacity, 0, 1)
       targetCue.visible = visibleOpacity > 0.01
-      targetPlateMaterial.opacity = visibleOpacity * 0.22
+      targetPlateMaterial.opacity = visibleOpacity * 0.36
       targetArrowMaterial.opacity = visibleOpacity * 0.95
+      targetArrowTubeMaterial.opacity = visibleOpacity * 0.98
+      targetPlateOutlineMaterial.opacity = visibleOpacity * 0.95
       targetArrowHeadMaterial.opacity = visibleOpacity
-      targetCue.scale.setScalar(1 + Math.sin(performance.now() * 0.004) * 0.01 * visibleOpacity)
+      targetCue.scale.setScalar(1)
     }
 
     const render = (time: number) => {
@@ -1826,12 +1944,12 @@ function ProjectDetailClient() {
                 </div>
               </section>
 
-              <section id="rubiks-trace" className="scroll-mt-32 rubiks-panel rounded-xl border border-border/70 p-6 md:p-8">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
-                  <div className="lg:col-span-5 space-y-4">
+              <section id="rubiks-trace" className="scroll-mt-32 rubiks-panel rounded-xl border border-border/70 p-5 md:p-7">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-8">
+                  <div className="lg:col-span-4 space-y-3">
                     <div>
                       <div className="mb-2 text-[11px] uppercase tracking-[0.25em] text-primary">Interactive</div>
-                      <h2 className="text-2xl md:text-3xl font-bold tracking-tight">What is a U move?</h2>
+                      <h2 className="text-2xl font-bold tracking-tight">What is a U move?</h2>
                     </div>
                     <p className="text-sm leading-relaxed text-foreground/65">
                       U rotates the upper face. This robot has no top motor, so the cube below carries 13 physical turns
@@ -1839,7 +1957,7 @@ function ProjectDetailClient() {
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {rubiksNotationLegend.map((item) => (
-                        <div key={item.symbol} className="rounded-md border border-border/70 bg-background/70 px-3 py-2">
+                        <div key={item.symbol} className="rounded-md border border-border/70 bg-background/70 px-2.5 py-2">
                           <div className="font-mono text-xs text-primary/80">{item.symbol}</div>
                           <div className="mt-1 text-xs text-foreground/65">{item.label}</div>
                         </div>
@@ -1847,7 +1965,7 @@ function ProjectDetailClient() {
                     </div>
                   </div>
 
-                  <div className="lg:col-span-7 space-y-5">
+                  <div className="lg:col-span-8 space-y-5">
                     <div className="rounded-lg border border-border/70 bg-background/75 p-4 md:p-5">
                       <div className="mb-3 flex flex-col items-start justify-between gap-3 border-b border-border/60 pb-3 sm:flex-row sm:items-center">
                         <div>
@@ -1951,18 +2069,35 @@ function ProjectDetailClient() {
                           </div>
                         </div>
                       )}
-                      <RubiksPhysicalCube
-                        activeFace={activeRubiksVisual.face}
-                        turn={activeRubiksVisual.turn}
-                        stepIndex={safeRubiksMove}
-                        moveSequence={activeMoveSequence}
-                        direction={rubiksDirection}
-                        previewMode={rubiksPreviewMode}
-                        replayKey={rubiksReplayKey}
-                        moveLabel={activeRubiksTrace.move}
-                        moveTitle={activeRubiksTrace.title}
-                        highlightTopFace={shouldHighlightTopFace}
-                      />
+                      <div className="relative">
+                        {showRubiksFinalOutcome && (
+                          <div className="rubiks-goal-complete" aria-hidden="true">
+                            <span className="rubiks-goal-complete-icon">
+                              <CheckCircle2 className="h-5 w-5" />
+                            </span>
+                            <span>
+                              <span className="block text-[10px] uppercase tracking-[0.18em] text-emerald-200/75">
+                                Goal complete
+                              </span>
+                              <span className="font-semibold text-white">
+                                {activeRubiksObjective.symbol} rotation achieved
+                              </span>
+                            </span>
+                          </div>
+                        )}
+                        <RubiksPhysicalCube
+                          activeFace={activeRubiksVisual.face}
+                          turn={activeRubiksVisual.turn}
+                          stepIndex={safeRubiksMove}
+                          moveSequence={activeMoveSequence}
+                          direction={rubiksDirection}
+                          previewMode={rubiksPreviewMode}
+                          replayKey={rubiksReplayKey}
+                          moveLabel={activeRubiksTrace.move}
+                          moveTitle={activeRubiksTrace.title}
+                          highlightTopFace={shouldHighlightTopFace}
+                        />
+                      </div>
                       <div className="mt-4 h-2 overflow-hidden rounded-full bg-foreground/10" aria-label={`Step ${safeRubiksMove + 1} of ${activeMoveSequence.length}`}>
                         <div
                           className="h-full rounded-full bg-primary transition-all duration-300"
@@ -1970,9 +2105,9 @@ function ProjectDetailClient() {
                         />
                       </div>
                       {showRubiksFinalOutcome && (
-                        <div className="mt-4 rounded-lg border border-primary/35 bg-primary/10 px-4 py-3 text-sm leading-relaxed text-foreground/75">
+                        <div className="mt-4 rounded-lg border border-emerald-400/35 bg-emerald-400/10 px-4 py-3 text-sm leading-relaxed text-foreground/75">
                           <span className="font-semibold text-foreground">{activeRubiksObjective.symbol} achieved.</span>{" "}
-                          The highlighted top face is the rotation created by using the surrounding motors instead of a top-face motor.
+                          The highlighted top face is the final rotation produced by chaining the surrounding motors instead of using a top-face motor.
                         </div>
                       )}
                     </div>
