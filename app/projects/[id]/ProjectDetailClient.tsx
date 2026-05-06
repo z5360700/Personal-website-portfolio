@@ -243,7 +243,8 @@ const rubiksBuildPhotos = [
   },
   {
     src: "/images/5motordiagramimage.jpg",
-    label: "Electronics wiring layout",
+    label: "Final 4-motor circuit",
+    caption: "Circuit layout used for the completed 4-motor prototype.",
     span: "col-span-12 md:col-span-5",
     aspect: "aspect-[4/3]",
   },
@@ -255,7 +256,8 @@ const rubiksBuildPhotos = [
   },
   {
     src: "/images/5motordesignfinal.jpg",
-    label: "Final chassis direction",
+    label: "Scrapped 4-motor chassis",
+    caption: "This direction was abandoned because four motors could not solve every possible cube state.",
     span: "col-span-12 md:col-span-7",
     aspect: "aspect-[4/3]",
   },
@@ -268,6 +270,7 @@ const rubiksBuildPhotos = [
   {
     src: "/images/motorwithadapterissue.jpg",
     label: "Adapter issue",
+    caption: "The tolerances were too tight, so heat and other removal methods were needed to free the plastic.",
     span: "col-span-6 md:col-span-4",
     aspect: "aspect-[4/3]",
   },
@@ -279,7 +282,8 @@ const rubiksBuildPhotos = [
   },
   {
     src: "/images/4motorbreadboardwiring.jpg",
-    label: "Stepper driver wiring",
+    label: "4-motor stepper driver wiring",
+    caption: "Driver wiring for the earlier 4-motor design only.",
     span: "col-span-12",
     aspect: "aspect-[16/9]",
   },
@@ -519,7 +523,7 @@ function RubiksPhysicalCube({
 
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100)
-    camera.position.set(6.2, 5.0, 8.3)
+    camera.position.set(6.55, 5.15, 8.6)
     camera.lookAt(0, 0, 0)
 
     const renderer = new THREE.WebGLRenderer({
@@ -537,6 +541,7 @@ function RubiksPhysicalCube({
 
     const root = new THREE.Group()
     root.rotation.set(0, 0, 0)
+    root.position.y = 0.12
     scene.add(root)
 
     const fixedGroup = new THREE.Group()
@@ -555,28 +560,13 @@ function RubiksPhysicalCube({
     rimLight.position.set(-4, 1.8, -3)
     scene.add(rimLight)
 
-    const floor = new THREE.Mesh(
-      new THREE.CircleGeometry(2.9, 72),
-      new THREE.MeshStandardMaterial({
-        color: 0x111827,
-        roughness: 0.82,
-        metalness: 0.08,
-        transparent: true,
-        opacity: 0.38,
-      }),
-    )
-    floor.position.y = -1.82
-    floor.rotation.x = -Math.PI / 2
-    floor.receiveShadow = true
-    scene.add(floor)
-
     const turnConfig = getRubiksSliceTurn(activeFace, turn)
     const isSettledFinalResult = previewMode === "result" && highlightTopFace
     const cubieStates = getRubiksCubeStateBeforeStep(moveSequence, stepIndex + (isSettledFinalResult ? 1 : 0))
-    const cubieGeometry = new THREE.BoxGeometry(0.92, 0.92, 0.92, 3, 3, 3)
+    const cubieGeometry = new THREE.BoxGeometry(1.02, 1.02, 1.02, 3, 3, 3)
     const cubieEdgeGeometry = new THREE.EdgesGeometry(cubieGeometry)
-    const stickerGeometry = new THREE.PlaneGeometry(0.72, 0.72)
-    const topHighlightGeometry = new THREE.BoxGeometry(3.18, 0.045, 3.18)
+    const stickerGeometry = new THREE.PlaneGeometry(0.8, 0.8)
+    const topHighlightGeometry = new THREE.BoxGeometry(3.5, 0.05, 3.5)
     const bodyMaterial = new THREE.MeshStandardMaterial({
       color: 0x07080c,
       roughness: 0.54,
@@ -689,7 +679,7 @@ function RubiksPhysicalCube({
       const faceNormal = rubiksFaceNormals[face]
       const sticker = new THREE.Mesh(stickerGeometry.clone(), stickerMaterials[face])
 
-      sticker.position[faceNormal.axis] = faceNormal.layer * 0.468
+      sticker.position[faceNormal.axis] = faceNormal.layer * 0.518
       sticker.rotation.set(...faceNormal.rotation)
 
       return sticker
@@ -698,7 +688,7 @@ function RubiksPhysicalCube({
     cubieStates.forEach((cubieState) => {
       const { position } = cubieState
       const cubie = new THREE.Group()
-      cubie.position.set(position.x * 1.02, position.y * 1.02, position.z * 1.02)
+      cubie.position.set(position.x * 1.12, position.y * 1.12, position.z * 1.12)
       cubie.quaternion.copy(cubieState.quaternion)
 
       const isMovingSlice = !isSettledFinalResult && Math.round(position[turnConfig.axis]) === turnConfig.layer
@@ -729,41 +719,41 @@ function RubiksPhysicalCube({
     const motorRig = new THREE.Group()
     const motorBodyGeometry = new THREE.BoxGeometry(0.62, 0.62, 0.62)
     const motorFaceGeometry = new THREE.BoxGeometry(0.66, 0.66, 0.06)
-    const couplerGeometry = new THREE.CylinderGeometry(0.055, 0.055, 1.02, 16)
+    const couplerGeometry = new THREE.CylinderGeometry(0.065, 0.065, 1.36, 16)
     const motorConfigs = [
       {
-        bodyPosition: new THREE.Vector3(2.92, 0, 0),
-        facePosition: new THREE.Vector3(2.55, 0, 0),
+        bodyPosition: new THREE.Vector3(3.38, 0, 0),
+        facePosition: new THREE.Vector3(3.0, 0, 0),
         faceRotation: new THREE.Euler(0, Math.PI / 2, 0),
-        couplerPosition: new THREE.Vector3(2.05, 0, 0),
+        couplerPosition: new THREE.Vector3(2.32, 0, 0),
         couplerRotation: new THREE.Euler(0, 0, Math.PI / 2),
       },
       {
-        bodyPosition: new THREE.Vector3(-2.92, 0, 0),
-        facePosition: new THREE.Vector3(-2.55, 0, 0),
+        bodyPosition: new THREE.Vector3(-3.38, 0, 0),
+        facePosition: new THREE.Vector3(-3.0, 0, 0),
         faceRotation: new THREE.Euler(0, Math.PI / 2, 0),
-        couplerPosition: new THREE.Vector3(-2.05, 0, 0),
+        couplerPosition: new THREE.Vector3(-2.32, 0, 0),
         couplerRotation: new THREE.Euler(0, 0, Math.PI / 2),
       },
       {
-        bodyPosition: new THREE.Vector3(0, 0, 2.92),
-        facePosition: new THREE.Vector3(0, 0, 2.55),
+        bodyPosition: new THREE.Vector3(0, 0, 3.38),
+        facePosition: new THREE.Vector3(0, 0, 3.0),
         faceRotation: new THREE.Euler(0, 0, 0),
-        couplerPosition: new THREE.Vector3(0, 0, 2.05),
+        couplerPosition: new THREE.Vector3(0, 0, 2.32),
         couplerRotation: new THREE.Euler(Math.PI / 2, 0, 0),
       },
       {
-        bodyPosition: new THREE.Vector3(0, 0, -2.92),
-        facePosition: new THREE.Vector3(0, 0, -2.55),
+        bodyPosition: new THREE.Vector3(0, 0, -3.38),
+        facePosition: new THREE.Vector3(0, 0, -3.0),
         faceRotation: new THREE.Euler(0, 0, 0),
-        couplerPosition: new THREE.Vector3(0, 0, -2.05),
+        couplerPosition: new THREE.Vector3(0, 0, -2.32),
         couplerRotation: new THREE.Euler(Math.PI / 2, 0, 0),
       },
       {
-        bodyPosition: new THREE.Vector3(0, -2.82, 0),
-        facePosition: new THREE.Vector3(0, -2.45, 0),
+        bodyPosition: new THREE.Vector3(0, -3.3, 0),
+        facePosition: new THREE.Vector3(0, -2.92, 0),
         faceRotation: new THREE.Euler(Math.PI / 2, 0, 0),
-        couplerPosition: new THREE.Vector3(0, -2.0, 0),
+        couplerPosition: new THREE.Vector3(0, -2.24, 0),
         couplerRotation: new THREE.Euler(0, 0, 0),
       },
     ]
@@ -789,7 +779,7 @@ function RubiksPhysicalCube({
     const topHighlight = new THREE.Group()
     const topPlate = new THREE.Mesh(topHighlightGeometry, topHighlightMaterial)
     const topOutline = new THREE.LineSegments(new THREE.EdgesGeometry(topHighlightGeometry), topHighlightLineMaterial)
-    topHighlight.position.y = 1.55
+    topHighlight.position.y = 1.7
     topHighlight.visible = false
     topHighlight.add(topPlate, topOutline)
     root.add(topHighlight)
@@ -797,8 +787,8 @@ function RubiksPhysicalCube({
     const targetCue = new THREE.Group()
     const targetPlate = new THREE.Mesh(topHighlightGeometry.clone(), targetPlateMaterial)
     const targetDirectionSign = direction === "cw" ? -1 : 1
-    const targetRadius = 2.02
-    const targetArrowHeight = 2.56
+    const targetRadius = 2.24
+    const targetArrowHeight = 2.84
     const targetStartAngle = direction === "cw" ? Math.PI * -0.2 : Math.PI * 1.2
     const targetArcLength = Math.PI * 1.45 * targetDirectionSign
     const targetArcPoints = Array.from({ length: 44 }, (_, index) => {
@@ -815,8 +805,8 @@ function RubiksPhysicalCube({
     const targetArrowBeforeEnd = targetArcPoints[targetArcPoints.length - 4]
     const targetArrowDirection = targetArrowEnd.clone().sub(targetArrowBeforeEnd).normalize()
 
-    targetPlate.position.y = 1.58
-    targetPlateOutline.position.y = 1.61
+    targetPlate.position.y = 1.74
+    targetPlateOutline.position.y = 1.77
     targetArrowHead.position.copy(targetArrowEnd)
     targetArrowHead.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), targetArrowDirection)
     targetCue.visible = false
@@ -914,8 +904,7 @@ function RubiksPhysicalCube({
 
       movingGroup.rotation[turnConfig.axis] = angle
       setTopHighlightOpacity(highlightTopFace ? THREE.MathUtils.smoothstep(moveProgress, 0.78, 1) : 0)
-      setTargetCueOpacity(previewMode === "start" ? 1 : 0)
-      floor.rotation.z += 0.0012
+      setTargetCueOpacity(previewMode === "start" || isSettledFinalResult ? 1 : 0)
       renderer.render(scene, camera)
       animationFrame = window.requestAnimationFrame(render)
     }
@@ -933,12 +922,6 @@ function RubiksPhysicalCube({
       cubieGeometry.dispose()
       cubieEdgeGeometry.dispose()
       stickerGeometry.dispose()
-      floor.geometry.dispose()
-      if (Array.isArray(floor.material)) {
-        floor.material.forEach((material) => material.dispose())
-      } else {
-        floor.material.dispose()
-      }
       renderer.dispose()
       renderer.domElement.remove()
     }
@@ -1148,6 +1131,12 @@ function ProjectDetailClient() {
   const replayRubiksAnimation = () => {
     setIsRubiksSequencePlaying(false)
     setRubiksPreviewMode("animate")
+    setRubiksReplayKey((current) => current + 1)
+  }
+  const resetRubiksDemo = () => {
+    setIsRubiksSequencePlaying(false)
+    setActiveRubiksMove(0)
+    setRubiksPreviewMode("start")
     setRubiksReplayKey((current) => current + 1)
   }
   const goToRubiksMove = (moveIndex: number) => {
@@ -2055,17 +2044,28 @@ function ProjectDetailClient() {
                             <RotateCcw className="h-3.5 w-3.5" />
                             Replay
                           </Button>
+                          <Button type="button" variant="outline" size="sm" className="h-8 rounded-md bg-background/80" onClick={resetRubiksDemo}>
+                            <RotateCcw className="h-3.5 w-3.5" />
+                            Reset
+                          </Button>
                         </div>
                       </div>
 
                       {rubiksPreviewMode === "start" && (
                         <div className="rubiks-cube-intent" aria-hidden="true">
-                          <div className="rubiks-cube-intent-primary">
-                            Goal: rotate top face {rubiksDirection === "cw" ? "clockwise" : "anticlockwise"}
+                          <div className="rubiks-cube-intent-item">
+                            <span className="rubiks-cube-intent-kicker">Target</span>
+                            <span className="rubiks-cube-intent-value">
+                              Top face {rubiksDirection === "cw" ? "clockwise" : "anticlockwise"}
+                            </span>
                           </div>
-                          <div className="rubiks-cube-intent-lock">
-                            <Lock className="h-3.5 w-3.5" />
-                            Top face locked: no motor
+                          <div className="rubiks-cube-intent-divider" />
+                          <div className="rubiks-cube-intent-item">
+                            <span className="rubiks-cube-intent-kicker">Constraint</span>
+                            <span className="rubiks-cube-intent-value">
+                              <Lock className="h-3.5 w-3.5" />
+                              No top motor
+                            </span>
                           </div>
                         </div>
                       )}
@@ -2202,8 +2202,13 @@ function ProjectDetailClient() {
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, 50vw"
                       />
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-sm font-semibold text-white opacity-95">
-                        {photo.label}
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent p-4 text-white opacity-95">
+                        <div className="text-sm font-semibold">{photo.label}</div>
+                        {"caption" in photo && photo.caption && (
+                          <div className="mt-1 max-w-xl text-xs font-medium leading-snug text-white/78">
+                            {photo.caption}
+                          </div>
+                        )}
                       </div>
                     </button>
                   ))}
@@ -2233,11 +2238,12 @@ function ProjectDetailClient() {
                   </div>
 
                   <div className="lg:col-span-4 rounded-lg border border-border/70 bg-background/75 p-5">
-                    <div className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">V2 ideas</div>
+                    <div className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">Next steps</div>
                     <ul className="space-y-3 text-sm leading-relaxed text-foreground/65">
+                      <li>A cleaner manual-input interface where the cube state is entered on-screen, then solved and executed from one button.</li>
                       <li>Computer-vision colour capture to remove manual state entry.</li>
                       <li>A 6th U-face mechanism for shorter physical solutions.</li>
-                      <li>Telemetry overlay: solve time, move expansion, and motor execution time.</li>
+                      <li>A custom PCB design to replace the breadboard wiring with a cleaner, more reliable electronics stack.</li>
                     </ul>
                   </div>
                 </div>

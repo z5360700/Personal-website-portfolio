@@ -145,35 +145,62 @@
     cursor: grabbing;
   }
   .rubiks-cube-intent {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    align-items: stretch;
+    border: 1px solid hsl(var(--border) / 0.65);
+    border-radius: 0.5rem;
+    display: inline-flex;
+    gap: 0;
     margin-bottom: 0.75rem;
     max-width: 100%;
+    overflow: hidden;
     pointer-events: none;
     position: relative;
     z-index: 2;
-  }
-  .rubiks-cube-intent-primary,
-  .rubiks-cube-intent-lock {
-    align-items: center;
-    border: 1px solid hsl(var(--border) / 0.7);
-    border-radius: 0.375rem;
-    display: inline-flex;
-    gap: 0.4rem;
-    width: fit-content;
-    background: hsl(var(--background) / 0.82);
-    color: hsl(var(--foreground) / 0.78);
-    font-size: 0.78rem;
-    font-weight: 700;
-    line-height: 1.1;
-    padding: 0.5rem 0.65rem;
+    background: linear-gradient(90deg, hsl(var(--primary) / 0.14), hsl(var(--background) / 0.76));
     backdrop-filter: blur(12px);
   }
-  .rubiks-cube-intent-primary {
-    border-color: hsl(var(--primary) / 0.45);
-    color: hsl(var(--primary-foreground));
-    background: hsl(var(--primary) / 0.78);
+  .rubiks-cube-intent-item {
+    display: grid;
+    gap: 0.18rem;
+    min-width: min(14rem, 48vw);
+    padding: 0.55rem 0.7rem;
+  }
+  .rubiks-cube-intent-divider {
+    background: hsl(var(--border) / 0.65);
+    width: 1px;
+  }
+  .rubiks-cube-intent-kicker {
+    color: hsl(var(--foreground) / 0.45);
+    font-size: 0.61rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .rubiks-cube-intent-value {
+    align-items: center;
+    color: hsl(var(--foreground) / 0.86);
+    display: inline-flex;
+    font-size: 0.78rem;
+    font-weight: 750;
+    gap: 0.38rem;
+    line-height: 1.15;
+  }
+  .rubiks-cube-intent-item:first-child .rubiks-cube-intent-value {
+    color: hsl(var(--primary));
+  }
+  @media (max-width: 640px) {
+    .rubiks-cube-intent {
+      display: grid;
+      width: 100%;
+    }
+    .rubiks-cube-intent-divider {
+      height: 1px;
+      width: 100%;
+    }
+    .rubiks-cube-intent-item {
+      min-width: 0;
+    }
   }
   .rubiks-goal-complete {
     align-items: center;
