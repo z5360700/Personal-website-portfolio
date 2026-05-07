@@ -127,9 +127,27 @@
   .cooling-flow-pulse-late {
     animation-delay: -0.55s;
   }
+  .cooling-gpu-heat {
+    animation: cooling-gpu-heat 1.9s ease-in-out infinite;
+  }
+  .cooling-gpu-cool {
+    animation: cooling-gpu-cool 2.4s ease-in-out infinite;
+  }
   .cat-door-beam {
     box-shadow: 0 0 18px hsl(187 92% 69% / 0.9);
     animation: cat-door-beam-scan 1.55s ease-in-out infinite;
+  }
+  .micromouse-maze-bg {
+    background:
+      radial-gradient(circle at 18% 20%, hsl(187 92% 55% / 0.16), transparent 28%),
+      radial-gradient(circle at 86% 72%, hsl(142 72% 45% / 0.13), transparent 30%),
+      linear-gradient(90deg, hsl(187 92% 55% / 0.1) 1px, transparent 1px),
+      linear-gradient(0deg, hsl(187 92% 55% / 0.08) 1px, transparent 1px);
+    background-size: auto, auto, 44px 44px, 44px 44px;
+  }
+  .micromouse-route-dash {
+    stroke-dasharray: 18 14;
+    animation: micromouse-route-flow 1.4s linear infinite;
   }
   .rubiks-panel {
     background: linear-gradient(180deg, hsl(var(--background) / 0.9), hsl(var(--background) / 0.72));
@@ -294,6 +312,24 @@
       stroke-dashoffset: -74;
     }
   }
+  @keyframes cooling-gpu-heat {
+    0%,
+    100% {
+      opacity: 0.74;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes cooling-gpu-cool {
+    0%,
+    100% {
+      opacity: 0.66;
+    }
+    50% {
+      opacity: 0.9;
+    }
+  }
   @keyframes cat-door-beam-scan {
     0%,
     100% {
@@ -303,6 +339,11 @@
     50% {
       transform: translateX(110%);
       opacity: 1;
+    }
+  }
+  @keyframes micromouse-route-flow {
+    to {
+      stroke-dashoffset: -32;
     }
   }
   @media (prefers-reduced-motion: reduce) {

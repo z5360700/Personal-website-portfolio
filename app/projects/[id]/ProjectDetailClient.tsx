@@ -29,6 +29,8 @@ import {
   Ruler,
   Timer,
   Wrench,
+  AlertTriangle,
+  TrendingDown,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -949,6 +951,706 @@ function RubiksPhysicalCube({
   )
 }
 
+type PCCoolingMode = "stock" | "ducted"
+
+type PCFlowCurve = {
+  curve: THREE.CatmullRomCurve3
+  color: number
+  particleCount: number
+  speed: number
+  size: number
+}
+
+function PCCoolingScene({ mode }: { mode: PCCoolingMode }) {
+  const mountRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const mount = mountRef.current
+    if (!mount) return
+
+    const scene = new THREE.Scene()
+    scene.fog = new THREE.Fog(0x05060a, 13, 24)
+
+    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100)
+    camera.position.set(1.6, 0.6, 11.4)
+    camera.lookAt(-0.4, 0.1, 0)
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" })
+    renderer.outputColorSpace = THREE.SRGBColorSpace
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+    renderer.setClearColor(0x000000, 0)
+    mount.appendChild(renderer.domElement)
+
+    // Lights
+    scene.add(new THREE.HemisphereLight(0x6e8cb8, 0x111827, 1.7))
+    const key = new THREE.DirectionalLight(0xffffff, 1.5)
+    key.position.set(4, 6, 6)
+    scene.add(key)
+    const rim = new THREE.DirectionalLight(0x60a5fa, 0.85)
+    rim.position.set(-4, 2, 4)
+    scene.add(rim)
+
+    // Case dimensions — taller mid-tower like the actual build
+    const W = 5.6 // front-to-back (intake at +X, rear at -X)
+    const H = 6.6 // top-to-bottom
+    const D = 2.8 // closed-side at -Z, camera-facing open side at +Z
+
+    // Case wireframe outline
+    const caseGeo = new THREE.BoxGeometry(W, H, D)
+    const caseLines = new THREE.LineSegments(
+      new THREE.EdgesGeometry(caseGeo),
+      new THREE.LineBasicMaterial({ color: 0x475569, transparent: true, opacity: 0.55 }),
+    )
+    scene.add(caseLines)
+    caseGeo.dispose()
+
+    // Rear wall
+    const backWall = new THREE.Mesh(
+      new THREE.PlaneGeometry(D, H * 0.96),
+      new THREE.MeshStandardMaterial({ color: 0x0e131c, roughness: 0.75, metalness: 0.2, side: THREE.DoubleSide }),
+    )
+    backWall.position.set(-W / 2, 0, 0)
+    backWall.rotation.y = Math.PI / 2
+    scene.add(backWall)
+
+    // Bottom panel
+    const bottomPanel = new THREE.Mesh(
+      new THREE.PlaneGeometry(W * 0.96, D),
+      new THREE.MeshStandardMaterial({ color: 0x080b12, roughness: 0.85, side: THREE.DoubleSide }),
+    )
+    bottomPanel.position.set(0, -H / 2, 0)
+    bottomPanel.rotation.x = -Math.PI / 2
+    scene.add(bottomPanel)
+
+    // Top panel (slightly translucent — radiator sits below it)
+    const topPanel = new THREE.Mesh(
+      new THREE.PlaneGeometry(W * 0.96, D),
+      new THREE.MeshStandardMaterial({
+        color: 0x1f2937,
+        roughness: 0.85,
+        transparent: true,
+        opacity: 0.16,
+        side: THREE.DoubleSide,
+      }),
+    )
+    topPanel.position.set(0, H / 2, 0)
+    topPanel.rotation.x = -Math.PI / 2
+    scene.add(topPanel)
+
+    // Closed side wall (motherboard tray) — slight tint, semi-transparent so we still see depth
+    const sideWall = new THREE.Mesh(
+      new THREE.PlaneGeometry(W * 0.96, H * 0.96),
+      new THREE.MeshStandardMaterial({
+        color: 0x121826,
+        roughness: 0.85,
+        transparent: true,
+        opacity: 0.5,
+        side: THREE.DoubleSide,
+      }),
+    )
+    sideWall.position.set(0, 0, -D / 2)
+    scene.add(sideWall)
+
+    // ---- Top: AIO radiator + 3 radiator fans ----
+    const radiatorMat = new THREE.MeshStandardMaterial({ color: 0x0c1018, metalness: 0.5, roughness: 0.6 })
+    const radiator = new THREE.Mesh(new THREE.BoxGeometry(W * 0.78, 0.32, D * 0.9), radiatorMat)
+    radiator.position.set(0.05, H / 2 - 0.32, 0)
+    scene.add(radiator)
+    // Radiator fin lines on visible (front) side
+    const finLineMat = new THREE.LineBasicMaterial({ color: 0x334155, transparent: true, opacity: 0.6 })
+    const radHalfW = (W * 0.78) / 2
+    const finVerts: number[] = []
+    for (let i = 0; i < 28; i++) {
+      const x = -radHalfW + (i / 27) * (W * 0.78)
+      finVerts.push(x + 0.05, H / 2 - 0.32 - 0.16, D * 0.45 + 0.001, x + 0.05, H / 2 - 0.32 + 0.16, D * 0.45 + 0.001)
+    }
+    const finsGeo = new THREE.BufferGeometry()
+    finsGeo.setAttribute("position", new THREE.Float32BufferAttribute(finVerts, 3))
+    scene.add(new THREE.LineSegments(finsGeo, finLineMat))
+
+    // 3 radiator fans on bottom of radiator (pulling up through it)
+    const fanRingGeo = new THREE.RingGeometry(0.18, 0.78, 28)
+    const fanIntakeMat = new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0.55,
+      side: THREE.DoubleSide,
+      roughness: 0.4,
+      emissive: 0x0ea5e9,
+      emissiveIntensity: 0.3,
+    })
+    const fanRimMat = new THREE.MeshStandardMaterial({
+      color: 0x4b5563,
+      transparent: true,
+      opacity: 0.7,
+      side: THREE.DoubleSide,
+      roughness: 0.5,
+    })
+    const radFanXs = [-1.6, 0.05, 1.6]
+    for (const x of radFanXs) {
+      const radFan = new THREE.Mesh(fanRingGeo, fanIntakeMat)
+      radFan.rotation.x = -Math.PI / 2
+      radFan.position.set(x, H / 2 - 0.5, 0)
+      scene.add(radFan)
+    }
+
+    // ---- Front: 3 intake fans ----
+    const intakeYs = [1.45, 0.0, -1.45]
+    for (const y of intakeYs) {
+      const fan = new THREE.Mesh(fanRingGeo, fanIntakeMat)
+      fan.position.set(W / 2 - 0.04, y, 0)
+      fan.rotation.y = Math.PI / 2
+      scene.add(fan)
+    }
+
+    // ---- Back: rear exhaust fan ----
+    const backFan = new THREE.Mesh(fanRingGeo, fanRimMat)
+    backFan.position.set(-W / 2 + 0.04, 1.4, 0)
+    backFan.rotation.y = Math.PI / 2
+    scene.add(backFan)
+
+    // ---- Motherboard plane (with subtle PCB texture via colored panels) ----
+    const moboW = 3.6
+    const moboH = 3.4
+    const mobo = new THREE.Mesh(
+      new THREE.PlaneGeometry(moboW, moboH),
+      new THREE.MeshStandardMaterial({ color: 0x0b1220, roughness: 0.7, metalness: 0.2, side: THREE.DoubleSide }),
+    )
+    mobo.position.set(-0.7, 0.55, -D / 2 + 0.05)
+    scene.add(mobo)
+    // Mobo trace hint (a few faint horizontal lines)
+    const traceMat = new THREE.LineBasicMaterial({ color: 0x1e3a8a, transparent: true, opacity: 0.45 })
+    const traceVerts: number[] = []
+    for (let i = 0; i < 6; i++) {
+      const ty = 0.55 - moboH / 2 + 0.3 + (i / 5) * (moboH - 0.6)
+      traceVerts.push(-0.7 - moboW / 2 + 0.2, ty, -D / 2 + 0.06, -0.7 + moboW / 2 - 0.2, ty, -D / 2 + 0.06)
+    }
+    const traceGeo = new THREE.BufferGeometry()
+    traceGeo.setAttribute("position", new THREE.Float32BufferAttribute(traceVerts, 3))
+    scene.add(new THREE.LineSegments(traceGeo, traceMat))
+
+    // ---- CPU AIO pump block (visible on motherboard) ----
+    const cpuBlock = new THREE.Mesh(
+      new THREE.BoxGeometry(0.7, 0.7, 0.35),
+      new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.65, roughness: 0.4 }),
+    )
+    cpuBlock.position.set(-0.6, 1.3, -D / 2 + 0.28)
+    scene.add(cpuBlock)
+    // CPU block glowing logo
+    const cpuLogo = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.45, 0.45),
+      new THREE.MeshBasicMaterial({ color: 0x67e8f9, transparent: true, opacity: 0.85 }),
+    )
+    cpuLogo.position.set(-0.6, 1.3, -D / 2 + 0.46)
+    scene.add(cpuLogo)
+
+    // ---- RAM sticks (4 thin vertical bars beside CPU) ----
+    const ramMat = new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.6, roughness: 0.4 })
+    const ramHeatspreaderMat = new THREE.MeshStandardMaterial({
+      color: 0x67e8f9,
+      emissive: 0x0891b2,
+      emissiveIntensity: 0.4,
+    })
+    for (let i = 0; i < 4; i++) {
+      const ram = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.05, 0.16), ramMat)
+      ram.position.set(0.55 + i * 0.18, 1.18, -D / 2 + 0.18)
+      scene.add(ram)
+      const ramTop = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.06, 0.17), ramHeatspreaderMat)
+      ramTop.position.set(0.55 + i * 0.18, 1.7, -D / 2 + 0.18)
+      scene.add(ramTop)
+    }
+
+    // ---- AIO tubes (2 cylinders from radiator down to CPU block) ----
+    const tubeCurveA = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.45, H / 2 - 0.5, -D / 2 + 0.45),
+      new THREE.Vector3(-0.45, H / 2 - 1.4, -D / 2 + 0.45),
+      new THREE.Vector3(-0.5, H / 2 - 1.85, -D / 2 + 0.5),
+      new THREE.Vector3(-0.55, 1.55, -D / 2 + 0.45),
+    ])
+    const tubeCurveB = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.15, H / 2 - 0.5, -D / 2 + 0.45),
+      new THREE.Vector3(-0.15, H / 2 - 1.5, -D / 2 + 0.45),
+      new THREE.Vector3(-0.3, H / 2 - 1.95, -D / 2 + 0.5),
+      new THREE.Vector3(-0.45, 1.55, -D / 2 + 0.45),
+    ])
+    const tubeMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.6, metalness: 0.2 })
+    for (const tubeCurve of [tubeCurveA, tubeCurveB]) {
+      const tubeGeo = new THREE.TubeGeometry(tubeCurve, 24, 0.08, 8, false)
+      const tubeMesh = new THREE.Mesh(tubeGeo, tubeMat)
+      scene.add(tubeMesh)
+    }
+
+    // ---- GPU body (horizontal, hangs off mobo PCIe slot) ----
+    const gpuW = 3.6
+    const gpuH = 0.7
+    const gpuD = 1.4
+    const gpu = new THREE.Mesh(
+      new THREE.BoxGeometry(gpuW, gpuH, gpuD),
+      new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.55, roughness: 0.5 }),
+    )
+    gpu.position.set(-0.85, -0.55, 0.15)
+    scene.add(gpu)
+
+    // GPU brand stripe (subtle)
+    const stripe = new THREE.Mesh(
+      new THREE.BoxGeometry(gpuW * 0.82, 0.05, gpuD + 0.012),
+      new THREE.MeshStandardMaterial({ color: 0x334155, emissive: 0x0e7490, emissiveIntensity: 0.35 }),
+    )
+    stripe.position.set(-0.85, -0.18, 0.15)
+    scene.add(stripe)
+
+    // GPU bottom intake fans
+    const gpuFanGeo = new THREE.RingGeometry(0.07, 0.34, 20)
+    const gpuFanMat = new THREE.MeshStandardMaterial({ color: 0x4b5563, side: THREE.DoubleSide, roughness: 0.5 })
+    for (const xOff of [-1.05, 0, 1.05]) {
+      const gpuFan = new THREE.Mesh(gpuFanGeo, gpuFanMat)
+      gpuFan.rotation.x = Math.PI / 2
+      gpuFan.position.set(-0.85 + xOff, -0.91, 0.15)
+      scene.add(gpuFan)
+    }
+
+    // PCIe rear bracket on -X side
+    const bracket = new THREE.Mesh(
+      new THREE.BoxGeometry(0.12, gpuH * 1.5, gpuD * 0.95),
+      new THREE.MeshStandardMaterial({ color: 0x6b7280, roughness: 0.4, metalness: 0.7 }),
+    )
+    bracket.position.set(-W / 2 + 0.08, -0.42, 0.15)
+    scene.add(bracket)
+
+    // ---- PSU shroud (large box across the bottom) ----
+    const psuShroudH = 1.15
+    const psuShroud = new THREE.Mesh(
+      new THREE.BoxGeometry(W * 0.96, psuShroudH, D * 0.95),
+      new THREE.MeshStandardMaterial({ color: 0x05080d, roughness: 0.85, metalness: 0.15 }),
+    )
+    psuShroud.position.set(0, -H / 2 + psuShroudH / 2, 0)
+    scene.add(psuShroud)
+    // Subtle highlight strip on top edge of PSU
+    const psuStripe = new THREE.Mesh(
+      new THREE.BoxGeometry(W * 0.96, 0.03, D * 0.95),
+      new THREE.MeshStandardMaterial({ color: 0x1f2937 }),
+    )
+    psuStripe.position.set(0, -H / 2 + psuShroudH + 0.015, 0)
+    scene.add(psuStripe)
+
+    // ---- Duct (ducted mode only) — solid scoop matching the close-up photo ----
+    if (mode === "ducted") {
+      // Side-profile traced from the close-up: tall front face that catches the bottom
+      // intake fan and the lower half of the middle fan, gentle quadratic curve over
+      // the top that meets the GPU underside at the rear.
+      const frontX = W / 2 - 0.12
+      const psuTopY = -2.15
+      const frontTopY = 0.0
+      const backX = -2.05
+      const backTopY = -0.95
+      const ctrlX = 0.5
+      const ctrlY = frontTopY - 0.55
+      const ductDepth = D - 0.4
+
+      const ductShape = new THREE.Shape()
+      ductShape.moveTo(frontX, psuTopY)
+      ductShape.lineTo(frontX, frontTopY)
+      ductShape.quadraticCurveTo(ctrlX, ctrlY, backX, backTopY)
+      ductShape.lineTo(backX, psuTopY)
+      ductShape.lineTo(frontX, psuTopY)
+
+      const ductGeom = new THREE.ExtrudeGeometry(ductShape, {
+        depth: ductDepth,
+        bevelEnabled: true,
+        bevelThickness: 0.025,
+        bevelSize: 0.025,
+        bevelSegments: 2,
+        curveSegments: 36,
+      })
+      ductGeom.translate(0, 0, -ductDepth / 2)
+
+      // Matte 3D-printed PLA finish — solid black, slightly translucent so airflow shows through
+      const duct = new THREE.Mesh(
+        ductGeom,
+        new THREE.MeshStandardMaterial({
+          color: 0x080a0e,
+          roughness: 0.96,
+          metalness: 0.04,
+          transparent: true,
+          opacity: 0.82,
+          side: THREE.DoubleSide,
+        }),
+      )
+      scene.add(duct)
+
+      // Subtle layer-line stripes on the visible side (3D-printed look)
+      const layerLineMat = new THREE.LineBasicMaterial({ color: 0x1f2937, transparent: true, opacity: 0.55 })
+      const layerVerts: number[] = []
+      const layerCount = 12
+      for (let i = 1; i < layerCount; i++) {
+        const ly = psuTopY + (i / layerCount) * (frontTopY - psuTopY)
+        layerVerts.push(frontX - 0.001, ly, ductDepth / 2 + 0.001, backX + 0.5, ly, ductDepth / 2 + 0.001)
+      }
+      const layerGeo = new THREE.BufferGeometry()
+      layerGeo.setAttribute("position", new THREE.Float32BufferAttribute(layerVerts, 3))
+      scene.add(new THREE.LineSegments(layerGeo, layerLineMat))
+
+      // Cyan silhouette accent so the duct still pops against the dark scene
+      const ductEdgesMesh = new THREE.LineSegments(
+        new THREE.EdgesGeometry(ductGeom),
+        new THREE.LineBasicMaterial({ color: 0x67e8f9, transparent: true, opacity: 0.85 }),
+      )
+      scene.add(ductEdgesMesh)
+
+      // Glowing intake mouth on the front face — covers bottom + lower middle fan
+      const intakeMouth = new THREE.Mesh(
+        new THREE.PlaneGeometry(ductDepth * 0.86, frontTopY - psuTopY - 0.08),
+        new THREE.MeshBasicMaterial({
+          color: 0x67e8f9,
+          transparent: true,
+          opacity: 0.18,
+          side: THREE.DoubleSide,
+        }),
+      )
+      intakeMouth.rotation.y = -Math.PI / 2
+      intakeMouth.position.set(frontX - 0.001, (frontTopY + psuTopY) / 2, 0)
+      scene.add(intakeMouth)
+
+      // Outlet glows on the curved top above each GPU bottom intake fan.
+      // Solve the quadratic-bezier for x to find the corresponding y on the curve.
+      const yOnTopAt = (xTarget: number) => {
+        let lo = 0
+        let hi = 1
+        for (let i = 0; i < 20; i++) {
+          const m = (lo + hi) / 2
+          const xm = (1 - m) * (1 - m) * frontX + 2 * (1 - m) * m * ctrlX + m * m * backX
+          if (xm > xTarget) lo = m
+          else hi = m
+        }
+        const t = (lo + hi) / 2
+        return (1 - t) * (1 - t) * frontTopY + 2 * (1 - t) * t * ctrlY + t * t * backTopY
+      }
+      for (const fanX of [-1.05, 0, 1.05]) {
+        const outletX = -0.85 + fanX
+        const outletY = yOnTopAt(outletX) - 0.04
+        const outlet = new THREE.Mesh(
+          new THREE.CircleGeometry(0.32, 24),
+          new THREE.MeshBasicMaterial({
+            color: 0x67e8f9,
+            transparent: true,
+            opacity: 0.34,
+            side: THREE.DoubleSide,
+          }),
+        )
+        outlet.rotation.x = -Math.PI / 2
+        outlet.position.set(outletX, outletY, 0.15)
+        scene.add(outlet)
+      }
+    }
+
+    // Curves
+    const flowCurves: PCFlowCurve[] = []
+    const heatCurves: PCFlowCurve[] = []
+
+    if (mode === "ducted") {
+      flowCurves.push(
+        // Bottom intake → along the duct floor → emerges at GPU back fan → up through GPU
+        {
+          curve: new THREE.CatmullRomCurve3([
+            new THREE.Vector3(2.85, -1.45, 0),
+            new THREE.Vector3(2.2, -1.6, 0),
+            new THREE.Vector3(1.0, -1.75, 0),
+            new THREE.Vector3(-0.5, -1.6, 0),
+            new THREE.Vector3(-1.4, -1.3, 0.05),
+            new THREE.Vector3(-1.7, -1.05, 0.15),
+            new THREE.Vector3(-1.9, -0.7, 0.15),
+            new THREE.Vector3(-1.9, -0.3, 0.15),
+            new THREE.Vector3(-2.4, -0.4, 0),
+            new THREE.Vector3(-2.85, -0.4, 0),
+          ]),
+          color: 0x67e8f9,
+          particleCount: 60,
+          speed: 0.14,
+          size: 0.07,
+        },
+        // Lower-middle intake (caught by the upper part of the duct mouth) → curves
+        // along the duct's inner top → exits through the GPU center fan upward
+        {
+          curve: new THREE.CatmullRomCurve3([
+            new THREE.Vector3(2.85, -0.25, 0),
+            new THREE.Vector3(2.3, -0.35, 0),
+            new THREE.Vector3(1.5, -0.55, 0),
+            new THREE.Vector3(0.5, -0.8, 0),
+            new THREE.Vector3(-0.4, -0.95, 0.1),
+            new THREE.Vector3(-0.85, -1.0, 0.15),
+            new THREE.Vector3(-0.85, -0.55, 0.15),
+            new THREE.Vector3(-0.85, 0.1, 0.15),
+            new THREE.Vector3(-0.85, 1.0, 0),
+            new THREE.Vector3(0.05, 2.95, 0),
+          ]),
+          color: 0x67e8f9,
+          particleCount: 50,
+          speed: 0.12,
+          size: 0.065,
+        },
+        // Bottom intake (depth variant) → along the duct → emerges at GPU front fan
+        {
+          curve: new THREE.CatmullRomCurve3([
+            new THREE.Vector3(2.85, -1.45, -0.4),
+            new THREE.Vector3(2.1, -1.65, -0.35),
+            new THREE.Vector3(1.3, -1.55, -0.2),
+            new THREE.Vector3(0.5, -1.2, -0.05),
+            new THREE.Vector3(0.1, -0.95, 0.1),
+            new THREE.Vector3(-0.05, -0.95, 0.15),
+            new THREE.Vector3(-0.05, -0.6, 0.15),
+            new THREE.Vector3(-0.4, -0.3, 0.15),
+            new THREE.Vector3(-1.4, -0.4, 0),
+            new THREE.Vector3(-2.85, -0.4, 0),
+          ]),
+          color: 0xbae6fd,
+          particleCount: 35,
+          speed: 0.115,
+          size: 0.055,
+        },
+        // Top intake → straight up to top radiator (above the duct, unaffected)
+        {
+          curve: new THREE.CatmullRomCurve3([
+            new THREE.Vector3(2.85, 1.45, 0),
+            new THREE.Vector3(1.6, 1.7, 0.2),
+            new THREE.Vector3(0.6, 2.05, -0.1),
+            new THREE.Vector3(0.05, 2.4, 0),
+            new THREE.Vector3(0.05, 2.95, 0),
+          ]),
+          color: 0x67e8f9,
+          particleCount: 24,
+          speed: 0.11,
+          size: 0.06,
+        },
+        // Upper-middle intake (above the duct mouth) → straight up to middle radiator fan
+        {
+          curve: new THREE.CatmullRomCurve3([
+            new THREE.Vector3(2.85, 0.55, 0),
+            new THREE.Vector3(2.0, 0.95, 0),
+            new THREE.Vector3(1.0, 1.45, 0),
+            new THREE.Vector3(0.6, 2.0, 0),
+            new THREE.Vector3(0.4, 2.4, 0),
+            new THREE.Vector3(0.05, 2.95, 0),
+          ]),
+          color: 0xbae6fd,
+          particleCount: 22,
+          speed: 0.10,
+          size: 0.055,
+        },
+      )
+    } else {
+      // Stock mode: air disperses, doesn't reach GPU effectively
+      flowCurves.push(
+        // Top intake → top radiator
+        {
+          curve: new THREE.CatmullRomCurve3([
+            new THREE.Vector3(2.85, 1.45, 0),
+            new THREE.Vector3(1.5, 1.6, 0.2),
+            new THREE.Vector3(0.5, 1.95, -0.1),
+            new THREE.Vector3(0.05, 2.4, 0),
+            new THREE.Vector3(0.05, 2.95, 0),
+          ]),
+          color: 0x67e8f9,
+          particleCount: 28,
+          speed: 0.10,
+          size: 0.06,
+        },
+        // Middle intake → drifts and partially exhausts up
+        {
+          curve: new THREE.CatmullRomCurve3([
+            new THREE.Vector3(2.85, 0, 0),
+            new THREE.Vector3(1.8, 0.35, 0.3),
+            new THREE.Vector3(0.6, 0.0, -0.2),
+            new THREE.Vector3(-0.6, 0.4, 0),
+            new THREE.Vector3(-1.6, 0.95, 0),
+            new THREE.Vector3(-1.6, 2.0, 0),
+            new THREE.Vector3(-1.6, 2.95, 0),
+          ]),
+          color: 0x67e8f9,
+          particleCount: 30,
+          speed: 0.09,
+          size: 0.06,
+        },
+        // Bottom intake → mostly disperses around PSU shroud, bypasses GPU
+        {
+          curve: new THREE.CatmullRomCurve3([
+            new THREE.Vector3(2.85, -1.45, 0),
+            new THREE.Vector3(1.6, -1.3, -0.3),
+            new THREE.Vector3(0.4, -1.65, 0.4),
+            new THREE.Vector3(-0.8, -1.45, 0),
+            new THREE.Vector3(-2.0, -1.6, 0),
+            new THREE.Vector3(-2.85, -1.4, 0),
+          ]),
+          color: 0xbae6fd,
+          particleCount: 30,
+          speed: 0.085,
+          size: 0.055,
+        },
+        // Bottom intake (depth variant) — drifts upward weakly toward GPU but loses momentum
+        {
+          curve: new THREE.CatmullRomCurve3([
+            new THREE.Vector3(2.85, -1.45, 0.4),
+            new THREE.Vector3(1.0, -1.0, 0.2),
+            new THREE.Vector3(-0.4, -0.6, 0),
+            new THREE.Vector3(-1.2, -0.3, -0.2),
+            new THREE.Vector3(-2.0, -0.4, 0),
+            new THREE.Vector3(-2.85, -0.6, 0),
+          ]),
+          color: 0xbae6fd,
+          particleCount: 22,
+          speed: 0.075,
+          size: 0.05,
+        },
+      )
+
+      // Hot air pooling above GPU
+      heatCurves.push(
+        {
+          curve: new THREE.CatmullRomCurve3(
+            [
+              new THREE.Vector3(-2.0, -0.15, 0.15),
+              new THREE.Vector3(-1.5, 0.45, 0.5),
+              new THREE.Vector3(-0.6, 0.95, -0.3),
+              new THREE.Vector3(-0.85, 1.4, 0),
+              new THREE.Vector3(-1.5, 1.7, 0.25),
+              new THREE.Vector3(-1.2, 0.55, -0.1),
+              new THREE.Vector3(-2.0, -0.15, 0.15),
+            ],
+            true,
+          ),
+          color: 0xf87171,
+          particleCount: 16,
+          speed: 0.06,
+          size: 0.075,
+        },
+        {
+          curve: new THREE.CatmullRomCurve3(
+            [
+              new THREE.Vector3(0.0, -0.18, 0.15),
+              new THREE.Vector3(0.3, 0.55, -0.3),
+              new THREE.Vector3(-0.2, 1.05, 0.35),
+              new THREE.Vector3(-0.6, 1.6, 0),
+              new THREE.Vector3(0.1, 0.95, 0.15),
+              new THREE.Vector3(0.0, -0.18, 0.15),
+            ],
+            true,
+          ),
+          color: 0xf87171,
+          particleCount: 14,
+          speed: 0.055,
+          size: 0.075,
+        },
+      )
+    }
+
+    // Particle systems via instanced spheres
+    type ParticleSystem = {
+      mesh: THREE.InstancedMesh
+      curve: THREE.CatmullRomCurve3
+      count: number
+      speed: number
+      offsets: number[]
+    }
+
+    const buildSystem = (flow: PCFlowCurve): ParticleSystem => {
+      const sphereGeo = new THREE.SphereGeometry(flow.size, 8, 8)
+      const sphereMat = new THREE.MeshBasicMaterial({
+        color: flow.color,
+        transparent: true,
+        opacity: 0.9,
+      })
+      const mesh = new THREE.InstancedMesh(sphereGeo, sphereMat, flow.particleCount)
+      mesh.frustumCulled = false
+      const offsets: number[] = []
+      for (let i = 0; i < flow.particleCount; i++) offsets.push(i / flow.particleCount)
+      scene.add(mesh)
+      return { mesh, curve: flow.curve, count: flow.particleCount, speed: flow.speed, offsets }
+    }
+
+    const flowSystems = flowCurves.map(buildSystem)
+    const heatSystems = heatCurves.map(buildSystem)
+
+    // Resize
+    const resize = () => {
+      const w = Math.max(mount.clientWidth, 320)
+      const h = Math.max(mount.clientHeight, 240)
+      renderer.setSize(w, h, false)
+      camera.aspect = w / h
+      camera.updateProjectionMatrix()
+    }
+    const resizeObs = new ResizeObserver(resize)
+    resizeObs.observe(mount)
+    resize()
+
+    const dummy = new THREE.Object3D()
+    let frameId = 0
+    const startTime = performance.now()
+
+    const tmpPoint = new THREE.Vector3()
+    const updateSystem = (sys: ParticleSystem, time: number) => {
+      for (let i = 0; i < sys.count; i++) {
+        const raw = (time * sys.speed + sys.offsets[i]) % 1
+        const t = Math.min(Math.max(raw, 0), 0.9999)
+        sys.curve.getPoint(t, tmpPoint)
+        const fade = Math.sin(t * Math.PI)
+        dummy.position.copy(tmpPoint)
+        dummy.scale.setScalar(0.55 + fade * 0.7)
+        dummy.updateMatrix()
+        sys.mesh.setMatrixAt(i, dummy.matrix)
+      }
+      sys.mesh.instanceMatrix.needsUpdate = true
+    }
+
+    const render = (now: number) => {
+      const t = (now - startTime) / 1000
+      for (const sys of flowSystems) updateSystem(sys, t)
+      for (const sys of heatSystems) updateSystem(sys, t)
+      renderer.render(scene, camera)
+      frameId = window.requestAnimationFrame(render)
+    }
+    frameId = window.requestAnimationFrame(render)
+
+    return () => {
+      window.cancelAnimationFrame(frameId)
+      resizeObs.disconnect()
+
+      const visited = new Set<THREE.Material | THREE.BufferGeometry>()
+      scene.traverse((obj) => {
+        if (obj instanceof THREE.Mesh || obj instanceof THREE.LineSegments || obj instanceof THREE.InstancedMesh) {
+          if (!visited.has(obj.geometry)) {
+            obj.geometry.dispose()
+            visited.add(obj.geometry)
+          }
+          const mat = obj.material as THREE.Material | THREE.Material[]
+          if (Array.isArray(mat)) {
+            mat.forEach((m) => {
+              if (!visited.has(m)) {
+                m.dispose()
+                visited.add(m)
+              }
+            })
+          } else if (!visited.has(mat)) {
+            mat.dispose()
+            visited.add(mat)
+          }
+        }
+      })
+
+      renderer.dispose()
+      renderer.domElement.remove()
+    }
+  }, [mode])
+
+  return (
+    <div
+      ref={mountRef}
+      className="relative w-full overflow-hidden rounded-lg"
+      style={{ aspectRatio: "4 / 3", minHeight: 280, background: "linear-gradient(180deg, #050810 0%, #0b1220 100%)" }}
+      aria-label={`${mode === "ducted" ? "Ducted" : "Stock"} airflow simulation: case interior with intake fans and GPU`}
+      role="img"
+    />
+  )
+}
+
 function ProjectDetailClient() {
   const router = useRouter()
   const { id } = useParams()
@@ -961,7 +1663,6 @@ function ProjectDetailClient() {
   const [isRubiksSequencePlaying, setIsRubiksSequencePlaying] = useState(false)
   const [showRubiksVideo, setShowRubiksVideo] = useState(false)
   const [coolingAirflowMode, setCoolingAirflowMode] = useState<"stock" | "ducted">("ducted")
-  const [coolingObstacle, setCoolingObstacle] = useState<{ x: number; y: number } | null>(null)
 
   const activeRubiksObjective = rubiksObjectives[rubiksDirection]
   const activeMoveSequence = activeRubiksObjective.trace
@@ -1141,30 +1842,6 @@ function ProjectDetailClient() {
       </main>
     )
   }
-
-  const coolingObstacleActive = Boolean(
-    coolingObstacle &&
-      coolingObstacle.x > 145 &&
-      coolingObstacle.x < 720 &&
-      coolingObstacle.y > 100 &&
-      coolingObstacle.y < 345,
-  )
-  const coolingObstacleX = coolingObstacle?.x ?? 500
-  const coolingObstacleY = coolingObstacle?.y ?? 250
-  const getCoolingStockPath = (startY: number, endX: number, endY: number, offset: number) => {
-    if (!coolingObstacleActive) {
-      return `M744 ${startY} C650 ${startY + offset * 0.25} 555 ${endY + offset * 0.2} ${endX} ${endY}`
-    }
-
-    const bendY = Math.min(360, Math.max(82, coolingObstacleY + offset))
-    return `M744 ${startY} C${coolingObstacleX + 110} ${startY} ${coolingObstacleX + 72} ${bendY} ${coolingObstacleX + 14} ${bendY} C${coolingObstacleX - 90} ${bendY} ${endX + 82} ${endY} ${endX} ${endY}`
-  }
-  const coolingDuctTopPath = coolingObstacleActive
-    ? `M746 272 C${coolingObstacleX + 126} 258 ${coolingObstacleX + 78} ${coolingObstacleY - 36} ${coolingObstacleX} ${coolingObstacleY - 36} C${coolingObstacleX - 114} ${coolingObstacleY - 36} 472 262 356 274`
-    : "M746 276 C642 262 520 254 356 274"
-  const coolingDuctBottomPath = coolingObstacleActive
-    ? `M746 322 C${coolingObstacleX + 126} 336 ${coolingObstacleX + 78} ${coolingObstacleY + 42} ${coolingObstacleX} ${coolingObstacleY + 42} C${coolingObstacleX - 114} ${coolingObstacleY + 42} 472 310 356 292`
-    : "M746 322 C640 334 510 326 356 292"
 
   const replayRubiksAnimation = () => {
     setIsRubiksSequencePlaying(false)
@@ -1413,68 +2090,258 @@ function ProjectDetailClient() {
         ) : project.id === 2 ? (
           /* Micromouse project layout */
           <div className="space-y-8">
-            <ProjectHeader project={project} />
+            <section className="relative overflow-hidden rounded-xl border bg-[#05070b] text-white">
+              <div className="absolute inset-0 micromouse-maze-bg opacity-80" aria-hidden="true" />
+              <div className="relative grid grid-cols-1 gap-8 p-5 md:p-8 lg:grid-cols-12 lg:items-center">
+                <div className="lg:col-span-5">
+                  <div className="mb-3 text-[11px] uppercase tracking-[0.24em] text-cyan-300">Maze telemetry</div>
+                  <h1 className="max-w-xl text-3xl font-bold leading-tight tracking-tight md:text-5xl">
+                    Micromouse maze navigation robot
+                  </h1>
+                  <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/70 md:text-base">
+                    Autonomous maze-solving robot using LiDAR, IMU, wheel encoders, PID control, and path planning to map and navigate a maze in real time.
+                  </p>
+                  <div className="mt-5 grid grid-cols-3 gap-2">
+                    {[
+                      { label: "Finish", value: "Top-3" },
+                      { label: "Planner", value: "BFS" },
+                      { label: "Control", value: "PID" },
+                    ].map((item) => (
+                      <div key={item.label} className="rounded-md border border-white/10 bg-white/[0.06] p-3">
+                        <div className="text-[10px] uppercase tracking-[0.18em] text-white/40">{item.label}</div>
+                        <div className="mt-1 text-lg font-bold">{item.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {project.githubUrl && (
+                      <Button asChild size="sm" className="rounded-md">
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                          <Github className="mr-2 h-4 w-4" />
+                          Source
+                        </a>
+                      </Button>
+                    )}
+                    {project.videoGallery?.[0] && (
+                      <Button asChild size="sm" variant="outline" className="rounded-md border-white/20 bg-white/5 text-white hover:bg-white/10">
+                        <a href={`https://www.youtube.com/watch?v=${project.videoGallery[0].id}`} target="_blank" rel="noopener noreferrer">
+                          <Play className="mr-2 h-4 w-4" />
+                          Demo
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+                </div>
 
-            {/* Main Project Image */}
-            <div className="bg-muted/10 rounded-lg p-6 border">
-              <div className="relative aspect-video rounded-lg overflow-hidden max-w-4xl mx-auto">
-                <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
-              </div>
-            </div>
+                <div className="lg:col-span-7">
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_0.72fr]">
+                    <div className="relative overflow-hidden rounded-lg border border-white/10 bg-black/35">
+                      <div className="relative aspect-[4/3]">
+                        <Image
+                          src="/images/micromouse-testing-lab.jpeg"
+                          alt="Micromouse robot testing inside maze"
+                          fill
+                          className="object-cover opacity-80"
+                          sizes="(max-width: 1024px) 100vw, 46vw"
+                          priority
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 640 480" aria-hidden="true">
+                          <defs>
+                            <path id="micromouse-hero-route" d="M98 388 L98 318 L178 318 L178 246 L264 246 L264 176 L354 176 L354 102 L468 102 L468 172 L544 172" />
+                            <filter id="micromouse-route-glow" x="-40%" y="-40%" width="180%" height="180%">
+                              <feGaussianBlur stdDeviation="4" result="blur" />
+                              <feMerge>
+                                <feMergeNode in="blur" />
+                                <feMergeNode in="SourceGraphic" />
+                              </feMerge>
+                            </filter>
+                          </defs>
+                          <path d="M98 388 L98 318 L178 318 L178 246 L264 246 L264 176 L354 176 L354 102 L468 102 L468 172 L544 172" stroke="#67e8f9" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.35" fill="none" />
+                          <path className="micromouse-route-dash" d="M98 388 L98 318 L178 318 L178 246 L264 246 L264 176 L354 176 L354 102 L468 102 L468 172 L544 172" stroke="#67e8f9" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" filter="url(#micromouse-route-glow)" />
+                          <circle r="9" fill="#22c55e" filter="url(#micromouse-route-glow)">
+                            <animateMotion dur="5s" repeatCount="indefinite">
+                              <mpath href="#micromouse-hero-route" />
+                            </animateMotion>
+                          </circle>
+                        </svg>
+                        <div className="absolute bottom-4 left-4 rounded-md border border-cyan-300/25 bg-black/55 px-3 py-2 backdrop-blur">
+                          <div className="text-[10px] uppercase tracking-[0.2em] text-cyan-200/70">Run objective</div>
+                          <div className="text-sm font-bold">Map, plan, drive, correct</div>
+                        </div>
+                      </div>
+                    </div>
 
-            {/* Project Description */}
-            <div className="bg-muted/10 rounded-lg p-6 border">
-              <div className="prose dark:prose-invert max-w-none">
-                <p className="text-base leading-relaxed whitespace-pre-line">{project.longDescription}</p>
+                    <button
+                      type="button"
+                      className="group relative min-h-[260px] overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] text-left"
+                      onClick={() => openLightbox(["/images/micromouse-robot.jpeg"], 0, "Micromouse robot")}
+                    >
+                      <Image
+                        src="/images/micromouse-robot.jpeg"
+                        alt="Micromouse robot close-up"
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                        sizes="(max-width: 1024px) 100vw, 25vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <div className="text-[10px] uppercase tracking-[0.2em] text-white/50">Robot build</div>
+                        <div className="mt-1 text-lg font-bold">Compact sensor stack</div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
+            </section>
 
-            {/* GitHub Link */}
-            {project.githubUrl && (
-              <div className="text-center bg-muted/10 rounded-lg p-4 border">
-                <Button asChild>
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                  >
-                    <Github size={16} />
-                    View Source Code
-                  </a>
-                </Button>
+            <section className="grid grid-cols-1 gap-4 md:grid-cols-4">
+              {[
+                { icon: Monitor, label: "Sense", value: "LiDAR + IMU + encoders" },
+                { icon: Cpu, label: "Think", value: "occupancy map + BFS" },
+                { icon: Gauge, label: "Control", value: "PID steering" },
+                { icon: Zap, label: "Result", value: "Top-3 competition finish" },
+              ].map(({ icon: Icon, label, value }) => (
+                <div key={label} className="rounded-lg border bg-muted/10 p-4">
+                  <Icon className="mb-3 h-5 w-5 text-primary" />
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-foreground/45">{label}</div>
+                  <div className="mt-1 text-sm font-bold leading-snug">{value}</div>
+                </div>
+              ))}
+            </section>
+
+            <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+              <div className="rounded-xl border bg-muted/10 p-5 md:p-6 lg:col-span-5">
+                <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">Navigation stack</div>
+                <h2 className="text-2xl font-bold tracking-tight">Small corrections, every cell.</h2>
+                <p className="mt-3 text-sm leading-relaxed text-foreground/65">
+                  The robot constantly fused distance, heading, and wheel motion so small errors did not compound across the maze.
+                </p>
+                <div className="mt-6 space-y-3">
+                  {[
+                    { step: "01", title: "Read sensors", detail: "LiDAR, IMU, and encoders update the local state." },
+                    { step: "02", title: "Update map", detail: "The maze representation changes as walls are discovered." },
+                    { step: "03", title: "Plan route", detail: "Breadth-first search chooses the next useful cell." },
+                    { step: "04", title: "Drive cleanly", detail: "PID keeps straight runs and turns consistent." },
+                  ].map((item) => (
+                    <div key={item.step} className="grid grid-cols-[2.5rem_1fr] gap-3 rounded-md border border-border/70 bg-background/70 p-3">
+                      <div className="font-mono text-xs font-bold text-primary">{item.step}</div>
+                      <div>
+                        <div className="text-sm font-bold">{item.title}</div>
+                        <div className="mt-1 text-xs leading-relaxed text-foreground/60">{item.detail}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
+
+              <div className="rounded-xl border bg-muted/10 p-5 md:p-6 lg:col-span-7">
+                <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">Path planning</div>
+                    <h2 className="text-2xl font-bold tracking-tight">Route chosen from noisy data</h2>
+                  </div>
+                  <span className="rounded-md border border-primary/25 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+                    BFS + PID
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className="group relative aspect-[16/10] w-full overflow-hidden rounded-lg border border-border/70 bg-background/60"
+                  onClick={() => openLightbox(["/images/micromouse-algorithm.jpeg"], 0, "Micromouse path planning output")}
+                >
+                  <Image
+                    src="/images/micromouse-algorithm.jpeg"
+                    alt="Micromouse path planning visualisation"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    sizes="(max-width: 1024px) 100vw, 54vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-black/15" />
+                  <div className="absolute bottom-4 left-4 rounded-md border border-white/20 bg-black/55 px-3 py-2 text-left text-white backdrop-blur">
+                    <div className="text-[10px] uppercase tracking-[0.2em] text-white/55">Planner output</div>
+                    <div className="text-sm font-bold">Search graph to driveable path</div>
+                  </div>
+                </button>
+              </div>
+            </section>
+
+            <section className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+              {[
+                {
+                  title: "Prototype wiring",
+                  image: "/images/micromouse-prototype.jpeg",
+                  alt: "Micromouse prototype wiring",
+                  text: "Early layout validation before final assembly.",
+                },
+                {
+                  title: "Final hardware",
+                  image: "/images/micromouse-closeup.jpeg",
+                  alt: "Micromouse assembled hardware close-up",
+                  text: "Sensors, power, and motor wiring packed into the chassis.",
+                },
+                {
+                  title: "Competition maze",
+                  image: "/images/micromouse-testing-lab.jpeg",
+                  alt: "Micromouse testing maze",
+                  text: "Real testing in the maze exposed drift and tuning issues.",
+                },
+              ].map((item) => (
+                <button
+                  key={item.title}
+                  type="button"
+                  className="group overflow-hidden rounded-xl border bg-muted/10 text-left"
+                  onClick={() => openLightbox([item.image], 0, item.title)}
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-black/5 dark:bg-white/[0.03]">
+                    <Image
+                      src={item.image}
+                      alt={item.alt}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                      sizes="(max-width: 1024px) 100vw, 31vw"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-bold">{item.title}</h3>
+                    <p className="mt-1 text-xs leading-relaxed text-foreground/60">{item.text}</p>
+                  </div>
+                </button>
+              ))}
+            </section>
+
+            {project.videoGallery && (
+              <section className="rounded-xl border bg-muted/10 p-5 md:p-6">
+                <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">Run footage</div>
+                    <h2 className="text-2xl font-bold tracking-tight">Testing the control loop</h2>
+                  </div>
+                  <p className="max-w-md text-sm leading-relaxed text-foreground/60">
+                    Short demos of maze navigation, accuracy tuning, and straight-line PID behaviour.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                  {project.videoGallery.map((video) => (
+                    <div key={video.id} className="overflow-hidden rounded-lg border border-border/70 bg-background/70">
+                      <div className="aspect-video">
+                        <iframe
+                          src={`https://www.youtube.com/embed/${video.id}`}
+                          title={video.title}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          className="h-full w-full"
+                        />
+                      </div>
+                      <div className="p-3">
+                        <h3 className="text-sm font-bold leading-snug">{video.title}</h3>
+                        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-foreground/55">{video.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
             )}
-
-            {/* Video Demonstrations */}
-            {project.videoGallery && <VideoGallery title="Video Demonstrations" videos={project.videoGallery} />}
-
-            {/* Hardware and Software Galleries */}
-            <div className="space-y-8">
-              {project.hardwareGallery && (
-                <ImageGallery
-                  title="Hardware Development"
-                  images={project.hardwareGallery}
-                  onImageClick={openLightbox}
-                  altPrefix="Hardware development"
-                  columns="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                  imageHeight="h-40"
-                />
-              )}
-
-              {project.softwareGallery && (
-                <ImageGallery
-                  title="Software Development"
-                  images={project.softwareGallery}
-                  onImageClick={openLightbox}
-                  altPrefix="Software development"
-                  columns="grid-cols-1 md:grid-cols-3"
-                  imageHeight="h-48"
-                />
-              )}
-            </div>
-
-            <ProjectTabs project={project} />
           </div>
         ) : project.id === 3 ? (
           /* PC Cooling project with story steps layout */
@@ -1512,35 +2379,79 @@ function ProjectDetailClient() {
                       sizes="(max-width: 1024px) 100vw, 50vw"
                       priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
-                    <div className="absolute bottom-4 left-4 rounded-md border border-white/20 bg-black/55 px-3 py-2 text-left text-white backdrop-blur">
-                      <div className="text-[10px] uppercase tracking-[0.18em] text-white/60">Measured result</div>
-                      <div className="text-2xl font-bold">7°C lower GPU temps</div>
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent" />
                   </button>
                 </div>
               </div>
             </section>
 
-            <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="rounded-lg border border-primary/35 bg-primary/10 p-5">
-                <div className="text-[10px] uppercase tracking-[0.2em] text-primary/75">Measured gain</div>
-                <div className="mt-2 flex items-end gap-2">
-                  <span className="text-4xl font-bold tracking-tight">7°C</span>
-                  <span className="pb-1 text-sm font-semibold text-foreground/70">cooler under GPU load</span>
+            <section className="rounded-xl border bg-gradient-to-br from-muted/15 via-muted/5 to-muted/15 p-5 md:p-7">
+              <div className="grid grid-cols-1 items-stretch gap-3 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
+                {/* Problem */}
+                <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-5">
+                  <div className="mb-3 flex items-center gap-2">
+                    <div className="grid h-8 w-8 place-items-center rounded-md bg-red-500/15 text-red-300">
+                      <AlertTriangle size={16} />
+                    </div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-red-300/85">
+                      Problem
+                    </div>
+                  </div>
+                  <p className="text-base font-semibold leading-snug">Air scattered inside the case.</p>
+                  <p className="mt-1.5 text-xs leading-relaxed text-foreground/55">
+                    Front intake disperses before it reaches the GPU.
+                  </p>
                 </div>
-              </div>
-              <div className="rounded-lg border border-border/70 bg-muted/10 p-5">
-                <div className="text-[10px] uppercase tracking-[0.2em] text-primary/75">Airflow change</div>
-                <div className="mt-2 text-2xl font-bold tracking-tight">Front intake straight to GPU</div>
-                <div className="mt-2 text-sm text-foreground/60">Less case turbulence. More useful air.</div>
+
+                <div className="hidden self-center text-foreground/30 md:block">
+                  <ArrowRight size={22} />
+                </div>
+
+                {/* Fix */}
+                <div className="rounded-lg border border-primary/35 bg-primary/[0.08] p-5">
+                  <div className="mb-3 flex items-center gap-2">
+                    <div className="grid h-8 w-8 place-items-center rounded-md bg-primary/15 text-primary">
+                      <Wrench size={16} />
+                    </div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-primary/85">
+                      Fix
+                    </div>
+                  </div>
+                  <p className="text-base font-semibold leading-snug">Duct the intake to the GPU.</p>
+                  <p className="mt-1.5 text-xs leading-relaxed text-foreground/55">
+                    3D-printed shroud channels air straight to the bottom-fan inlet.
+                  </p>
+                </div>
+
+                <div className="hidden self-center text-foreground/30 md:block">
+                  <ArrowRight size={22} />
+                </div>
+
+                {/* Result */}
+                <div className="rounded-lg border border-emerald-500/35 bg-emerald-500/[0.07] p-5">
+                  <div className="mb-3 flex items-center gap-2">
+                    <div className="grid h-8 w-8 place-items-center rounded-md bg-emerald-500/15 text-emerald-300">
+                      <TrendingDown size={16} />
+                    </div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-emerald-300/85">
+                      Result
+                    </div>
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-3xl font-bold tracking-tight">7°C</span>
+                    <span className="text-sm font-medium text-foreground/65">lower under load</span>
+                  </div>
+                  <p className="mt-1.5 text-xs leading-relaxed text-foreground/55">
+                    Higher sustained boost clocks. Quieter fans.
+                  </p>
+                </div>
               </div>
             </section>
 
             <section className="grid grid-cols-1 gap-5 rounded-lg border bg-muted/10 p-5 md:p-6 lg:grid-cols-12 lg:items-center">
               <div className="lg:col-span-4">
                 <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">Airflow lab</div>
-                <h2 className="text-2xl font-bold tracking-tight">The duct turns messy air into a path.</h2>
+                <h2 className="text-2xl font-bold tracking-tight">From intake to GPU.</h2>
                 <div className="mt-5 inline-flex rounded-md border border-border/70 bg-background/80 p-1">
                   {[
                     { id: "stock", label: "Stock" },
@@ -1563,164 +2474,21 @@ function ProjectDetailClient() {
                 </div>
                 <p className="mt-4 max-w-sm text-sm leading-relaxed text-foreground/65">
                   {coolingAirflowMode === "ducted"
-                    ? "Front fan air is funnelled directly into the GPU cooler."
-                    : "Front fan air enters the case, then spills upward and around the GPU."}
+                    ? "The lower intake air is captured by the printed duct and delivered into the GPU cooler."
+                    : "Without the duct, intake air disperses through the case and heat lingers around the GPU."}
                 </p>
+                <div className="mt-5 max-w-sm rounded-lg border border-border/70 bg-background/70 p-4">
+                  <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-3 text-xs text-foreground/70">
+                    <span className="mt-1 h-2.5 w-2.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,0.8)]" />
+                    <span>Blue particles show useful intake air.</span>
+                    <span className="mt-1 h-2.5 w-2.5 rounded-full bg-red-400 shadow-[0_0_12px_rgba(248,113,113,0.8)]" />
+                    <span>Red haze shows heat that is not being cleared quickly.</span>
+                  </div>
+                </div>
               </div>
               <div className="lg:col-span-8">
-                <div
-                  className="relative overflow-hidden rounded-lg border border-border/70 bg-background/70 p-2 md:p-4"
-                  onPointerMove={(event) => {
-                    const rect = event.currentTarget.getBoundingClientRect()
-                    setCoolingObstacle({
-                      x: ((event.clientX - rect.left) / rect.width) * 860,
-                      y: ((event.clientY - rect.top) / rect.height) * 430,
-                    })
-                  }}
-                  onPointerLeave={() => setCoolingObstacle(null)}
-                >
-                  <svg className="h-auto w-full" viewBox="0 0 860 430" role="img" aria-label={`${coolingAirflowMode === "ducted" ? "Ducted" : "Stock"} PC airflow diagram`}>
-                    <defs>
-                      <linearGradient id="coolingAir" x1="0" x2="1" y1="0" y2="0">
-                        <stop offset="0%" stopColor="#2dd4bf" stopOpacity="0.95" />
-                        <stop offset="52%" stopColor="#38bdf8" stopOpacity="0.9" />
-                        <stop offset="100%" stopColor="#60a5fa" stopOpacity="0" />
-                      </linearGradient>
-                      <linearGradient id="coolingDuct" x1="0" x2="1" y1="0" y2="0">
-                        <stop offset="0%" stopColor="#111827" stopOpacity="0.96" />
-                        <stop offset="55%" stopColor="#1f2937" stopOpacity="0.94" />
-                        <stop offset="100%" stopColor="#020617" stopOpacity="0.98" />
-                      </linearGradient>
-                      <linearGradient id="coolingCaseGlow" x1="0" x2="1" y1="0" y2="1">
-                        <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.16" />
-                        <stop offset="52%" stopColor="#0f172a" stopOpacity="0" />
-                        <stop offset="100%" stopColor="#2563eb" stopOpacity="0.12" />
-                      </linearGradient>
-                      <filter id="coolingGlow" x="-30%" y="-80%" width="160%" height="260%">
-                        <feGaussianBlur stdDeviation="7" result="blur" />
-                        <feMerge>
-                          <feMergeNode in="blur" />
-                          <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                      </filter>
-                      <marker id="coolingArrow" markerHeight="14" markerUnits="userSpaceOnUse" markerWidth="14" orient="auto" refX="12" refY="7">
-                        <path d="M0,0 L13,7 L0,14 Z" fill="#67e8f9" />
-                      </marker>
-                      <marker id="coolingHeatArrow" markerHeight="14" markerUnits="userSpaceOnUse" markerWidth="14" orient="auto" refX="12" refY="7">
-                        <path d="M0,0 L13,7 L0,14 Z" fill="#f87171" />
-                      </marker>
-                    </defs>
-
-                    <rect x="8" y="8" width="844" height="414" rx="18" fill="currentColor" className="text-black/5 dark:text-white/[0.025]" stroke="currentColor" strokeOpacity="0.12" />
-                    <rect x="72" y="52" width="714" height="326" rx="18" fill="#030712" fillOpacity="0.72" stroke="#334155" strokeOpacity="0.68" />
-                    <rect x="72" y="52" width="714" height="326" rx="18" fill="url(#coolingCaseGlow)" />
-
-                    <g opacity="0.24" stroke="currentColor" className="text-foreground">
-                      {Array.from({ length: 11 }).map((_, index) => (
-                        <line key={`case-v-${index}`} x1={118 + index * 58} x2={118 + index * 58} y1="80" y2="352" strokeWidth="1" />
-                      ))}
-                      {Array.from({ length: 5 }).map((_, index) => (
-                        <line key={`case-h-${index}`} x1="98" x2="762" y1={104 + index * 52} y2={104 + index * 52} strokeWidth="1" />
-                      ))}
-                    </g>
-
-                    <g aria-hidden="true">
-                      <rect x="78" y="54" width="34" height="322" fill="#111827" stroke="#475569" strokeOpacity="0.7" />
-                      <rect x="745" y="66" width="30" height="300" rx="6" fill="#111827" stroke="#475569" strokeOpacity="0.62" />
-                      <rect x="126" y="306" width="368" height="44" rx="8" fill="#0f172a" stroke="#334155" strokeOpacity="0.85" />
-                      <rect x="116" y="82" width="34" height="34" rx="6" fill="#020617" stroke="#334155" />
-                      {Array.from({ length: 6 }).map((_, index) => (
-                        <line key={`rear-slot-${index}`} x1="84" x2="104" y1={174 + index * 18} y2={174 + index * 18} stroke="#64748b" strokeOpacity="0.7" strokeWidth="4" strokeLinecap="round" />
-                      ))}
-                      {Array.from({ length: 22 }).map((_, index) => (
-                        <line key={`top-rad-${index}`} x1={232 + index * 15} x2={238 + index * 15} y1="75" y2="75" stroke="#64748b" strokeOpacity="0.55" strokeWidth="8" strokeLinecap="round" />
-                      ))}
-                    </g>
-
-                    <g>
-                      <rect x="704" y="92" width="50" height="246" rx="16" fill="#082f49" fillOpacity="0.62" stroke="#38bdf8" strokeOpacity="0.45" />
-                      {[132, 216, 300].map((fanY) => (
-                        <g key={`front-fan-${fanY}`}>
-                          <circle cx="730" cy={fanY} r="30" fill="#020617" stroke="#7dd3fc" strokeOpacity="0.82" strokeWidth="2" />
-                          <circle cx="730" cy={fanY} r="8" fill="#38bdf8" fillOpacity="0.8" />
-                          <g transform={`translate(730 ${fanY})`}>
-                            <animateTransform attributeName="transform" dur="1.4s" repeatCount="indefinite" type="rotate" from={`0 0 0`} to={`360 0 0`} additive="sum" />
-                            <path d="M0 -24 C8 -20 13 -11 8 -4 C3 -7 -1 -14 0 -24Z" fill="#67e8f9" fillOpacity="0.65" />
-                            <path d="M24 0 C20 8 11 13 4 8 C7 3 14 -1 24 0Z" fill="#67e8f9" fillOpacity="0.65" />
-                            <path d="M0 24 C-8 20 -13 11 -8 4 C-3 7 1 14 0 24Z" fill="#67e8f9" fillOpacity="0.65" />
-                            <path d="M-24 0 C-20 -8 -11 -13 -4 -8 C-7 -3 -14 1 -24 0Z" fill="#67e8f9" fillOpacity="0.65" />
-                          </g>
-                        </g>
-                      ))}
-                      <text x="682" y="362" fill="currentColor" className="text-[11px] uppercase tracking-[0.22em] text-foreground/55">Front intake</text>
-                    </g>
-
-                    <g>
-                      <rect x="188" y="168" width="390" height="54" rx="8" fill="#1f2937" stroke="#64748b" strokeOpacity="0.75" />
-                      <rect x="206" y="182" width="154" height="18" rx="4" fill="#0f172a" stroke="#94a3b8" strokeOpacity="0.45" />
-                      <text x="220" y="196" fill="#e5e7eb" className="text-[16px] font-bold tracking-[0.08em]">GEFORCE RTX</text>
-                      {Array.from({ length: 18 }).map((_, index) => (
-                        <line key={`gpu-fin-${index}`} x1={396 + index * 8} x2={400 + index * 8} y1="178" y2="212" stroke="#cbd5e1" strokeOpacity="0.24" strokeWidth="3" />
-                      ))}
-                      <rect x="244" y="224" width="286" height="56" rx="10" fill="#0f172a" stroke="#475569" strokeOpacity="0.8" />
-                      {Array.from({ length: 17 }).map((_, index) => (
-                        <line key={`gpu-sink-${index}`} x1={260 + index * 15} x2={260 + index * 15} y1="232" y2="272" stroke="#94a3b8" strokeOpacity="0.34" strokeWidth="3" />
-                      ))}
-                      <text x="246" y="158" fill="currentColor" className="text-[11px] uppercase tracking-[0.22em] text-foreground/55">GPU cooler intake</text>
-                    </g>
-
-                    <g>
-                      <circle cx="130" cy="210" r="34" fill="#020617" stroke="#7dd3fc" strokeOpacity="0.7" strokeWidth="2" />
-                      <circle cx="130" cy="210" r="11" fill="#38bdf8" fillOpacity="0.72" />
-                      <path d="M112 192 C125 184 143 186 151 199" stroke="#67e8f9" strokeOpacity="0.45" strokeWidth="6" strokeLinecap="round" fill="none" />
-                      <path d="M148 228 C134 236 118 232 110 220" stroke="#67e8f9" strokeOpacity="0.45" strokeWidth="6" strokeLinecap="round" fill="none" />
-                      <text x="102" y="266" fill="currentColor" className="text-[11px] uppercase tracking-[0.22em] text-foreground/55">Rear exhaust</text>
-                    </g>
-
-                    {coolingObstacleActive && (
-                      <g>
-                        <circle cx={coolingObstacleX} cy={coolingObstacleY} r="26" fill="#020617" fillOpacity="0.82" stroke="#f8fafc" strokeOpacity="0.5" />
-                        <circle cx={coolingObstacleX} cy={coolingObstacleY} r="39" fill="none" stroke="#f8fafc" strokeDasharray="4 8" strokeOpacity="0.25" />
-                      </g>
-                    )}
-                    {coolingAirflowMode === "ducted" ? (
-                      <g>
-                        <path
-                          d="M748 242 C646 232 556 230 482 248 C428 262 386 286 342 294 L342 330 C430 342 514 344 588 326 C664 308 716 294 748 302 Z"
-                          fill="url(#coolingDuct)"
-                          stroke="#64748b"
-                          strokeOpacity="0.78"
-                          strokeWidth="2"
-                        />
-                        <path d="M748 246 C642 242 522 246 355 282" stroke="#94a3b8" strokeOpacity="0.22" strokeWidth="2" fill="none" />
-                        <path d="M748 298 C640 312 516 318 355 304" stroke="#94a3b8" strokeOpacity="0.18" strokeWidth="2" fill="none" />
-                        {coolingObstacleActive ? (
-                          <>
-                            <path className="cooling-flow-pulse" d={coolingDuctTopPath} stroke="url(#coolingAir)" strokeWidth="10" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
-                            <path className="cooling-flow-pulse cooling-flow-pulse-late" d={coolingDuctBottomPath} stroke="url(#coolingAir)" strokeWidth="10" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
-                          </>
-                        ) : (
-                          <>
-                            <path className="cooling-flow-pulse" d={coolingDuctTopPath} stroke="url(#coolingAir)" strokeWidth="13" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
-                            <path className="cooling-flow-pulse cooling-flow-pulse-late" d={coolingDuctBottomPath} stroke="url(#coolingAir)" strokeWidth="13" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
-                          </>
-                        )}
-                        <path d="M344 284 L382 264 L378 304 Z" fill="#67e8f9" fillOpacity="0.9" filter="url(#coolingGlow)" />
-                        <rect x="412" y="288" width="88" height="28" rx="6" fill="#064e3b" fillOpacity="0.72" stroke="#34d399" strokeOpacity="0.65" />
-                        <text x="430" y="307" fill="#a7f3d0" className="text-[13px] font-bold">guided</text>
-                      </g>
-                    ) : (
-                      <g>
-                        <path className="cooling-flow-pulse" d={getCoolingStockPath(132, 198, 94, -86)} stroke="url(#coolingAir)" strokeWidth="9" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
-                        <path className="cooling-flow-pulse cooling-flow-pulse-late" d={getCoolingStockPath(216, 245, 235, 0)} stroke="url(#coolingAir)" strokeWidth="9" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
-                        <path className="cooling-flow-pulse" d={getCoolingStockPath(300, 420, 350, 78)} stroke="url(#coolingAir)" strokeWidth="9" strokeLinecap="round" markerEnd="url(#coolingArrow)" filter="url(#coolingGlow)" fill="none" />
-                        <path d="M360 112 C286 108 220 132 168 178" stroke="#f87171" strokeWidth="7" strokeLinecap="round" strokeOpacity="0.72" markerEnd="url(#coolingHeatArrow)" fill="none" />
-                        <path d="M512 342 C442 362 356 358 282 328" stroke="#f87171" strokeWidth="7" strokeLinecap="round" strokeOpacity="0.55" markerEnd="url(#coolingHeatArrow)" fill="none" />
-                        <rect x="432" y="120" width="90" height="28" rx="6" fill="#7f1d1d" fillOpacity="0.62" stroke="#f87171" strokeOpacity="0.58" />
-                        <text x="448" y="139" fill="#fecaca" className="text-[13px] font-bold">spills away</text>
-                      </g>
-                    )}
-                  </svg>
+                <div className="relative overflow-hidden rounded-lg border border-border/70">
+                  <PCCoolingScene mode={coolingAirflowMode} />
                 </div>
               </div>
             </section>
@@ -1754,23 +2522,15 @@ function ProjectDetailClient() {
                   <p>
                     The funnel creates a controlled path from intake fans to the GPU cooler, reducing recirculation and improving thermal consistency.
                   </p>
-                  <div className="rounded-md border border-primary/25 bg-primary/10 p-3 text-xs font-medium text-primary">
-                    Inspired by automotive intake ducting: move air intentionally, not generally.
-                  </div>
                 </div>
               </div>
             </section>
 
             {/* Story Steps */}
             <div className="rounded-lg border bg-muted/10 p-5 md:p-7">
-              <div className="mb-8 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">Timeline</div>
-                  <h2 className="text-2xl font-bold tracking-tight">Project development story</h2>
-                </div>
-                <p className="max-w-md text-sm leading-relaxed text-foreground/60">
-                  From airflow problem to printed ducting, with each stage shown without image cropping.
-                </p>
+              <div className="mb-8">
+                <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-primary">Timeline</div>
+                <h2 className="text-2xl font-bold tracking-tight">Project development story</h2>
               </div>
               <div className="relative space-y-8 before:absolute before:left-3 before:top-2 before:hidden before:h-[calc(100%-1rem)] before:w-px before:bg-border md:before:block lg:before:left-1/2">
                 {project.storySteps?.map((step, index) => {
@@ -1903,20 +2663,6 @@ function ProjectDetailClient() {
               </div>
             </section>
 
-            <section className="rounded-lg border bg-muted/10 p-5 md:p-6">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                {[
-                  { label: "Problem", value: "Air scattered inside the case." },
-                  { label: "Fix", value: "Duct the intake toward the GPU." },
-                  { label: "Result", value: "7°C lower under load." },
-                ].map((item) => (
-                  <div key={item.label} className="rounded-md border border-border/70 bg-background/70 p-4">
-                    <div className="text-[10px] uppercase tracking-[0.2em] text-primary/75">{item.label}</div>
-                    <div className="mt-2 text-sm font-semibold leading-snug text-foreground/85">{item.value}</div>
-                  </div>
-                ))}
-              </div>
-            </section>
           </div>
         ) : project.id === 4 ? (
           /* UR5e Robotic Writing System */
@@ -2688,79 +3434,169 @@ function ProjectDetailClient() {
             </div>
           </div>
         ) : project.id === 6 ? (
-          /* Custom Watch Build layout */
-          <div className="space-y-8">
-            <ProjectHeader project={project} />
-
-            {/* Image + Specs side by side */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-muted/10 rounded-lg p-6 border flex items-center justify-center">
+          /* Custom Watch Build — editorial / craft layout */
+          <div className="relative space-y-16 overflow-hidden pb-16 md:space-y-24">
+            <div aria-hidden className="pointer-events-none absolute inset-x-[-12%] top-[-7rem] h-[34rem] bg-[radial-gradient(circle_at_52%_18%,rgba(217,119,6,0.18),transparent_30%),radial-gradient(circle_at_76%_46%,rgba(59,130,246,0.13),transparent_26%)]" />
+            {/* HERO */}
+            <section className="relative overflow-hidden rounded-[1.5rem] border border-border/70 bg-[#050507] p-6 text-center text-white shadow-2xl shadow-black/30 md:p-10">
+              <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(217,119,6,0.12),transparent_38%),linear-gradient(90deg,rgba(255,255,255,0.055)_1px,transparent_1px),linear-gradient(0deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:auto,56px_56px,56px_56px]" />
+              <div className="absolute inset-0 block md:inset-y-0 md:left-auto md:right-0 md:w-[44%]">
                 <Image
                   src={project.image || "/placeholder.svg"}
-                  alt={project.title}
-                  width={600}
-                  height={600}
-                  className="w-full h-auto rounded-lg max-h-[480px] object-contain"
+                  alt=""
+                  fill
+                  className="object-cover object-top opacity-[0.16] saturate-[1.05] md:opacity-[0.38]"
+                  sizes="44vw"
+                  priority
                 />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#050507] via-[#050507]/70 to-[#050507]/20 md:via-[#050507]/55 md:to-transparent" />
               </div>
-
-              <div className="space-y-4">
-                {/* Quick specs */}
-                <div className="bg-muted/10 rounded-lg p-6 border h-full flex flex-col justify-center">
-                  <h2 className="text-lg font-bold mb-5">Build Specs</h2>
-                  <div className="space-y-4">
-                    {[
-                      { label: "Movement", value: "Seiko NH35A" },
-                      { label: "Type", value: "Mechanical Automatic" },
-                      { label: "Power Reserve", value: "41 hours" },
-                      { label: "Assembly", value: "Hand-built from individual parts" },
-                      { label: "Environment", value: "Dust-free, clean room conditions" },
-                      { label: "Parts Sourced", value: "Case, dial, hands, crystal, crown, bracelet" },
-                    ].map(({ label, value }) => (
-                      <div key={label} className="flex justify-between items-start gap-4 border-b border-border/40 pb-3 last:border-0 last:pb-0">
-                        <span className="text-foreground/50 text-sm font-medium shrink-0">{label}</span>
-                        <span className="text-foreground/90 text-sm text-right">{value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              <div className="relative mx-auto w-full max-w-3xl min-w-0">
+              <div className="mb-7 inline-flex max-w-[17rem] rounded-full border border-amber-300/25 bg-amber-300/10 px-3 py-1 text-center text-[9px] font-semibold uppercase leading-relaxed tracking-[0.18em] text-amber-100/80 sm:max-w-full sm:text-[10px] sm:tracking-[0.28em]">
+                Reference 001 &nbsp;·&nbsp; Custom build
               </div>
-            </div>
-
-            {/* Project Description */}
-            <div className="bg-muted/10 rounded-lg p-6 border">
-              <div className="prose dark:prose-invert max-w-none">
-                <p className="text-base leading-relaxed whitespace-pre-line">{project.longDescription}</p>
-              </div>
-            </div>
-
-            {/* Video */}
-            {project.videoGallery && (
-              <div className="bg-muted/10 rounded-lg p-6 border">
-                <h2 className="text-xl font-bold text-center mb-6">Watch the Build</h2>
-                {project.videoGallery.map((video, index) => (
-                  <div key={index} className="space-y-3 max-w-4xl mx-auto">
-                    <div className="relative w-full aspect-video rounded-lg overflow-hidden">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${video.id}`}
-                        title={video.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="w-full h-full"
-                      />
-                    </div>
-                    <div className="text-center">
-                      <h3 className="font-bold text-sm mb-1">{video.title}</h3>
-                      <p className="text-foreground/70 text-xs">{video.description}</p>
-                    </div>
+              <h1 className="mx-auto max-w-[18rem] break-words font-serif text-3xl font-medium leading-[1.04] tracking-tight sm:max-w-3xl sm:text-5xl md:text-7xl">
+                A mechanical watch,
+                <br className="hidden sm:block" />
+                <span className="italic text-amber-100"> assembled by hand.</span>
+              </h1>
+              <p className="mx-auto mt-8 max-w-[17rem] break-words text-sm leading-relaxed text-white/66 sm:max-w-md sm:text-base">
+                Sourced and hand-built around a Seiko NH35 movement. Every part was fitted, aligned, cleaned, and tested at wristwatch scale.
+              </p>
+              <div className="mx-auto mt-7 grid w-full max-w-[17rem] grid-cols-1 gap-2 sm:max-w-md sm:grid-cols-3 sm:gap-3">
+                {[
+                  { label: "Movement", value: "NH35" },
+                  { label: "Beat rate", value: "21,600" },
+                  { label: "Reserve", value: "41 h" },
+                ].map((item) => (
+                  <div key={item.label} className="min-w-0 rounded-lg border border-white/10 bg-white/[0.045] p-2.5 sm:p-3">
+                    <div className="truncate text-[8px] uppercase tracking-[0.16em] text-white/38 sm:text-[9px] sm:tracking-[0.2em]">{item.label}</div>
+                    <div className="mt-1 text-base font-bold tracking-tight text-white sm:text-lg">{item.value}</div>
                   </div>
                 ))}
               </div>
+              </div>
+            </section>
+
+            {/* Frontispiece image */}
+            <section className="relative flex justify-center">
+              <figure className="text-center">
+                <button
+                  type="button"
+                  className="group relative inline-block overflow-hidden rounded-[1.25rem] border border-border/60 bg-muted/10 p-3 shadow-2xl shadow-black/35"
+                  onClick={() => openLightbox([project.image || "/placeholder.svg"], 0, project.title)}
+                >
+                  <div aria-hidden className="absolute inset-8 rounded-full border border-amber-500/25" />
+                  <div aria-hidden className="absolute inset-14 rounded-full border border-foreground/10" />
+                  <Image
+                    src={project.image || "/placeholder.svg"}
+                    alt={project.title}
+                    width={440}
+                    height={440}
+                    className="relative block h-[500px] w-[500px] max-w-[82vw] rounded-lg object-cover transition-transform duration-700 group-hover:scale-[1.025]"
+                    style={{ objectPosition: "top" }}
+                    priority
+                  />
+                  <div className="absolute bottom-6 left-6 rounded-lg border border-white/15 bg-black/50 px-3 py-2 text-left text-white backdrop-blur-md">
+                    <div className="text-[9px] uppercase tracking-[0.22em] text-white/45">Finished build</div>
+                    <div className="mt-1 text-sm font-bold">Inspect close-up</div>
+                  </div>
+                </button>
+                <figcaption className="mt-4 font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/40">
+                  Seiko NH35A &nbsp;·&nbsp; 41 h reserve &nbsp;·&nbsp; 21,600 vph
+                </figcaption>
+              </figure>
+            </section>
+
+            {/* Specs ticker — single horizontal line */}
+            <section className="border-y border-border/40 py-5">
+              <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-7 gap-y-2 px-4 text-[11px] uppercase tracking-[0.22em] text-foreground/55">
+                <span>Mechanical automatic</span>
+                <span aria-hidden className="text-foreground/20">·</span>
+                <span>Hand-pressed dial &amp; hands</span>
+                <span aria-hidden className="text-foreground/20">·</span>
+                <span>Sourced parts</span>
+                <span aria-hidden className="text-foreground/20">·</span>
+                <span>Dust-free assembly</span>
+              </div>
+            </section>
+
+            {/* Video — the page's centerpiece */}
+            <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              {[
+                {
+                  icon: Layers,
+                  label: "Source",
+                  title: "Compatible parts",
+                  text: "Case, dial, hands, crown, bracelet, crystal, and NH35 movement checked before assembly.",
+                },
+                {
+                  icon: Wrench,
+                  label: "Assemble",
+                  title: "Small-force work",
+                  text: "Hands and dial pressed carefully so nothing scratched, bent, or fouled.",
+                },
+                {
+                  icon: CheckCircle2,
+                  label: "Verify",
+                  title: "Runs cleanly",
+                  text: "Final check for dust, alignment, hand clearance, and reliable wrist operation.",
+                },
+              ].map(({ icon: Icon, label, title, text }) => (
+                <div key={label} className="group rounded-xl border border-border/70 bg-muted/10 p-5 transition-colors hover:border-amber-500/35 hover:bg-amber-500/[0.045]">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-primary">{label}</div>
+                    <div className="grid h-9 w-9 place-items-center rounded-full border border-border/70 bg-background/70 text-amber-500 transition-colors group-hover:border-amber-500/40">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                  </div>
+                  <h2 className="font-serif text-2xl font-medium tracking-tight">{title}</h2>
+                  <p className="mt-3 text-sm leading-relaxed text-foreground/62">{text}</p>
+                </div>
+              ))}
+            </section>
+
+            {project.videoGallery && project.videoGallery[0] && (
+              <section className="grid grid-cols-1 gap-6 rounded-[1.25rem] border border-border/70 bg-muted/10 p-4 md:p-6 lg:grid-cols-[0.34fr_0.66fr] lg:items-center">
+                <div className="p-2 md:p-4">
+                  <div className="text-[10px] uppercase tracking-[0.34em] text-primary">Watch the build</div>
+                  <h2 className="mt-3 font-serif text-3xl font-medium leading-tight md:text-4xl">The careful bit is the whole project.</h2>
+                  <p className="mt-4 max-w-sm text-sm leading-relaxed text-foreground/62">
+                    Dust control, hand setting, alignment, and patience at a scale where every mark shows.
+                  </p>
+                </div>
+                <div className="w-full">
+                  <div className="relative aspect-video overflow-hidden rounded-xl border border-border/50 bg-black shadow-2xl shadow-black/35">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${project.videoGallery[0].id}`}
+                      title={project.videoGallery[0].title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="h-full w-full"
+                    />
+                  </div>
+                </div>
+              </section>
             )}
 
-            {project.results && <ResultsSection results={project.results} />}
+            {/* Pull quote — amber accent reserved for this page */}
+            <section className="mx-auto max-w-3xl px-2">
+              <div className="rounded-[1.25rem] border border-amber-500/25 bg-[linear-gradient(135deg,rgba(217,119,6,0.1),transparent_42%)] p-6 md:p-8">
+                <p className="font-serif text-xl italic leading-[1.55] text-foreground/85 md:text-2xl">
+                  A moment of rushing or frustration can mean a scratched dial, a bent hand, or dust trapped under the crystal &mdash; all of which mean taking everything apart and starting over.
+                </p>
+              </div>
+            </section>
 
-            <ProjectTabs project={project} />
+            {/* Sign-off */}
+            <section className="pt-2 text-center">
+              <p className="mx-auto max-w-md font-serif text-3xl italic leading-tight text-foreground/80">
+                It runs. Within spec. On the wrist.
+              </p>
+              <p className="mt-4 text-[10px] uppercase tracking-[0.4em] text-foreground/35">
+                That&rsquo;s the whole result.
+              </p>
+            </section>
           </div>
         ) : (
           /* Default project layout for any other projects */

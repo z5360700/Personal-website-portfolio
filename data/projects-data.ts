@@ -164,7 +164,6 @@ The robot achieved a top-3 competition finish by efficiently mapping the maze en
 Sensor fusion combined data from multiple sources to maintain accurate position estimates and make real-time navigation decisions.
 `,
     image: "/images/micromouse-robot.jpeg",
-    course: "MTRN3100",
     hardwareGallery: [
       "/images/micromouse-robot.jpeg",
       "/images/micromouse-prototype.jpeg",
@@ -304,7 +303,7 @@ Custom ducting directs cool air from front intake fans straight to the GPU, allo
       {
         title: "Modeling the Case",
         description:
-          "First, I created a precise 3D model of my PC case in Fusion360, ensuring all dimensions were accurate for a perfect fit.",
+          "Rather than model the entire PC case from scratch, I downloaded an existing 3D model of it online and brought it into Fusion360 as the reference for the duct.",
         image: "/images/pc-case-model.png",
         highlight: "",
         aspectRatio: "aspect-video",
@@ -314,7 +313,7 @@ Custom ducting directs cool air from front intake fans straight to the GPU, allo
         description:
           "Next, I modeled the GPU and intake fan positions to understand the exact path the air needed to travel.",
         image: "/images/pc-case-with-gpu.png",
-        highlight: "Understanding the spatial relationship between components was essential for effective duct design.",
+        highlight: "",
         aspectRatio: "aspect-video",
       },
       {
@@ -330,7 +329,7 @@ Custom ducting directs cool air from front intake fans straight to the GPU, allo
         description:
           "The final design included multiple components that would fit together perfectly while being printable on a standard 3D printer bed.",
         image: "/images/cooling-duct-component.png",
-        highlight: "Each component was designed with both function and printability in mind.",
+        highlight: "",
         aspectRatio: "aspect-[3/2]",
       },
       {
