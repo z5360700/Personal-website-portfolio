@@ -961,6 +961,75 @@ type PCFlowCurve = {
   size: number
 }
 
+type WatchWaveDriftProps = {
+  height?: number
+  density?: number
+  tone?: string
+  accentTone?: string
+  speed?: "slow" | "fast"
+  className?: string
+  idPrefix: string
+}
+
+function WatchWaveDrift({
+  height = 260,
+  density = 8,
+  tone = "rgba(156, 180, 204, 0.16)",
+  accentTone = "rgba(212, 165, 87, 0.28)",
+  speed = "slow",
+  className = "",
+  idPrefix,
+}: WatchWaveDriftProps) {
+  const lines = Array.from({ length: density })
+  const renderLines = (offset = 0) =>
+    lines.map((_, index) => {
+      const y = (height / (density + 1)) * (index + 1)
+      const amplitude = 14 + (index % 3) * 6
+      const phase = index % 2 === 0 ? 0 : 60
+      const path = `M -40 ${y} C 100 ${y - amplitude}, 240 ${y + amplitude}, 400 ${y} S 720 ${y - amplitude}, 880 ${y} S 1200 ${y + amplitude}, 1640 ${y - amplitude + phase * 0.05}`
+      const isAccent = index === Math.floor(density / 2)
+
+      return (
+        <path
+          key={`${offset}-${index}`}
+          d={path}
+          fill="none"
+          stroke={`url(#${idPrefix}-${isAccent ? "accent" : "fade"})`}
+          strokeWidth={isAccent ? 1.4 : 0.9}
+          strokeLinecap="round"
+          transform={offset ? `translate(${offset} 0)` : undefined}
+        />
+      )
+    })
+
+  return (
+    <div className={`pointer-events-none select-none ${className}`} aria-hidden>
+      <svg
+        viewBox={`0 0 1600 ${height}`}
+        preserveAspectRatio="none"
+        className={`block h-full w-[200%] ${speed === "slow" ? "watch-wave-drift-slow" : "watch-wave-drift-fast"}`}
+      >
+        <defs>
+          <linearGradient id={`${idPrefix}-fade`} x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stopColor={tone} stopOpacity="0" />
+            <stop offset="0.18" stopColor={tone} stopOpacity="1" />
+            <stop offset="0.78" stopColor={tone} stopOpacity="1" />
+            <stop offset="1" stopColor={tone} stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id={`${idPrefix}-accent`} x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stopColor={accentTone} stopOpacity="0" />
+            <stop offset="0.45" stopColor={accentTone} stopOpacity="1" />
+            <stop offset="0.65" stopColor={accentTone} stopOpacity="1" />
+            <stop offset="1" stopColor={accentTone} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {renderLines(0)}
+        {renderLines(1600)}
+      </svg>
+    </div>
+  )
+}
+
 function PCCoolingScene({ mode }: { mode: PCCoolingMode }) {
   const mountRef = useRef<HTMLDivElement>(null)
 
@@ -3435,61 +3504,40 @@ function ProjectDetailClient() {
           </div>
         ) : project.id === 6 ? (
           /* Custom Watch Build — editorial / craft layout */
-          <div className="relative space-y-16 overflow-hidden pb-16 md:space-y-24">
+          <div className="relative overflow-hidden pb-16">
             <div aria-hidden className="pointer-events-none absolute inset-x-[-12%] top-[-7rem] h-[34rem] bg-[radial-gradient(circle_at_52%_18%,rgba(217,119,6,0.18),transparent_30%),radial-gradient(circle_at_76%_46%,rgba(59,130,246,0.13),transparent_26%)]" />
+            <WatchWaveDrift
+              idPrefix="watch-page-wave-a"
+              height={520}
+              density={10}
+              speed="slow"
+              tone="rgba(156,180,204,0.12)"
+              accentTone="rgba(212,165,87,0.18)"
+              className="absolute inset-x-0 top-24 h-[34rem] opacity-[0.55]"
+            />
+            <WatchWaveDrift
+              idPrefix="watch-page-wave-b"
+              height={360}
+              density={7}
+              speed="fast"
+              tone="rgba(107,138,168,0.10)"
+              accentTone="rgba(212,165,87,0.14)"
+              className="absolute inset-x-0 top-[48rem] h-[24rem] opacity-[0.45]"
+            />
+            <div className="relative space-y-16 md:space-y-24">
             {/* HERO */}
             <section className="relative overflow-hidden rounded-[1.5rem] border border-border/70 bg-[#050507] p-6 text-center text-white shadow-2xl shadow-black/30 md:p-10">
               <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(217,119,6,0.12),transparent_38%),linear-gradient(90deg,rgba(255,255,255,0.055)_1px,transparent_1px),linear-gradient(0deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:auto,56px_56px,56px_56px]" />
-              <svg
-                aria-hidden
-                viewBox="0 0 1200 520"
-                preserveAspectRatio="none"
-                className="absolute inset-0 h-full w-full opacity-30"
-              >
-                <defs>
-                  <linearGradient id="watch-hero-wave" x1="0%" x2="100%" y1="0%" y2="0%">
-                    <stop offset="0%" stopColor="rgba(59, 130, 246, 0)" />
-                    <stop offset="46%" stopColor="rgba(147, 197, 253, 0.34)" />
-                    <stop offset="72%" stopColor="rgba(251, 191, 36, 0.18)" />
-                    <stop offset="100%" stopColor="rgba(59, 130, 246, 0)" />
-                  </linearGradient>
-                  <linearGradient id="watch-gold-glint" x1="0%" x2="100%" y1="0%" y2="0%">
-                    <stop offset="0%" stopColor="rgba(251, 191, 36, 0)" />
-                    <stop offset="42%" stopColor="rgba(253, 224, 71, 0.82)" />
-                    <stop offset="100%" stopColor="rgba(251, 191, 36, 0)" />
-                  </linearGradient>
-                </defs>
-                {Array.from({ length: 9 }).map((_, index) => {
-                  const y = 92 + index * 38
-                  return (
-                    <path
-                      key={`watch-hero-wave-${index}`}
-                      d={`M-80 ${y} C 90 ${y - 34}, 205 ${y + 34}, 360 ${y} S 625 ${y - 34}, 780 ${y} S 1030 ${y + 34}, 1280 ${y - 8}`}
-                      fill="none"
-                      stroke="url(#watch-hero-wave)"
-                      strokeWidth={index % 3 === 0 ? 1.7 : 1}
-                      strokeLinecap="round"
-                    />
-                  )
-                })}
-                <path
-                  d="M384 352 C 520 318, 632 286, 802 226"
-                  fill="none"
-                  stroke="url(#watch-gold-glint)"
-                  strokeWidth="2.4"
-                  strokeLinecap="round"
-                />
-                <circle cx="626" cy="286" r="4" fill="rgba(253, 224, 71, 0.9)" />
-                {[0, 1, 2, 3].map((index) => (
-                  <circle
-                    key={`watch-hero-gold-spark-${index}`}
-                    cx={500 + index * 58}
-                    cy={328 - index * 24}
-                    r={index % 2 === 0 ? 2.4 : 1.7}
-                    fill="rgba(251, 191, 36, 0.72)"
-                  />
-                ))}
-              </svg>
+              <WatchWaveDrift
+                idPrefix="watch-hero-wave"
+                height={520}
+                density={11}
+                speed="slow"
+                tone="rgba(156,180,204,0.15)"
+                accentTone="rgba(212,165,87,0.32)"
+                className="absolute inset-x-0 top-0 h-full opacity-[0.70]"
+              />
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_54%_48%,rgba(212,165,87,0.10),transparent_48%)]" />
               <div className="absolute inset-0 block md:inset-y-0 md:left-auto md:right-0 md:w-[44%]">
                 <Image
                   src={project.image || "/placeholder.svg"}
@@ -3525,62 +3573,6 @@ function ProjectDetailClient() {
                   </div>
                 ))}
               </div>
-              </div>
-            </section>
-
-            <section className="relative overflow-hidden rounded-[1.25rem] border border-border/70 bg-muted/10 p-5 md:p-7">
-              <svg
-                aria-hidden
-                viewBox="0 0 1200 260"
-                preserveAspectRatio="none"
-                className="absolute inset-0 h-full w-full opacity-70"
-              >
-                <defs>
-                  <linearGradient id="watch-suwa-wave" x1="0%" x2="100%" y1="0%" y2="0%">
-                    <stop offset="0%" stopColor="rgba(14, 165, 233, 0)" />
-                    <stop offset="44%" stopColor="rgba(56, 189, 248, 0.28)" />
-                    <stop offset="66%" stopColor="rgba(245, 158, 11, 0.15)" />
-                    <stop offset="100%" stopColor="rgba(14, 165, 233, 0)" />
-                  </linearGradient>
-                  <radialGradient id="watch-suwa-sun" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="rgba(253, 224, 71, 0.5)" />
-                    <stop offset="48%" stopColor="rgba(245, 158, 11, 0.16)" />
-                    <stop offset="100%" stopColor="rgba(245, 158, 11, 0)" />
-                  </radialGradient>
-                </defs>
-                <ellipse cx="780" cy="86" rx="190" ry="58" fill="url(#watch-suwa-sun)" />
-                {Array.from({ length: 11 }).map((_, index) => {
-                  const y = 24 + index * 22
-                  return (
-                    <path
-                      key={`watch-suwa-wave-${index}`}
-                      d={`M-120 ${y} C 75 ${y - 22}, 190 ${y + 22}, 340 ${y} S 565 ${y - 22}, 720 ${y} S 980 ${y + 22}, 1320 ${y - 12}`}
-                      fill="none"
-                      stroke="url(#watch-suwa-wave)"
-                      strokeWidth={index % 4 === 0 ? 1.6 : 0.9}
-                      strokeLinecap="round"
-                    />
-                  )
-                })}
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <path
-                    key={`watch-suwa-gold-reflection-${index}`}
-                    d={`M610 ${62 + index * 22} C 690 ${48 + index * 20}, 770 ${76 + index * 18}, 865 ${58 + index * 22}`}
-                    fill="none"
-                    stroke="rgba(251, 191, 36, 0.32)"
-                    strokeWidth={index === 2 ? 2 : 1.1}
-                    strokeLinecap="round"
-                  />
-                ))}
-              </svg>
-              <div className="relative grid grid-cols-1 gap-5 md:grid-cols-[0.42fr_0.58fr] md:items-center">
-                <div>
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-primary">Dial inspiration</div>
-                  <h2 className="mt-2 font-serif text-3xl font-medium leading-tight">Lake Suwa ripple texture.</h2>
-                </div>
-                <p className="max-w-2xl text-sm leading-relaxed text-foreground/62">
-                  The blue dial has a soft wave pattern inspired by Grand Seiko&apos;s Lake Suwa design language. The gold logo and seconds hand become the warm accent here: sunlight catching the water.
-                </p>
               </div>
             </section>
 
@@ -3703,6 +3695,7 @@ function ProjectDetailClient() {
                 That&rsquo;s the whole result.
               </p>
             </section>
+            </div>
           </div>
         ) : (
           /* Default project layout for any other projects */

@@ -149,6 +149,14 @@
     stroke-dasharray: 18 14;
     animation: micromouse-route-flow 1.4s linear infinite;
   }
+  .watch-wave-drift-slow {
+    animation: watch-wave-drift 60s linear infinite;
+    will-change: transform;
+  }
+  .watch-wave-drift-fast {
+    animation: watch-wave-drift 32s linear infinite;
+    will-change: transform;
+  }
   .rubiks-panel {
     background: linear-gradient(180deg, hsl(var(--background) / 0.9), hsl(var(--background) / 0.72));
     backdrop-filter: blur(14px);
@@ -346,10 +354,22 @@
       stroke-dashoffset: -32;
     }
   }
+  @keyframes watch-wave-drift {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
     .rubiks-video-scan {
       animation: none;
       display: none;
+    }
+    .watch-wave-drift-slow,
+    .watch-wave-drift-fast {
+      animation: none;
     }
     .rubiks-goal-complete,
     .rubiks-goal-complete-icon {
