@@ -3504,8 +3504,8 @@ function ProjectDetailClient() {
           </div>
         ) : project.id === 6 ? (
           /* Custom Watch Build — editorial / craft layout */
-          <div className="relative overflow-hidden pb-16">
-            <div aria-hidden className="pointer-events-none absolute inset-x-[-12%] top-[-7rem] h-[34rem] bg-[radial-gradient(circle_at_52%_18%,rgba(217,119,6,0.18),transparent_30%),radial-gradient(circle_at_76%_46%,rgba(59,130,246,0.13),transparent_26%)]" />
+          <div className="relative overflow-hidden pb-20">
+            <div aria-hidden className="pointer-events-none absolute inset-x-[-12%] top-[-7rem] h-[34rem] bg-[radial-gradient(circle_at_52%_18%,rgba(217,119,6,0.14),transparent_30%),radial-gradient(circle_at_76%_46%,rgba(59,130,246,0.1),transparent_26%)]" />
             <WatchWaveDrift
               idPrefix="watch-page-wave-a"
               height={520}
@@ -3513,7 +3513,7 @@ function ProjectDetailClient() {
               speed="slow"
               tone="rgba(156,180,204,0.12)"
               accentTone="rgba(212,165,87,0.18)"
-              className="absolute inset-x-0 top-24 h-[34rem] opacity-[0.55]"
+              className="absolute inset-x-0 top-24 h-[34rem] opacity-[0.42]"
             />
             <WatchWaveDrift
               idPrefix="watch-page-wave-b"
@@ -3522,12 +3522,12 @@ function ProjectDetailClient() {
               speed="fast"
               tone="rgba(107,138,168,0.10)"
               accentTone="rgba(212,165,87,0.14)"
-              className="absolute inset-x-0 top-[48rem] h-[24rem] opacity-[0.45]"
+              className="absolute inset-x-0 top-[48rem] h-[24rem] opacity-[0.34]"
             />
-            <div className="relative space-y-16 md:space-y-24">
+            <div className="relative space-y-14 md:space-y-20">
             {/* HERO */}
-            <section className="relative overflow-hidden rounded-[1.5rem] border border-border/70 bg-[#050507] p-6 text-center text-white shadow-2xl shadow-black/30 md:p-10">
-              <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(217,119,6,0.12),transparent_38%),linear-gradient(90deg,rgba(255,255,255,0.055)_1px,transparent_1px),linear-gradient(0deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:auto,56px_56px,56px_56px]" />
+            <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#050507] px-5 py-12 text-center text-white shadow-2xl shadow-black/35 sm:px-8 md:px-12 md:py-16">
+              <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(217,119,6,0.1),transparent_38%),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(0deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:auto,56px_56px,56px_56px]" />
               <WatchWaveDrift
                 idPrefix="watch-hero-wave"
                 height={520}
@@ -3535,40 +3535,40 @@ function ProjectDetailClient() {
                 speed="slow"
                 tone="rgba(156,180,204,0.15)"
                 accentTone="rgba(212,165,87,0.32)"
-                className="absolute inset-x-0 top-0 h-full opacity-[0.70]"
+                className="absolute inset-x-0 top-0 h-full opacity-[0.55]"
               />
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_54%_48%,rgba(212,165,87,0.10),transparent_48%)]" />
-              <div className="absolute inset-0 block md:inset-y-0 md:left-auto md:right-0 md:w-[44%]">
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_54%_48%,rgba(212,165,87,0.08),transparent_48%)]" />
+              <div className="absolute inset-0 block md:inset-y-0 md:left-auto md:right-0 md:w-[46%]">
                 <Image
                   src={project.image || "/placeholder.svg"}
                   alt=""
                   fill
-                  className="object-cover object-top opacity-[0.16] saturate-[1.05] md:opacity-[0.38]"
-                  sizes="44vw"
+                  className="object-cover object-top opacity-[0.14] saturate-[1.05] md:opacity-[0.32]"
+                  sizes="46vw"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#050507] via-[#050507]/70 to-[#050507]/20 md:via-[#050507]/55 md:to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#050507] via-[#050507]/75 to-[#050507]/25 md:via-[#050507]/58 md:to-transparent" />
               </div>
-              <div className="relative mx-auto w-full max-w-3xl min-w-0">
-              <div className="mb-7 inline-flex max-w-[17rem] rounded-full border border-amber-300/25 bg-amber-300/10 px-3 py-1 text-center text-[9px] font-semibold uppercase leading-relaxed tracking-[0.18em] text-amber-100/80 sm:max-w-full sm:text-[10px] sm:tracking-[0.28em]">
+              <div className="relative mx-auto w-full max-w-4xl min-w-0">
+              <div className="mb-7 inline-flex max-w-[17rem] rounded-full border border-amber-300/25 bg-amber-300/10 px-4 py-1.5 text-center text-[9px] font-semibold uppercase leading-relaxed tracking-[0.18em] text-amber-100/80 sm:max-w-full sm:text-[10px] sm:tracking-[0.28em]">
                 Reference 001 &nbsp;·&nbsp; Custom build
               </div>
-              <h1 className="mx-auto max-w-[18rem] break-words font-serif text-3xl font-medium leading-[1.04] tracking-tight sm:max-w-3xl sm:text-5xl md:text-7xl">
+              <h1 className="mx-auto max-w-[18rem] break-words font-serif text-3xl font-medium leading-[1.04] tracking-tight sm:max-w-4xl sm:text-5xl md:text-7xl">
                 A mechanical watch,
                 <br className="hidden sm:block" />
                 <span className="italic text-amber-100"> assembled by hand.</span>
               </h1>
-              <p className="mx-auto mt-8 max-w-[17rem] break-words text-sm leading-relaxed text-white/66 sm:max-w-md sm:text-base">
+              <p className="mx-auto mt-7 max-w-[17rem] break-words text-sm leading-relaxed text-white/70 sm:max-w-lg sm:text-base">
                 Sourced and hand-built around a Seiko NH35 movement. Every part was fitted, aligned, cleaned, and tested at wristwatch scale.
               </p>
-              <div className="mx-auto mt-7 grid w-full max-w-[17rem] grid-cols-1 gap-2 sm:max-w-md sm:grid-cols-3 sm:gap-3">
+              <div className="mx-auto mt-8 grid w-full max-w-[17rem] grid-cols-1 gap-2 sm:max-w-xl sm:grid-cols-3 sm:gap-3">
                 {[
                   { label: "Movement", value: "NH35" },
                   { label: "Beat rate", value: "21,600" },
                   { label: "Reserve", value: "41 h" },
                 ].map((item) => (
-                  <div key={item.label} className="min-w-0 rounded-lg border border-white/10 bg-white/[0.045] p-2.5 sm:p-3">
-                    <div className="truncate text-[8px] uppercase tracking-[0.16em] text-white/38 sm:text-[9px] sm:tracking-[0.2em]">{item.label}</div>
+                  <div key={item.label} className="min-w-0 rounded-lg border border-white/10 bg-white/[0.055] p-3 shadow-inner shadow-white/[0.02] backdrop-blur-sm sm:p-4">
+                    <div className="truncate text-[8px] uppercase tracking-[0.16em] text-white/42 sm:text-[9px] sm:tracking-[0.2em]">{item.label}</div>
                     <div className="mt-1 text-base font-bold tracking-tight text-white sm:text-lg">{item.value}</div>
                   </div>
                 ))}
@@ -3577,38 +3577,37 @@ function ProjectDetailClient() {
             </section>
 
             {/* Frontispiece image */}
-            <section className="relative flex justify-center">
-              <figure className="text-center">
+            <section className="relative flex justify-center px-2">
+              <figure className="w-full max-w-4xl text-center">
                 <button
                   type="button"
-                  className="group relative inline-block overflow-hidden rounded-[1.25rem] border border-border/60 bg-muted/10 p-3 shadow-2xl shadow-black/35"
-                  onClick={() => openLightbox([project.image || "/placeholder.svg"], 0, project.title)}
+                  className="group relative block w-full overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-2.5 shadow-2xl shadow-black/40 sm:p-3"
+                  onClick={() => openLightbox(["/images/GrandSeikoImage.png"], 0, project.title)}
                 >
-                  <div aria-hidden className="absolute inset-8 rounded-full border border-amber-500/25" />
-                  <div aria-hidden className="absolute inset-14 rounded-full border border-foreground/10" />
+                  <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_50%_34%,rgba(245,158,11,0.18),transparent_32%)] opacity-70" />
                   <Image
-                    src={project.image || "/placeholder.svg"}
+                    src="/images/GrandSeikoImage.png"
                     alt={project.title}
-                    width={440}
-                    height={440}
-                    className="relative block h-[500px] w-[500px] max-w-[82vw] rounded-lg object-cover transition-transform duration-700 group-hover:scale-[1.025]"
-                    style={{ objectPosition: "top" }}
+                    width={980}
+                    height={980}
+                    className="relative block h-[min(780px,92vw)] w-full rounded-xl object-cover transition-transform duration-700 group-hover:scale-[1.018]"
+                    style={{ objectPosition: "center 40%" }}
                     priority
                   />
-                  <div className="absolute bottom-6 left-6 rounded-lg border border-white/15 bg-black/50 px-3 py-2 text-left text-white backdrop-blur-md">
+                  <div className="absolute bottom-5 left-5 rounded-lg border border-white/15 bg-black/55 px-3 py-2 text-left text-white shadow-lg shadow-black/30 backdrop-blur-md sm:bottom-6 sm:left-6">
                     <div className="text-[9px] uppercase tracking-[0.22em] text-white/45">Finished build</div>
                     <div className="mt-1 text-sm font-bold">Inspect close-up</div>
                   </div>
                 </button>
-                <figcaption className="mt-4 font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/40">
+                <figcaption className="mt-5 font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/40">
                   Seiko NH35A &nbsp;·&nbsp; 41 h reserve &nbsp;·&nbsp; 21,600 vph
                 </figcaption>
               </figure>
             </section>
 
             {/* Specs ticker — single horizontal line */}
-            <section className="border-y border-border/40 py-5">
-              <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-7 gap-y-2 px-4 text-[11px] uppercase tracking-[0.22em] text-foreground/55">
+            <section className="border-y border-border/35 py-5">
+              <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-7 gap-y-2 px-4 text-[10px] uppercase tracking-[0.24em] text-foreground/50 sm:text-[11px]">
                 <span>Mechanical automatic</span>
                 <span aria-hidden className="text-foreground/20">·</span>
                 <span>Hand-pressed dial &amp; hands</span>
@@ -3641,7 +3640,7 @@ function ProjectDetailClient() {
                   text: "Final check for dust, alignment, hand clearance, and reliable wrist operation.",
                 },
               ].map(({ icon: Icon, label, title, text }) => (
-                <div key={label} className="group rounded-xl border border-border/70 bg-muted/10 p-5 transition-colors hover:border-amber-500/35 hover:bg-amber-500/[0.045]">
+                <div key={label} className="group rounded-xl border border-border/60 bg-background/45 p-5 shadow-lg shadow-black/[0.03] transition-colors hover:border-amber-500/35 hover:bg-amber-500/[0.045]">
                   <div className="mb-4 flex items-center justify-between">
                     <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-primary">{label}</div>
                     <div className="grid h-9 w-9 place-items-center rounded-full border border-border/70 bg-background/70 text-amber-500 transition-colors group-hover:border-amber-500/40">
@@ -3655,7 +3654,7 @@ function ProjectDetailClient() {
             </section>
 
             {project.videoGallery && project.videoGallery[0] && (
-              <section className="grid grid-cols-1 gap-6 rounded-[1.25rem] border border-border/70 bg-muted/10 p-4 md:p-6 lg:grid-cols-[0.34fr_0.66fr] lg:items-center">
+              <section className="grid grid-cols-1 gap-6 rounded-2xl border border-border/60 bg-background/45 p-4 shadow-xl shadow-black/[0.04] md:p-6 lg:grid-cols-[0.34fr_0.66fr] lg:items-center">
                 <div className="p-2 md:p-4">
                   <div className="text-[10px] uppercase tracking-[0.34em] text-primary">Watch the build</div>
                   <h2 className="mt-3 font-serif text-3xl font-medium leading-tight md:text-4xl">The careful bit is the whole project.</h2>
@@ -3664,7 +3663,7 @@ function ProjectDetailClient() {
                   </p>
                 </div>
                 <div className="w-full">
-                  <div className="relative aspect-video overflow-hidden rounded-xl border border-border/50 bg-black shadow-2xl shadow-black/35">
+                  <div className="relative aspect-video overflow-hidden rounded-xl border border-white/10 bg-black shadow-2xl shadow-black/35">
                     <iframe
                       src={`https://www.youtube.com/embed/${project.videoGallery[0].id}`}
                       title={project.videoGallery[0].title}
@@ -3679,7 +3678,7 @@ function ProjectDetailClient() {
 
             {/* Pull quote — amber accent reserved for this page */}
             <section className="mx-auto max-w-3xl px-2">
-              <div className="rounded-[1.25rem] border border-amber-500/25 bg-[linear-gradient(135deg,rgba(217,119,6,0.1),transparent_42%)] p-6 md:p-8">
+              <div className="rounded-2xl border border-amber-500/20 bg-[linear-gradient(135deg,rgba(217,119,6,0.08),transparent_42%)] p-6 shadow-xl shadow-black/[0.03] md:p-8">
                 <p className="font-serif text-xl italic leading-[1.55] text-foreground/85 md:text-2xl">
                   A moment of rushing or frustration can mean a scratched dial, a bent hand, or dust trapped under the crystal &mdash; all of which mean taking everything apart and starting over.
                 </p>
