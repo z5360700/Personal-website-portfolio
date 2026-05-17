@@ -10,7 +10,7 @@ export default function Hero() {
   const resumeUrl = "/MichaelLoRusso_RESUME.pdf"
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative pt-20 pb-12 overflow-hidden">
+    <section id="home" className="min-h-dvh flex items-center justify-center relative pt-20 pb-12 overflow-hidden">
       <div className="container mx-auto px-6 flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-16 z-10">
         {/* Profile Image - Made smaller */}
         <motion.div
@@ -39,7 +39,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             className="mb-1"
           >
             <span className="text-base md:text-lg font-medium text-foreground/60">Hi, I'm</span>
@@ -48,7 +48,7 @@ export default function Hero() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 bg-clip-text text-transparent"
           >
             Michael Lo Russo
@@ -57,7 +57,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
             className="max-w-xl mb-6"
           >
             <p className="text-foreground/70 text-base md:text-lg leading-relaxed">
@@ -69,7 +69,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-3"
           >
             <Button size="lg" className="px-6 py-5 text-base font-medium" asChild>

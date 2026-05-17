@@ -13,22 +13,9 @@ const nextConfig = {
     imageSizes: [16, 32, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
   },
-  
+
   // Compression
   compress: true,
-  
-  // Optimize CSS
-  optimizeFonts: true,
-  
-  // ESLint configuration
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  
-  // TypeScript configuration
-  typescript: {
-    ignoreBuildErrors: true,
-  },
 }
 
 export default nextConfig
