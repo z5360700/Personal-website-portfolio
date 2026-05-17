@@ -14,7 +14,7 @@ export default function WavyLines() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none max-w-full">
       <svg
-        className="absolute inset-0 w-full h-full text-slate-600/20 dark:text-slate-300/25"
+        className="absolute inset-0 w-full h-full text-blue-500/15 dark:text-blue-400/15"
         viewBox="0 0 1400 900"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="xMidYMid slice"
